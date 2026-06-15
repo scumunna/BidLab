@@ -11,17 +11,19 @@ struct TradingFloorView: View {
         let name: String
         let marketMean: Double
         let marketSigma: Double
+        let floor: Double          // publisher reserve: a bid under it never wins
         let ctr: Double
         let cvr: Double
         let revenuePerConversion: Double
     }
 
     // Mean clearing price sits below value per impression so there is a real
-    // profitable bidding region, the way a desk actually faces it.
+    // profitable bidding region, the way a desk actually faces it. Each scenario
+    // carries a publisher floor, the reserve a bid must clear to even compete.
     private let scenarios = [
-        Scenario(name: "Retail prospecting", marketMean: 0.45, marketSigma: 0.50, ctr: 0.02, cvr: 0.10, revenuePerConversion: 500),     // value 1.00
-        Scenario(name: "Brand awareness", marketMean: 0.06, marketSigma: 0.50, ctr: 0.004, cvr: 0.02, revenuePerConversion: 1500),      // value 0.12
-        Scenario(name: "Competitive retargeting", marketMean: 0.70, marketSigma: 0.50, ctr: 0.06, cvr: 0.20, revenuePerConversion: 120), // value 1.44
+        Scenario(name: "Retail prospecting", marketMean: 0.45, marketSigma: 0.50, floor: 0.20, ctr: 0.02, cvr: 0.10, revenuePerConversion: 500),     // value 1.00
+        Scenario(name: "Brand awareness", marketMean: 0.06, marketSigma: 0.50, floor: 0.03, ctr: 0.004, cvr: 0.02, revenuePerConversion: 1500),      // value 0.12
+        Scenario(name: "Competitive retargeting", marketMean: 0.70, marketSigma: 0.50, floor: 0.35, ctr: 0.06, cvr: 0.20, revenuePerConversion: 120), // value 1.44
     ]
     private let opportunities = 50_000
     private let budgetCap = 1_000_000.0
@@ -30,6 +32,7 @@ struct TradingFloorView: View {
     @EnvironmentObject var progress: ProgressStore
     @Local private var scenarioIndex = 0
     @Local private var bid: Double = 0.30
+    @Local private var floor: Double = 0.20
     @Local private var secondPrice = false
 
     private var scenario: Scenario { scenarios[scenarioIndex] }
@@ -45,7 +48,7 @@ struct TradingFloorView: View {
     private func config(bid b: Double) -> MarketSimulation.Config {
         MarketSimulation.Config(
             opportunities: opportunities, bid: b, budget: budgetCap,
-            marketMean: marketMean, ctr: ctr, cvr: cvr,
+            marketMean: marketMean, floor: floor, ctr: ctr, cvr: cvr,
             revenuePerConversion: revenuePerConversion,
             model: .logNormal(sigma: marketSigma), auction: auctionType
         )
@@ -110,6 +113,7 @@ struct TradingFloorView: View {
             .onChange(of: scenarioIndex) { _, _ in
                 result = nil
                 score = nil
+                floor = scenario.floor
                 bid = value * 0.3
             }
             Picker("", selection: $secondPrice) {
@@ -175,6 +179,18 @@ struct TradingFloorView: View {
             Slider(value: $bid, in: 0.001...value).tint(Brand.lime)
                 .accessibilityLabel("Your bid")
                 .accessibilityValue(money(bid, 3))
+            HStack {
+                Text("PUBLISHER FLOOR").font(.brandMono(10, .semibold)).foregroundStyle(Color.white.opacity(0.4))
+                Spacer()
+                Text(money(floor, 3)).font(.brandMono(14, .bold)).foregroundStyle(Brand.down)
+            }
+            Slider(value: $floor, in: 0...value).tint(Brand.down)
+                .accessibilityLabel("Publisher floor")
+                .accessibilityValue(money(floor, 3))
+            if bid < floor {
+                Text("Your bid is under the floor, so it never clears the reserve.")
+                    .font(.brandRounded(11.5, .medium)).foregroundStyle(Brand.down)
+            }
             HStack(spacing: 18) {
                 miniStat("Win rate", pct(winRate), Brand.lime)
                 miniStat("Exp. profit / 1k", money(expectedProfitPerOpp * 1000, 2), Brand.up)
@@ -223,6 +239,8 @@ struct TradingFloorView: View {
                 miniStat("eff. CPA", r.conversions > 0 ? money(r.effectiveCPA, 2) : "—", .white)
                 miniStat("Revenue", money(r.revenue, 0), Brand.up)
                 miniStat("Profit", money(r.profit, 0), r.profit >= 0 ? Brand.up : Brand.down)
+                miniStat("Below floor", pct(r.lostToFloorRate), Brand.down)
+                miniStat("Outbid", pct(r.lostToCompetitionRate), Color.white.opacity(0.7))
             }
             Button { exportRun(r) } label: {
                 HStack(spacing: 6) {
@@ -245,6 +263,7 @@ struct TradingFloorView: View {
             HStack(spacing: 14) {
                 legendDot(Brand.lime, "expected profit")
                 legendDot(Brand.lime.opacity(0.9), "your bid", dashed: true)
+                legendDot(Brand.down.opacity(0.8), "floor")
                 legendDot(Brand.analytics, "optimal")
                 Spacer()
             }
@@ -254,6 +273,7 @@ struct TradingFloorView: View {
                 yDomain: 0...max(optimal.expectedProfit * 1.2, 1e-4),
                 markers: [
                     .vertical(x: bid, color: Brand.lime.opacity(0.9)),
+                    .vertical(x: floor, color: Brand.down.opacity(0.7)),
                     .point(x: optimal.bid, y: optimal.expectedProfit, color: Brand.analytics),
                 ]
             )
@@ -278,11 +298,13 @@ struct TradingFloorView: View {
                 "Competing clearing price is log-normal with mean \(money(marketMean, 2)) and log spread \\sigma = \(String(format: "%.2f", marketSigma)), so the win curve P_win is the log-normal CDF, an S-shaped bid landscape.",
                 "Value per impression = CTR × CVR × revenue per conversion.",
                 secondPrice
-                    ? "Second-price clearing: the winner pays the clearing price, so bidding your true value is optimal."
+                    ? "Second-price clearing: the winner pays max(clearing price, floor), so bidding your true value is optimal."
                     : "First-price clearing: the winner pays its own bid, so the optimal bid shades below value.",
+                "Publisher floor \(money(floor, 2)) is the reserve: a bid below it never clears, and a second-price winner pays at least the floor.",
             ],
             parameters: [
                 TransparencyRow(label: "your bid", value: money(bid, 3)),
+                TransparencyRow(label: "publisher floor", value: money(floor, 3)),
                 TransparencyRow(label: "market mean", value: money(marketMean, 2)),
                 TransparencyRow(label: "market sigma", value: String(format: "%.2f", marketSigma)),
                 TransparencyRow(label: "value / imp", value: money(value, 2)),
@@ -309,6 +331,7 @@ struct TradingFloorView: View {
         let csv = """
         metric,value
         bid,\(bid)
+        publisher_floor,\(floor)
         market_mean,\(marketMean)
         value_per_impression,\(value)
         opportunities,\(opportunities)
@@ -319,10 +342,12 @@ struct TradingFloorView: View {
         revenue,\(r.revenue)
         profit,\(r.profit)
         win_rate,\(r.winRate)
+        lost_to_floor,\(r.lostToFloor)
+        lost_to_competition,\(r.lostToCompetition)
         score,\(score ?? 0)
         """
         Exporter.saveText(csv, name: "bidlab-trading-run", ext: "csv")
-        let json = "{\"bid\":\(bid),\"marketMean\":\(marketMean),\"valuePerImpression\":\(value),\"opportunities\":\(opportunities),\"impressionsWon\":\(r.impressionsWon),\"spend\":\(r.spend),\"clicks\":\(r.clicks),\"conversions\":\(r.conversions),\"revenue\":\(r.revenue),\"profit\":\(r.profit),\"winRate\":\(r.winRate),\"score\":\(score ?? 0)}"
+        let json = "{\"bid\":\(bid),\"publisherFloor\":\(floor),\"marketMean\":\(marketMean),\"valuePerImpression\":\(value),\"opportunities\":\(opportunities),\"impressionsWon\":\(r.impressionsWon),\"spend\":\(r.spend),\"clicks\":\(r.clicks),\"conversions\":\(r.conversions),\"revenue\":\(r.revenue),\"profit\":\(r.profit),\"winRate\":\(r.winRate),\"lostToFloor\":\(r.lostToFloor),\"lostToCompetition\":\(r.lostToCompetition),\"score\":\(score ?? 0)}"
         Exporter.saveText(json, name: "bidlab-trading-run", ext: "json")
     }
 

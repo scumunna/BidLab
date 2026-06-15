@@ -58,4 +58,37 @@ func simulationTests(_ h: Harness) {
     let fpRun = MarketSimulation.run(fpConfig, seed: 5)
     h.check("second-price wins the same as first-price for the same bid", spRun.impressionsWon == fpRun.impressionsWon)
     h.check("second-price spends less than first-price", spRun.spend < fpRun.spend)
+
+    // Publisher reserve (floor). A bid below the floor never clears the reserve,
+    // so it cannot win and every loss is attributed to the floor.
+    var belowFloorCfg = lnConfig
+    belowFloorCfg.floor = 0.6
+    belowFloorCfg.bid = 0.5
+    let belowFloor = MarketSimulation.run(belowFloorCfg, seed: 11)
+    h.check("a bid below the floor never wins", belowFloor.impressionsWon == 0)
+    h.check("a bid below the floor is all lost to floor", belowFloor.lostToFloor == belowFloorCfg.opportunities)
+    h.close("win probability is zero below the floor", belowFloorCfg.winProbability(at: 0.5), 0, tol: 1e-9)
+
+    // Above the floor, the win curve is unchanged from the no-floor case.
+    var aboveFloorCfg = lnConfig
+    aboveFloorCfg.floor = 0.3
+    h.close("a floor the bid clears does not change the win curve",
+            aboveFloorCfg.winProbability(at: 0.5), lnConfig.winProbability(at: 0.5), tol: 1e-12)
+
+    // Second-price reserve: same wins (the bid clears the floor) but the winner
+    // pays max(clearing, floor), so spend is strictly higher, and every
+    // opportunity is accounted for as a win, a floor loss, or a competition loss.
+    let reserveCfg = MarketSimulation.Config(
+        opportunities: 200_000, bid: 1.0, budget: 1_000_000_000,
+        marketMean: 0.45, floor: 0.4, ctr: 0.02, cvr: 0.10, revenuePerConversion: 500,
+        model: .logNormal(sigma: 0.5), auction: .secondPrice
+    )
+    var noReserveCfg = reserveCfg
+    noReserveCfg.floor = 0
+    let withReserve = MarketSimulation.run(reserveCfg, seed: 5)
+    let noReserve = MarketSimulation.run(noReserveCfg, seed: 5)
+    h.check("a reserve the bid clears does not change who wins", withReserve.impressionsWon == noReserve.impressionsWon)
+    h.check("a second-price reserve raises the price paid", withReserve.spend > noReserve.spend)
+    h.check("every opportunity is a win, a floor loss, or a competition loss",
+            withReserve.impressionsWon + withReserve.lostToFloor + withReserve.lostToCompetition == reserveCfg.opportunities)
 }

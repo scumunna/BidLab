@@ -32,6 +32,7 @@ public enum MarketSimulation {
         public var bid: Double            // your bid (price per impression)
         public var budget: Double
         public var marketMean: Double     // mean of the competing clearing price
+        public var floor: Double          // publisher reserve: your bid must clear it
         public var ctr: Double
         public var cvr: Double
         public var revenuePerConversion: Double
@@ -43,6 +44,7 @@ public enum MarketSimulation {
             bid: Double,
             budget: Double,
             marketMean: Double,
+            floor: Double = 0,
             ctr: Double,
             cvr: Double,
             revenuePerConversion: Double,
@@ -53,6 +55,7 @@ public enum MarketSimulation {
             self.bid = bid
             self.budget = budget
             self.marketMean = marketMean
+            self.floor = floor
             self.ctr = ctr
             self.cvr = cvr
             self.revenuePerConversion = revenuePerConversion
@@ -69,8 +72,10 @@ public enum MarketSimulation {
         public var analyticWinRate: Double { winProbability(at: bid) }
 
         /// Closed-form win probability at an arbitrary bid, given the market model.
+        /// A bid below the publisher floor never clears the reserve, so its win
+        /// probability is zero regardless of the competition.
         public func winProbability(at b: Double) -> Double {
-            guard b > 0 else { return 0 }
+            guard b > 0, b >= floor else { return 0 }
             switch model {
             case .exponential:
                 return 1 - exp(-b / max(marketMean, 1e-9))
@@ -86,18 +91,21 @@ public enum MarketSimulation {
         /// clearing price is below your bid and pay that price, so it is the
         /// integral of `(value - c)` over the clearing prices you beat.
         public func expectedProfitPerOpportunity(at b: Double) -> Double {
-            guard b > 0 else { return 0 }
+            guard b > 0, b >= floor else { return 0 } // below the reserve you never win
             switch auction {
             case .firstPrice:
                 return winProbability(at: b) * (valuePerImpression - b)
             case .secondPrice:
+                // You win when the clearing price is below your bid and pay
+                // max(clearing, floor): the reserve raises the price when the
+                // competition clears below it.
                 let n = 400
                 let h = b / Double(n)
                 var sum = 0.0
                 for i in 0...n {
                     let c = Double(i) * h
                     let w = (i == 0 || i == n) ? 0.5 : 1.0
-                    sum += w * (valuePerImpression - c) * competingPDF(c)
+                    sum += w * (valuePerImpression - max(c, floor)) * competingPDF(c)
                 }
                 return sum * h
             }
@@ -159,11 +167,31 @@ public enum MarketSimulation {
         public let clicks: Int
         public let conversions: Int
         public let revenue: Double
+        public let lostToFloor: Int        // your bid was below the publisher reserve
+        public let lostToCompetition: Int  // you cleared the reserve but were outbid
+
+        public init(
+            opportunities: Int, impressionsWon: Int, spend: Double, clicks: Int,
+            conversions: Int, revenue: Double, lostToFloor: Int = 0, lostToCompetition: Int = 0
+        ) {
+            self.opportunities = opportunities
+            self.impressionsWon = impressionsWon
+            self.spend = spend
+            self.clicks = clicks
+            self.conversions = conversions
+            self.revenue = revenue
+            self.lostToFloor = lostToFloor
+            self.lostToCompetition = lostToCompetition
+        }
 
         public var profit: Double { revenue - spend }
         public var winRate: Double { opportunities > 0 ? Double(impressionsWon) / Double(opportunities) : 0 }
         public var effectiveCPA: Double { conversions > 0 ? spend / Double(conversions) : .infinity }
         public var roas: Double { spend > 0 ? revenue / spend : .infinity }
+        /// Share of all opportunities lost because the bid was under the reserve.
+        public var lostToFloorRate: Double { opportunities > 0 ? Double(lostToFloor) / Double(opportunities) : 0 }
+        /// Share of all opportunities lost to a higher competing bid.
+        public var lostToCompetitionRate: Double { opportunities > 0 ? Double(lostToCompetition) / Double(opportunities) : 0 }
     }
 
     /// Run the campaign deterministically for the given seed.
@@ -174,11 +202,17 @@ public enum MarketSimulation {
         var conversions = 0
         var spend = 0.0
         var revenue = 0.0
+        var lostToFloor = 0
+        var lostToCompetition = 0
 
         for _ in 0..<config.opportunities {
             let competingBid = config.sampleCompeting(using: &rng)
-            guard config.bid > competingBid else { continue }
-            let pay = config.auction == .secondPrice ? competingBid : config.bid
+            // Clear the publisher reserve first, then the competition.
+            if config.bid < config.floor { lostToFloor += 1; continue }
+            guard config.bid > competingBid else { lostToCompetition += 1; continue }
+            // Second-price pays max(clearing, floor); the reserve is the price when
+            // the competition clears below it. First-price pays your bid.
+            let pay = config.auction == .secondPrice ? max(competingBid, config.floor) : config.bid
             if spend + pay > config.budget { continue } // budget binds on actual payment
 
             won += 1
@@ -198,7 +232,9 @@ public enum MarketSimulation {
             spend: spend,
             clicks: clicks,
             conversions: conversions,
-            revenue: revenue
+            revenue: revenue,
+            lostToFloor: lostToFloor,
+            lostToCompetition: lostToCompetition
         )
     }
 }
