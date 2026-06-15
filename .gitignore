@@ -1,0 +1,20 @@
+# SwiftPM
+/.build/
+.swiftpm/
+Package.resolved
+
+# Built app bundle
+/build/
+*.app
+*.dmg
+
+# macOS
+.DS_Store
+
+# Xcode (if the user later opens in Xcode)
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+xcuserdata/
+DerivedData/
+bidlab-trading-run.*
+/.build-manual/
