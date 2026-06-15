@@ -8,6 +8,9 @@ Package.resolved
 *.app
 *.dmg
 
+# Local-only internal notes (not for the public repo)
+/reviews/
+
 # macOS
 .DS_Store
 
