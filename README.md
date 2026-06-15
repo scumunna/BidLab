@@ -20,6 +20,14 @@ media.
 
 ![BidLab Trading Floor](docs/screenshots/trading-floor.png)
 
+**Run 50,000 auctions in one click — realized win rate, spend, conversions, profit, the floor-vs-competition loss split, and your score against the optimal bid**
+
+![BidLab Trading Floor live run scoring 100](docs/screenshots/trading-floor-run.png)
+
+**Every concept is interactive — drag the bid and drop a live auction inside the lesson itself, and the math responds in real time**
+
+![BidLab interactive lesson with an embedded bid playground](docs/screenshots/lesson-interactive.png)
+
 **Industries — the same math across eleven verticals, each with its real economics**
 
 ![BidLab Industries lens](docs/screenshots/industries.png)
