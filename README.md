@@ -10,6 +10,28 @@ Every concept is interactive and every number is real. Train the bid, the plan,
 the deal, the experiment, and the bidder itself, without spending a dollar of
 media.
 
+## Screenshots
+
+**Learn — nine role-based paths and 124 cited, interactive lessons**
+
+![BidLab Learn surface](docs/screenshots/learn.png)
+
+**Trading Floor — a math-true bidding simulator with first and second-price auctions, a log-normal market, and publisher floors**
+
+![BidLab Trading Floor](docs/screenshots/trading-floor.png)
+
+**Industries — the same math across eleven verticals, each with its real economics**
+
+![BidLab Industries lens](docs/screenshots/industries.png)
+
+**Explorable — a library of standalone, share-worthy interactive explainers**
+
+![BidLab Explorables library](docs/screenshots/explorable.png)
+
+**Progress and certification — an exportable transcript and shareable credentials**
+
+![BidLab Progress and certification](docs/screenshots/progress.png)
+
 ## What is in here
 
 - **`BidLabCore`** (built as a SwiftPM-style library): a pure, UI-free Swift
