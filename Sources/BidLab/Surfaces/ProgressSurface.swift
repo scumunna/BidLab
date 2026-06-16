@@ -430,7 +430,7 @@ struct ProgressSurface: View {
                     .buttonStyle(.plain)
                 }
             }
-            Text("Each learner exports their transcript (here or in Settings). Import those CSV files to build a roster for an LMS or a manager review, all on this device.")
+            Text("Each learner exports their transcript (here or in Settings). Import those CSV files to build a roster for an LMS or a manager review, all on this device. Each row shows whether its signature checks out, so an edited file is flagged.")
                 .font(.brandRounded(12.5, .regular)).foregroundStyle(Brand.muted).fixedSize(horizontal: false, vertical: true)
             if cohort.isEmpty {
                 GuidedEmptyState(
@@ -443,6 +443,15 @@ struct ProgressSurface: View {
                 )
             } else {
                 cohortSummaryCards
+                if cohort.contains(where: { $0.verification == .tampered }) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "exclamationmark.triangle.fill").font(.system(size: 12, weight: .bold)).foregroundStyle(Brand.down)
+                        Text("One or more transcripts were edited after export and no longer match their signature. They are flagged below.")
+                            .font(.brandRounded(12.5, .medium)).foregroundStyle(Brand.down).fixedSize(horizontal: false, vertical: true)
+                    }
+                    .padding(12).frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Brand.down.opacity(0.08), in: RoundedRectangle(cornerRadius: Metric.radiusMd, style: .continuous))
+                }
                 cohortRoster
             }
         }
@@ -471,10 +480,21 @@ struct ProgressSurface: View {
         }
     }
 
+    @ViewBuilder private func verificationBadge(_ v: TranscriptVerification) -> some View {
+        switch v {
+        case .verified: Image(systemName: "checkmark.seal.fill").font(.system(size: 11)).foregroundStyle(Brand.up)
+        case .tampered: Image(systemName: "exclamationmark.triangle.fill").font(.system(size: 11)).foregroundStyle(Brand.down)
+        case .unsigned: Image(systemName: "questionmark.circle").font(.system(size: 11)).foregroundStyle(Brand.faint)
+        }
+    }
+
     private func cohortRow(_ r: LearnerRecord) -> some View {
         HStack(spacing: 12) {
-            Text(r.name).font(.brandRounded(14, .semibold)).foregroundStyle(Brand.ink)
-                .frame(width: 180, alignment: .leading).lineLimit(1)
+            HStack(spacing: 6) {
+                verificationBadge(r.verification)
+                Text(r.name).font(.brandRounded(14, .semibold)).foregroundStyle(Brand.ink).lineLimit(1)
+            }
+            .frame(width: 180, alignment: .leading)
             HStack(spacing: 8) {
                 GeometryReader { geo in
                     Capsule().fill(Brand.ink.opacity(0.06)).overlay(alignment: .leading) {

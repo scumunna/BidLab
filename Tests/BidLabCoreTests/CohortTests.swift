@@ -65,4 +65,36 @@ func cohortTests(_ h: Harness) {
     h.check("report has a header and two rows", rows.count == 3)
     h.check("report header is correct", rows[0].hasPrefix("learner,lessons_completed,lessons_total,completion_pct"))
     h.check("report row A shows 100 percent completion", rows[1].contains("\"A\",113,113,100,"))
+
+    // Tamper-evidence: the exporter signs the summary fields and the roll-up
+    // recomputes the signature on import.
+    let sig = Cohort.transcriptSignature(name: "Devon Park", lessonsCompleted: 90, lessonsTotal: 113,
+                                         certifications: 5, bestTradingScore: 96, xp: 1180, dayStreak: 14)
+    let signed = """
+    learner,Devon Park
+    summary,value
+    lessons_completed_total,90
+    lessons_total,113
+    certifications_earned,5
+    best_trading_score,96
+    xp,1180
+    day_streak,14
+    signature,\(sig)
+    """
+    let signedRec = Cohort.parseTranscript(signed)
+    h.check("a correctly signed transcript verifies", signedRec?.verification == .verified)
+    h.check("signature(for:) matches the signed record", (signedRec.map { Cohort.signature(for: $0) } ?? "") == sig)
+
+    // Editing any signed field after export breaks the signature.
+    let tampered = signed.replacingOccurrences(of: "certifications_earned,5", with: "certifications_earned,9")
+    h.check("an edited transcript is flagged as tampered", Cohort.parseTranscript(tampered)?.verification == .tampered)
+
+    // A transcript with no signature line is unsigned, not tampered.
+    let unsigned = signed.replacingOccurrences(of: "signature,\(sig)", with: "")
+    h.check("a transcript with no signature is unsigned", Cohort.parseTranscript(unsigned)?.verification == .unsigned)
+
+    // The report carries the verification status as a column.
+    let verifiedReport = Cohort.reportCSV(Cohort.parseAll([signed]))
+    h.check("report header includes a verification column", verifiedReport.components(separatedBy: "\n").first?.hasSuffix("verification") == true)
+    h.check("report row carries the verified status", verifiedReport.contains(",verified"))
 }

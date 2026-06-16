@@ -296,6 +296,14 @@ final class ProgressStore: ObservableObject {
         lines.append("best_trading_score,\(Int(bestTradingScore.rounded()))")
         lines.append("xp,\(xp)")
         lines.append("day_streak,\(streak)")
+        // Tamper-evident signature over the summary fields, so a manager rolling
+        // these up can tell an edited file from a real one (see Cohort).
+        let signature = Cohort.transcriptSignature(
+            name: displayName, lessonsCompleted: totalCompleted, lessonsTotal: totalLiveLessons,
+            certifications: passedExams.count, bestTradingScore: Int(bestTradingScore.rounded()),
+            xp: xp, dayStreak: streak
+        )
+        lines.append("signature,\(signature)")
         return lines.joined(separator: "\n")
     }
 
@@ -308,7 +316,12 @@ final class ProgressStore: ObservableObject {
             return "{\"track\":\"\(t.id)\",\"role\":\"\(t.role)\",\"lessonsCompleted\":\(completedCount(forTrack: t.id)),\"lessonsTotal\":\(liveCount(forTrack: t.id)),\"certified\":\(isExamPassed(t.id)),\"examScorePct\":\(score),\"examDate\":\(date)}"
         }.joined(separator: ",")
         let safeName = displayName.replacingOccurrences(of: "\"", with: "'")
-        return "{\"learner\":\"\(safeName)\",\"lessonsCompletedTotal\":\(totalCompleted),\"lessonsTotal\":\(totalLiveLessons),\"certificationsEarned\":\(passedExams.count),\"bestTradingScore\":\(Int(bestTradingScore.rounded())),\"xp\":\(xp),\"dayStreak\":\(streak),\"tracks\":[\(tracks)]}"
+        let signature = Cohort.transcriptSignature(
+            name: displayName, lessonsCompleted: totalCompleted, lessonsTotal: totalLiveLessons,
+            certifications: passedExams.count, bestTradingScore: Int(bestTradingScore.rounded()),
+            xp: xp, dayStreak: streak
+        )
+        return "{\"learner\":\"\(safeName)\",\"lessonsCompletedTotal\":\(totalCompleted),\"lessonsTotal\":\(totalLiveLessons),\"certificationsEarned\":\(passedExams.count),\"bestTradingScore\":\(Int(bestTradingScore.rounded())),\"xp\":\(xp),\"dayStreak\":\(streak),\"signature\":\"\(signature)\",\"tracks\":[\(tracks)]}"
     }
 
     // MARK: Persistence
