@@ -17,4 +17,18 @@ enum Importer {
         guard panel.runModal() == .OK else { return [] }
         return panel.urls.compactMap { try? String(contentsOf: $0, encoding: .utf8) }
     }
+
+    /// Present an open panel for a campaign-export CSV (line items) and return
+    /// the file contents, so the Tools models can run on real numbers.
+    static func openCampaign() -> [String] {
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = true
+        panel.canChooseDirectories = false
+        panel.canChooseFiles = true
+        panel.allowedContentTypes = [.commaSeparatedText, .plainText]
+        panel.message = "Choose a campaign export (CSV) to load your real numbers into the models."
+        panel.prompt = "Import"
+        guard panel.runModal() == .OK else { return [] }
+        return panel.urls.compactMap { try? String(contentsOf: $0, encoding: .utf8) }
+    }
 }

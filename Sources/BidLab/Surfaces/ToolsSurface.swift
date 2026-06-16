@@ -6,6 +6,7 @@ struct ToolsSurface: View {
     @Local private var selected = 0
 
     private let tools: [(name: String, icon: String, accent: Color)] = [
+        ("Bring your campaign", "tray.and.arrow.down", Brand.dsp),
         ("Bid playground", "chart.line.uptrend.xyaxis", Brand.dsp),
         ("Reach & frequency", "target", Brand.planning),
         ("Budget allocator", "square.grid.3x1.below.line.grid.1x2", Brand.planning),
@@ -59,13 +60,14 @@ struct ToolsSurface: View {
     @ViewBuilder
     private var selectedTool: some View {
         switch selected {
-        case 0: AuctionPlayground(params: [:])
-        case 1: ReachFrequencyPlayground(params: [:])
-        case 2: BudgetAllocatorWidget(params: [:])
-        case 3: PricingCalculator(params: [:])
-        case 4: MarginModeler(params: [:])
-        case 5: PowerExplorer(params: [:])
-        case 6: LatencySimulator(params: [:])
+        case 0: CampaignImportView()
+        case 1: AuctionPlayground(params: [:])
+        case 2: ReachFrequencyPlayground(params: [:])
+        case 3: BudgetAllocatorWidget(params: [:])
+        case 4: PricingCalculator(params: [:])
+        case 5: MarginModeler(params: [:])
+        case 6: PowerExplorer(params: [:])
+        case 7: LatencySimulator(params: [:])
         default: BenchmarksReference()
         }
     }
