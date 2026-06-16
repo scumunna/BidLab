@@ -334,23 +334,28 @@ struct TradingFloorView: View {
         let target: [CGPoint] = [CGPoint(x: 0, y: 0)] + r.points.map { CGPoint(x: $0.fractionElapsed, y: $0.targetCumulativeSpend) }
         let actual: [CGPoint] = [CGPoint(x: 0, y: 0)] + r.points.map { CGPoint(x: $0.fractionElapsed, y: $0.cumulativeSpend) }
         let yMax = max(r.flightBudget, r.totalSpend) * 1.05
+        // Win rate rides the same axis, scaled so 100% sits at the top, so its
+        // dips (when intraday competition spikes) line up with where spend stalls.
+        let winRate: [CGPoint] = r.points.map { CGPoint(x: $0.fractionElapsed, y: $0.winRate * yMax) }
         return VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 14) {
                 legendDot(Brand.analytics, "on-pace target")
                 legendDot(Brand.lime, "actual spend")
+                legendDot(Brand.planning, "win rate (0 to 100%)")
                 Spacer()
             }
             CurveChart(
                 series: [
                     ChartSeries(color: Brand.analytics, points: target),
                     ChartSeries(color: Brand.lime, points: actual),
+                    ChartSeries(color: Brand.planning, points: winRate),
                 ],
                 xDomain: 0...1,
                 yDomain: 0...max(yMax, 1e-4),
                 markers: []
             )
             HStack {
-                Text("flight start").font(.brandMono(10, .regular)).foregroundStyle(Color.white.opacity(0.4))
+                Text("flight start · market varies intraday").font(.brandMono(10, .regular)).foregroundStyle(Color.white.opacity(0.4))
                 Spacer()
                 Text("flight end").font(.brandMono(10, .regular)).foregroundStyle(Color.white.opacity(0.4))
             }

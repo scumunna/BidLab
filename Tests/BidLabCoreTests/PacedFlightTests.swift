@@ -31,4 +31,16 @@ func pacedFlightTests(_ h: Harness) {
     let empty = PacedFlight.run(baseConfig: cfg, flightBudget: flightBudget, intervals: 0, seed: 1)
     h.check("zero intervals yields an empty flight", empty.points.isEmpty)
     h.close("empty flight spends nothing", empty.totalSpend, 0, tol: 1e-9)
+
+    // Non-stationary market: intraday volatility varies per-interval volume, so
+    // the throttle fights a moving target, and win rates stay valid.
+    let varied = PacedFlight.run(baseConfig: cfg, flightBudget: flightBudget, intervals: 12, volatility: 0.35, seed: 7)
+    h.check("intraday volatility varies per-interval volume", Set(varied.points.map { $0.opportunities }).count > 1)
+    h.check("all interval win rates are within [0,1]", varied.points.allSatisfy { $0.winRate >= 0 && $0.winRate <= 1 })
+    h.check("a non-stationary flight is deterministic",
+            varied == PacedFlight.run(baseConfig: cfg, flightBudget: flightBudget, intervals: 12, volatility: 0.35, seed: 7))
+
+    // Zero volatility reproduces a stationary market (constant per-interval volume).
+    let flat = PacedFlight.run(baseConfig: cfg, flightBudget: flightBudget, intervals: 12, volatility: 0, seed: 7)
+    h.check("zero volatility holds per-interval volume constant", Set(flat.points.map { $0.opportunities }).count == 1)
 }

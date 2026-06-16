@@ -12,23 +12,27 @@ public enum PacedFlight {
         public let bid: Double                      // throttled bid used this interval
         public let throttle: Double                 // pacing multiplier applied
         public let impressionsWon: Int
+        public let opportunities: Int               // bid requests this interval (varies intraday)
         public let conversions: Int
         public let spend: Double
         public let cumulativeSpend: Double
         public let targetCumulativeSpend: Double    // on-pace target at this point
+        public let winRate: Double                  // impressionsWon / opportunities this interval
 
         public init(index: Int, fractionElapsed: Double, bid: Double, throttle: Double,
-                    impressionsWon: Int, conversions: Int, spend: Double,
-                    cumulativeSpend: Double, targetCumulativeSpend: Double) {
+                    impressionsWon: Int, opportunities: Int, conversions: Int, spend: Double,
+                    cumulativeSpend: Double, targetCumulativeSpend: Double, winRate: Double) {
             self.index = index
             self.fractionElapsed = fractionElapsed
             self.bid = bid
             self.throttle = throttle
             self.impressionsWon = impressionsWon
+            self.opportunities = opportunities
             self.conversions = conversions
             self.spend = spend
             self.cumulativeSpend = cumulativeSpend
             self.targetCumulativeSpend = targetCumulativeSpend
+            self.winRate = winRate
         }
     }
 
@@ -60,11 +64,16 @@ public enum PacedFlight {
     /// each interval it is scaled by the pacing throttle and capped at value.
     /// The per-interval budget is the remaining flight budget, so total spend can
     /// never exceed `flightBudget`.
+    /// `volatility` (0...) sets how much the market swings intraday: each interval
+    /// scales opportunity volume and the competing-price mean by a diurnal curve,
+    /// so the pacing throttle has to fight real under- and over-delivery instead
+    /// of a flat stationary market. `volatility: 0` reproduces the stationary run.
     public static func run(
         baseConfig: MarketSimulation.Config,
         flightBudget: Double,
         intervals: Int,
         gain: Double = 1.0,
+        volatility: Double = 0.35,
         seed: UInt64
     ) -> Result {
         guard intervals > 0 else {
@@ -89,9 +98,16 @@ public enum PacedFlight {
             let throttle = Pacing.throttle(targetSpend: target, actualSpend: cumulativeSpend, gain: gain)
             let bid = min(max(baseBid * throttle, 1e-6), valueCap)
 
+            // Intraday market: volume and competition swing on offset sinusoids.
+            let mid = (Double(i) + 0.5) / Double(intervals)
+            let volumeMultiplier = max(0.2, 1 + volatility * sin(2 * .pi * mid))
+            let competitionMultiplier = max(0.2, 1 + volatility * cos(2 * .pi * mid))
+            let intervalOpportunities = max(1, Int(Double(perInterval) * volumeMultiplier))
+
             var cfg = baseConfig
             cfg.bid = bid
-            cfg.opportunities = perInterval
+            cfg.opportunities = intervalOpportunities
+            cfg.marketMean = baseConfig.marketMean * competitionMultiplier
             cfg.budget = max(0, flightBudget - cumulativeSpend) // cannot exceed the flight budget
             let r = MarketSimulation.run(cfg, seed: seed &+ UInt64(i))
 
@@ -107,10 +123,12 @@ public enum PacedFlight {
                 bid: bid,
                 throttle: throttle,
                 impressionsWon: r.impressionsWon,
+                opportunities: intervalOpportunities,
                 conversions: r.conversions,
                 spend: r.spend,
                 cumulativeSpend: cumulativeSpend,
-                targetCumulativeSpend: Pacing.targetSpend(totalBudget: flightBudget, fractionElapsed: endFraction)
+                targetCumulativeSpend: Pacing.targetSpend(totalBudget: flightBudget, fractionElapsed: endFraction),
+                winRate: intervalOpportunities > 0 ? Double(r.impressionsWon) / Double(intervalOpportunities) : 0
             ))
         }
 
