@@ -13,6 +13,33 @@ public enum TranscriptVerification: String, Equatable {
     case unsigned   // no signature line (older export or hand-made file)
 }
 
+/// One path's progress for a learner, parsed from the transcript's per-track
+/// rows so a manager can see which paths a team is weak on, not just an average.
+public struct TrackProgress: Equatable {
+    public let trackID: String
+    public let role: String
+    public let lessonsCompleted: Int
+    public let lessonsTotal: Int
+    public let certified: Bool
+    public let examScorePct: Int?
+    public let examDate: String?
+
+    public init(trackID: String, role: String, lessonsCompleted: Int, lessonsTotal: Int,
+                certified: Bool, examScorePct: Int? = nil, examDate: String? = nil) {
+        self.trackID = trackID
+        self.role = role
+        self.lessonsCompleted = lessonsCompleted
+        self.lessonsTotal = lessonsTotal
+        self.certified = certified
+        self.examScorePct = examScorePct
+        self.examDate = examDate
+    }
+
+    public var completionFraction: Double {
+        lessonsTotal > 0 ? Double(lessonsCompleted) / Double(lessonsTotal) : 0
+    }
+}
+
 public struct LearnerRecord: Equatable {
     public let name: String
     public let lessonsCompleted: Int
@@ -22,10 +49,11 @@ public struct LearnerRecord: Equatable {
     public let xp: Int
     public let dayStreak: Int
     public let verification: TranscriptVerification
+    public let tracks: [TrackProgress]
 
     public init(name: String, lessonsCompleted: Int, lessonsTotal: Int,
                 certificationsEarned: Int, bestTradingScore: Int, xp: Int, dayStreak: Int,
-                verification: TranscriptVerification = .unsigned) {
+                verification: TranscriptVerification = .unsigned, tracks: [TrackProgress] = []) {
         self.name = name
         self.lessonsCompleted = lessonsCompleted
         self.lessonsTotal = lessonsTotal
@@ -34,6 +62,7 @@ public struct LearnerRecord: Equatable {
         self.xp = xp
         self.dayStreak = dayStreak
         self.verification = verification
+        self.tracks = tracks
     }
 
     /// Fraction of the live curriculum this learner has completed, in `0...1`.
@@ -57,6 +86,25 @@ public struct CohortSummary: Equatable {
         self.totalCertifications = totalCertifications
         self.certifiedLearners = certifiedLearners
         self.avgBestScore = avgBestScore
+    }
+}
+
+/// One path rolled up across the whole imported cohort: how many learners are
+/// certified and how far along they are, so a manager sees "the team is weak on
+/// DSP setup" rather than a single blended completion number.
+public struct PathRollup: Equatable {
+    public let trackID: String
+    public let role: String
+    public let learnerCount: Int    // learners whose transcript includes this path
+    public let certifiedCount: Int
+    public let avgCompletion: Double // 0...1
+
+    public init(trackID: String, role: String, learnerCount: Int, certifiedCount: Int, avgCompletion: Double) {
+        self.trackID = trackID
+        self.role = role
+        self.learnerCount = learnerCount
+        self.certifiedCount = certifiedCount
+        self.avgCompletion = avgCompletion
     }
 }
 
@@ -88,13 +136,31 @@ public enum Cohort {
         let lines = csv.components(separatedBy: "\n").map { $0.trimmingCharacters(in: .whitespaces) }
         var name = ""
         var summary: [String: String] = [:]
+        var tracks: [TrackProgress] = []
         var inSummary = false
+        var inTracks = false
         for line in lines {
             let lower = line.lowercased()
             if lower.hasPrefix("learner,") {
                 name = String(line.dropFirst("learner,".count)).trimmingCharacters(in: .whitespaces)
+            } else if lower.hasPrefix("track,role") {
+                inTracks = true // header row; data rows follow until the summary block
             } else if lower == "summary,value" {
                 inSummary = true
+                inTracks = false
+            } else if inTracks {
+                let cols = line.split(separator: ",", omittingEmptySubsequences: false).map {
+                    $0.trimmingCharacters(in: .whitespaces)
+                }
+                if cols.count >= 5, !cols[0].isEmpty {
+                    tracks.append(TrackProgress(
+                        trackID: cols[0], role: cols[1],
+                        lessonsCompleted: Int(cols[2]) ?? 0, lessonsTotal: Int(cols[3]) ?? 0,
+                        certified: cols[4].lowercased() == "yes",
+                        examScorePct: cols.count > 5 ? Int(cols[5]) : nil,
+                        examDate: cols.count > 6 && !cols[6].isEmpty ? cols[6] : nil
+                    ))
+                }
             } else if inSummary, let comma = line.firstIndex(of: ",") {
                 let key = String(line[..<comma]).trimmingCharacters(in: .whitespaces)
                 let value = String(line[line.index(after: comma)...]).trimmingCharacters(in: .whitespaces)
@@ -127,7 +193,8 @@ public enum Cohort {
             bestTradingScore: intVal("best_trading_score"),
             xp: intVal("xp"),
             dayStreak: intVal("day_streak"),
-            verification: verification
+            verification: verification,
+            tracks: tracks
         )
     }
 
@@ -151,6 +218,32 @@ public enum Cohort {
         return CohortSummary(learnerCount: records.count, avgCompletion: avgCompletion,
                              totalCertifications: totalCerts, certifiedLearners: certified,
                              avgBestScore: avgScore)
+    }
+
+    /// Roll the cohort up by path, preserving first-seen path order, so a manager
+    /// can see certification and completion per path across the team.
+    public static func byPath(_ records: [LearnerRecord]) -> [PathRollup] {
+        var order: [String] = []
+        var roles: [String: String] = [:]
+        var learners: [String: Int] = [:]
+        var certified: [String: Int] = [:]
+        var completionSum: [String: Double] = [:]
+        for r in records {
+            for t in r.tracks {
+                if learners[t.trackID] == nil { order.append(t.trackID); roles[t.trackID] = t.role }
+                learners[t.trackID, default: 0] += 1
+                if t.certified { certified[t.trackID, default: 0] += 1 }
+                completionSum[t.trackID, default: 0] += t.completionFraction
+            }
+        }
+        return order.map { id in
+            let n = learners[id] ?? 0
+            return PathRollup(
+                trackID: id, role: roles[id] ?? id, learnerCount: n,
+                certifiedCount: certified[id] ?? 0,
+                avgCompletion: n > 0 ? (completionSum[id] ?? 0) / Double(n) : 0
+            )
+        }
     }
 
     /// A combined CSV, one row per learner, for a manager report or an LMS.

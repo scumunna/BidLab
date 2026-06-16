@@ -97,4 +97,46 @@ func cohortTests(_ h: Harness) {
     let verifiedReport = Cohort.reportCSV(Cohort.parseAll([signed]))
     h.check("report header includes a verification column", verifiedReport.components(separatedBy: "\n").first?.hasSuffix("verification") == true)
     h.check("report row carries the verified status", verifiedReport.contains(",verified"))
+
+    // Per-track parsing and the by-path roll-up.
+    let withTracks = """
+    learner,Sam
+    track,role,lessons_completed,lessons_total,certified,exam_score_pct,exam_date
+    foundations,Foundations,12,12,yes,90,2026-06-10
+    dsp,DSP / Trader,6,13,no,,
+
+    summary,value
+    lessons_completed_total,18
+    lessons_total,113
+    certifications_earned,1
+    best_trading_score,70
+    xp,300
+    day_streak,3
+    """
+    let rec = Cohort.parseTranscript(withTracks)
+    h.check("parses per-track rows", rec?.tracks.count == 2)
+    h.check("a certified track is parsed as certified", rec?.tracks.first?.certified == true)
+    h.check("an uncertified track is parsed as not certified", rec?.tracks.last?.certified == false)
+    h.close("a track's completion fraction", rec?.tracks.last?.completionFraction ?? -1, 6.0 / 13.0, tol: 1e-9)
+
+    let other = """
+    learner,Lee
+    track,role,lessons_completed,lessons_total,certified,exam_score_pct,exam_date
+    dsp,DSP / Trader,13,13,yes,95,2026-06-09
+
+    summary,value
+    lessons_completed_total,30
+    lessons_total,113
+    certifications_earned,1
+    best_trading_score,88
+    xp,600
+    day_streak,5
+    """
+    let paths = Cohort.byPath(Cohort.parseAll([withTracks, other]))
+    let dsp = paths.first { $0.trackID == "dsp" }
+    h.check("by-path finds the DSP path", dsp != nil)
+    h.check("DSP path has two learners", dsp?.learnerCount == 2)
+    h.check("DSP path has one certified", dsp?.certifiedCount == 1)
+    h.close("DSP average completion is (6/13 + 1) / 2", dsp?.avgCompletion ?? -1, ((6.0 / 13.0) + 1.0) / 2.0, tol: 1e-9)
+    h.check("a path only one learner has shows a single learner", paths.first { $0.trackID == "foundations" }?.learnerCount == 1)
 }

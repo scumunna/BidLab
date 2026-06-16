@@ -453,6 +453,36 @@ struct ProgressSurface: View {
                     .background(Brand.down.opacity(0.08), in: RoundedRectangle(cornerRadius: Metric.radiusMd, style: .continuous))
                 }
                 cohortRoster
+                cohortByPath
+            }
+        }
+    }
+
+    @ViewBuilder private var cohortByPath: some View {
+        let paths = Cohort.byPath(cohort)
+        if !paths.isEmpty {
+            VStack(alignment: .leading, spacing: 8) {
+                SectionHeader(title: "By path across the team", accent: Brand.dsp)
+                Text("Where the team is certified and how far along, per path. The gap, not the average.")
+                    .font(.brandRounded(12, .regular)).foregroundStyle(Brand.muted)
+                ForEach(Array(paths.enumerated()), id: \.offset) { _, p in
+                    HStack(spacing: 12) {
+                        Text(p.role).font(.brandRounded(13.5, .semibold)).foregroundStyle(Brand.ink)
+                            .frame(width: 168, alignment: .leading).lineLimit(1)
+                        GeometryReader { geo in
+                            Capsule().fill(Brand.ink.opacity(0.06)).overlay(alignment: .leading) {
+                                Capsule().fill(Brand.dsp).frame(width: max(6, geo.size.width * CGFloat(p.avgCompletion)))
+                            }
+                        }
+                        .frame(height: 8)
+                        Text("\(p.certifiedCount)/\(p.learnerCount) cert")
+                            .font(.brandMono(11, .bold)).foregroundStyle(p.certifiedCount > 0 ? Brand.up : Brand.faint)
+                            .frame(width: 88, alignment: .trailing)
+                    }
+                    .padding(12)
+                    .background(Brand.surface, in: RoundedRectangle(cornerRadius: Metric.radiusLg, style: .continuous))
+                    .overlay(RoundedRectangle(cornerRadius: Metric.radiusLg, style: .continuous).strokeBorder(Brand.hairline, lineWidth: 1))
+                }
             }
         }
     }
