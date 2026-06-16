@@ -45,4 +45,15 @@ func campaignDataTests(_ h: Harness) {
     // Header-only or empty input yields nothing, not a crash.
     h.check("header-only input yields no lines", CampaignData.parseCSV("name,impressions,spend").isEmpty)
     h.check("empty input yields no lines", CampaignData.parseCSV("").isEmpty)
+
+    // Per-line verdicts judge cost efficiency against the campaign blend.
+    let efficientLine = CampaignLine(name: "A", impressions: 100_000, clicks: 2_000, conversions: 200, spend: 2_000)  // CPA 10
+    let costlyLine = CampaignLine(name: "B", impressions: 100_000, clicks: 1_000, conversions: 20, spend: 2_000)       // CPA 100
+    let noConvLine = CampaignLine(name: "C", impressions: 100_000, clicks: 1_000, conversions: 0, spend: 1_000)        // no conversions
+    let typicalLine = CampaignLine(name: "D", impressions: 100_000, clicks: 1_000, conversions: 90, spend: 2_000)      // CPA ~22.2
+    let blendedCPA = CampaignData.summarize([efficientLine, costlyLine, noConvLine, typicalLine]).cpa
+    h.check("a low-CPA line is efficient", CampaignData.verdict(line: efficientLine, blendedCPA: blendedCPA) == .efficient)
+    h.check("a high-CPA line is costly", CampaignData.verdict(line: costlyLine, blendedCPA: blendedCPA) == .costly)
+    h.check("a near-blend line is typical", CampaignData.verdict(line: typicalLine, blendedCPA: blendedCPA) == .typical)
+    h.check("a line with no conversions is flagged", CampaignData.verdict(line: noConvLine, blendedCPA: blendedCPA) == .noConversions)
 }

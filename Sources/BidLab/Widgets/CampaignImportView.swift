@@ -16,7 +16,9 @@ struct CampaignImportView: View {
                     emptyState
                 } else {
                     summary
+                    judging
                     table
+                    cpmReference
                 }
             }
         }
@@ -74,26 +76,65 @@ struct CampaignImportView: View {
         }
     }
 
+    private var judging: some View {
+        let blended = CampaignData.summarize(lines).cpa
+        let withConversions = lines.filter { $0.conversions > 0 }
+        let efficient = withConversions.filter { CampaignData.verdict(line: $0, blendedCPA: blended) == .efficient }.count
+        let costly = withConversions.filter { CampaignData.verdict(line: $0, blendedCPA: blended) == .costly }.count
+        return Text(headline(efficient: efficient, costly: costly, total: withConversions.count))
+            .font(.brandRounded(12.5, .medium)).foregroundStyle(Brand.ink).fixedSize(horizontal: false, vertical: true)
+    }
+
+    private func headline(efficient: Int, costly: Int, total: Int) -> String {
+        guard total > 0 else { return "No conversions yet, so cost efficiency cannot be judged." }
+        var parts = ["\(efficient) of \(total) line items beat the blended CPA"]
+        if costly > 0 { parts.append("\(costly) run well above it") }
+        return parts.joined(separator: ", ") + "."
+    }
+
     private var table: some View {
-        VStack(spacing: 6) {
+        let blended = CampaignData.summarize(lines).cpa
+        return VStack(spacing: 6) {
             HStack(spacing: 8) {
                 Text("Line item").font(.brandMono(10, .semibold)).foregroundStyle(Brand.faint).frame(maxWidth: .infinity, alignment: .leading)
-                Text("CPM").font(.brandMono(10, .semibold)).foregroundStyle(Brand.faint).frame(width: 56, alignment: .trailing)
-                Text("CTR").font(.brandMono(10, .semibold)).foregroundStyle(Brand.faint).frame(width: 52, alignment: .trailing)
-                Text("CPA").font(.brandMono(10, .semibold)).foregroundStyle(Brand.faint).frame(width: 62, alignment: .trailing)
+                Text("CPM").font(.brandMono(10, .semibold)).foregroundStyle(Brand.faint).frame(width: 50, alignment: .trailing)
+                Text("CTR").font(.brandMono(10, .semibold)).foregroundStyle(Brand.faint).frame(width: 46, alignment: .trailing)
+                Text("CPA").font(.brandMono(10, .semibold)).foregroundStyle(Brand.faint).frame(width: 54, alignment: .trailing)
+                Text("vs blend").font(.brandMono(10, .semibold)).foregroundStyle(Brand.faint).frame(width: 70, alignment: .trailing)
             }
             .padding(.horizontal, 10)
             ForEach(Array(lines.enumerated()), id: \.offset) { _, line in
                 HStack(spacing: 8) {
                     Text(line.name).font(.brandRounded(12.5, .medium)).foregroundStyle(Brand.ink).lineLimit(1).frame(maxWidth: .infinity, alignment: .leading)
-                    Text(money(line.cpm, 2)).font(.brandMono(11, .regular)).foregroundStyle(Brand.muted).frame(width: 56, alignment: .trailing)
-                    Text(pct(line.ctr)).font(.brandMono(11, .regular)).foregroundStyle(Brand.muted).frame(width: 52, alignment: .trailing)
-                    Text(line.conversions > 0 ? money(line.cpa, 2) : "—").font(.brandMono(11, .regular)).foregroundStyle(Brand.muted).frame(width: 62, alignment: .trailing)
+                    Text(money(line.cpm, 2)).font(.brandMono(11, .regular)).foregroundStyle(Brand.muted).frame(width: 50, alignment: .trailing)
+                    Text(pct(line.ctr)).font(.brandMono(11, .regular)).foregroundStyle(Brand.muted).frame(width: 46, alignment: .trailing)
+                    Text(line.conversions > 0 ? money(line.cpa, 2) : "—").font(.brandMono(11, .regular)).foregroundStyle(Brand.muted).frame(width: 54, alignment: .trailing)
+                    HStack { Spacer(); verdictTag(CampaignData.verdict(line: line, blendedCPA: blended)) }.frame(width: 70)
                 }
                 .padding(.vertical, 7).padding(.horizontal, 10)
                 .background(Brand.canvas, in: RoundedRectangle(cornerRadius: Metric.radiusSm, style: .continuous))
             }
         }
+    }
+
+    @ViewBuilder private func verdictTag(_ v: LineVerdict) -> some View {
+        switch v {
+        case .efficient: tag("efficient", Brand.up)
+        case .typical: tag("typical", Brand.muted)
+        case .costly: tag("costly", Brand.down)
+        case .noConversions: tag("no conv", Brand.faint)
+        }
+    }
+
+    private func tag(_ text: String, _ color: Color) -> some View {
+        Text(text).font(.brandMono(9.5, .semibold)).foregroundStyle(color)
+            .padding(.horizontal, 6).padding(.vertical, 2)
+            .background(color.opacity(0.13), in: Capsule())
+    }
+
+    private var cpmReference: some View {
+        Text("Reference CPMs (directional): display about $1.50 to $4, CTV about $25 to $45. Source: aggregated DSP/SSP and DoubleVerify ranges.")
+            .font(.brandMono(10, .regular)).foregroundStyle(Brand.faint).fixedSize(horizontal: false, vertical: true)
     }
 
     private func stat(_ label: String, _ value: String) -> some View {

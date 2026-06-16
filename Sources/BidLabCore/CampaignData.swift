@@ -63,7 +63,27 @@ public struct CampaignSummary: Equatable {
     public var roas: Double { spend > 0 ? revenue / spend : 0 }
 }
 
+/// How a line item's cost efficiency compares to the campaign blend, so the
+/// import flags under- and over-performers instead of only echoing numbers.
+public enum LineVerdict: String, Equatable {
+    case efficient      // CPA well below the blended CPA
+    case typical
+    case costly         // CPA well above the blended CPA
+    case noConversions  // no conversions yet, so CPA is undefined
+}
+
 public enum CampaignData {
+    /// Judge one line against the campaign's blended CPA. Efficient at 0.8x or
+    /// better, costly at 1.25x or worse, typical in between.
+    public static func verdict(line: CampaignLine, blendedCPA: Double) -> LineVerdict {
+        guard line.conversions > 0 else { return .noConversions }
+        guard blendedCPA > 0 else { return .typical }
+        let ratio = line.cpa / blendedCPA
+        if ratio <= 0.8 { return .efficient }
+        if ratio >= 1.25 { return .costly }
+        return .typical
+    }
+
     // Accepted header aliases, lowercased. A real export rarely uses our exact
     // names, so we map common ad-server column labels onto our fields.
     private static let aliases: [String: [String]] = [
