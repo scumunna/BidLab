@@ -1,5 +1,7 @@
 # BidLab
 
+[![CI](https://github.com/scumunna/BidLab/actions/workflows/ci.yml/badge.svg)](https://github.com/scumunna/BidLab/actions/workflows/ci.yml)
+
 The flight simulator for programmatic advertising. A native macOS app that
 teaches the math of programmatic by doing it: nine learning paths (Foundations
 and Programmatic Core, plus Ad Operations, DSP/Trader, Sales, Planning,

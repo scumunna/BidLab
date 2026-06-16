@@ -13,6 +13,7 @@ struct ProgressSurface: View {
     @EnvironmentObject var progress: ProgressStore
     @EnvironmentObject var app: AppState
     @Local private var tab = "overview"
+    @Local private var cohort: [LearnerRecord] = []
 
     private let tabs = [
         InnerTabBar.Item(id: "overview", title: "Overview", icon: "rosette"),
@@ -321,6 +322,7 @@ struct ProgressSurface: View {
         transcriptMetrics
         transcriptExportRow
         transcriptByPath
+        teamRollup
         hostedNote
     }
 
@@ -395,6 +397,109 @@ struct ProgressSurface: View {
         .padding(14)
         .background(Brand.surface, in: RoundedRectangle(cornerRadius: Metric.radiusLg, style: .continuous))
         .overlay(RoundedRectangle(cornerRadius: Metric.radiusLg, style: .continuous).strokeBorder(Brand.hairline, lineWidth: 1))
+    }
+
+    // MARK: Team roll-up (import several learner transcripts into one roster)
+
+    private var teamRollup: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                SectionHeader(title: "Team roll-up", accent: Brand.analytics)
+                Spacer()
+                Button(action: importCohort) {
+                    HStack(spacing: 5) {
+                        Image(systemName: "square.and.arrow.down")
+                        Text(cohort.isEmpty ? "Import transcripts (CSV)" : "Add more")
+                    }
+                    .font(.brandRounded(12.5, .semibold)).foregroundStyle(Brand.analytics)
+                    .padding(.horizontal, 11).padding(.vertical, 6)
+                    .background(Brand.analytics.opacity(0.12), in: Capsule())
+                }
+                .buttonStyle(.plain)
+                if !cohort.isEmpty {
+                    Button { Exporter.saveText(Cohort.reportCSV(cohort), name: "bidlab-cohort", ext: "csv") } label: {
+                        HStack(spacing: 5) { Image(systemName: "tablecells"); Text("Export report") }
+                            .font(.brandRounded(12.5, .semibold)).foregroundStyle(Brand.violet)
+                            .padding(.horizontal, 11).padding(.vertical, 6)
+                            .background(Brand.violet.opacity(0.12), in: Capsule())
+                    }
+                    .buttonStyle(.plain)
+                    Button { cohort = [] } label: {
+                        Text("Clear").font(.brandRounded(12.5, .semibold)).foregroundStyle(Brand.muted)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            Text("Each learner exports their transcript (here or in Settings). Import those CSV files to build a roster for an LMS or a manager review, all on this device.")
+                .font(.brandRounded(12.5, .regular)).foregroundStyle(Brand.muted).fixedSize(horizontal: false, vertical: true)
+            if cohort.isEmpty {
+                GuidedEmptyState(
+                    icon: "person.3.fill",
+                    title: "No team imported yet",
+                    message: "Import learner transcript CSVs to see completion, certifications, and simulator scores across your whole team in one roster.",
+                    accent: Brand.analytics,
+                    ctaTitle: "Import transcripts",
+                    action: importCohort
+                )
+            } else {
+                cohortSummaryCards
+                cohortRoster
+            }
+        }
+    }
+
+    private var cohortSummaryCards: some View {
+        let s = Cohort.summarize(cohort)
+        return HStack(spacing: 12) {
+            metric("Learners", "\(s.learnerCount)", Brand.analytics)
+            metric("Avg completion", "\(Int((s.avgCompletion * 100).rounded()))%", Brand.violet)
+            metric("Certifications", "\(s.totalCertifications)", Brand.up)
+            metric("Certified", "\(s.certifiedLearners) / \(s.learnerCount)", Brand.planning)
+        }
+    }
+
+    private var cohortRoster: some View {
+        VStack(spacing: 8) {
+            HStack(spacing: 12) {
+                Text("Learner").font(.brandMono(11, .semibold)).foregroundStyle(Brand.faint).frame(width: 180, alignment: .leading)
+                Text("Completion").font(.brandMono(11, .semibold)).foregroundStyle(Brand.faint).frame(maxWidth: .infinity, alignment: .leading)
+                Text("Certs").font(.brandMono(11, .semibold)).foregroundStyle(Brand.faint).frame(width: 50, alignment: .trailing)
+                Text("Best").font(.brandMono(11, .semibold)).foregroundStyle(Brand.faint).frame(width: 50, alignment: .trailing)
+            }
+            .padding(.horizontal, 14)
+            ForEach(Array(cohort.enumerated()), id: \.offset) { _, r in cohortRow(r) }
+        }
+    }
+
+    private func cohortRow(_ r: LearnerRecord) -> some View {
+        HStack(spacing: 12) {
+            Text(r.name).font(.brandRounded(14, .semibold)).foregroundStyle(Brand.ink)
+                .frame(width: 180, alignment: .leading).lineLimit(1)
+            HStack(spacing: 8) {
+                GeometryReader { geo in
+                    Capsule().fill(Brand.ink.opacity(0.06)).overlay(alignment: .leading) {
+                        Capsule().fill(Brand.violet).frame(width: max(6, geo.size.width * CGFloat(r.completionFraction)))
+                    }
+                }
+                .frame(height: 8)
+                Text("\(r.lessonsCompleted)/\(r.lessonsTotal)").font(.brandMono(11, .regular)).foregroundStyle(Brand.muted).frame(width: 54, alignment: .trailing)
+            }
+            .frame(maxWidth: .infinity)
+            Text("\(r.certificationsEarned)").font(.brandMono(13, .bold))
+                .foregroundStyle(r.certificationsEarned > 0 ? Brand.up : Brand.faint).frame(width: 50, alignment: .trailing)
+            Text(r.bestTradingScore > 0 ? "\(r.bestTradingScore)" : "—").font(.brandMono(13, .regular)).foregroundStyle(Brand.muted).frame(width: 50, alignment: .trailing)
+        }
+        .padding(14)
+        .background(Brand.surface, in: RoundedRectangle(cornerRadius: Metric.radiusLg, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: Metric.radiusLg, style: .continuous).strokeBorder(Brand.hairline, lineWidth: 1))
+    }
+
+    private func importCohort() {
+        let files = Importer.openTranscripts()
+        guard !files.isEmpty else { return }
+        var byName: [String: LearnerRecord] = [:]
+        for r in cohort + Cohort.parseAll(files) { byName[r.name] = r } // newest import wins per name
+        cohort = byName.values.sorted { $0.completionFraction > $1.completionFraction }
     }
 
     private var hostedNote: some View {

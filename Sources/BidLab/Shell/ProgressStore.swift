@@ -279,7 +279,10 @@ final class ProgressStore: ObservableObject {
 
     /// A CSV transcript of completion and certification, for an LMS or a manager report.
     func transcriptCSV() -> String {
-        var lines = ["track,role,lessons_completed,lessons_total,certified,exam_score_pct,exam_date"]
+        // A leading learner line makes the file self-describing, so a manager
+        // can roll several transcripts up into one cohort roster (see Cohort).
+        var lines = ["learner,\(displayName)"]
+        lines.append("track,role,lessons_completed,lessons_total,certified,exam_score_pct,exam_date")
         for t in Track.all {
             let score = examResults[t.id].map { String(Int(($0.fraction * 100).rounded())) } ?? ""
             let date = examResults[t.id]?.dateISO ?? ""
@@ -288,6 +291,7 @@ final class ProgressStore: ObservableObject {
         lines.append("")
         lines.append("summary,value")
         lines.append("lessons_completed_total,\(totalCompleted)")
+        lines.append("lessons_total,\(totalLiveLessons)")
         lines.append("certifications_earned,\(passedExams.count)")
         lines.append("best_trading_score,\(Int(bestTradingScore.rounded()))")
         lines.append("xp,\(xp)")
@@ -303,7 +307,8 @@ final class ProgressStore: ObservableObject {
             let date = r.map { "\"\($0.dateISO)\"" } ?? "null"
             return "{\"track\":\"\(t.id)\",\"role\":\"\(t.role)\",\"lessonsCompleted\":\(completedCount(forTrack: t.id)),\"lessonsTotal\":\(liveCount(forTrack: t.id)),\"certified\":\(isExamPassed(t.id)),\"examScorePct\":\(score),\"examDate\":\(date)}"
         }.joined(separator: ",")
-        return "{\"lessonsCompletedTotal\":\(totalCompleted),\"certificationsEarned\":\(passedExams.count),\"bestTradingScore\":\(Int(bestTradingScore.rounded())),\"xp\":\(xp),\"dayStreak\":\(streak),\"tracks\":[\(tracks)]}"
+        let safeName = displayName.replacingOccurrences(of: "\"", with: "'")
+        return "{\"learner\":\"\(safeName)\",\"lessonsCompletedTotal\":\(totalCompleted),\"lessonsTotal\":\(totalLiveLessons),\"certificationsEarned\":\(passedExams.count),\"bestTradingScore\":\(Int(bestTradingScore.rounded())),\"xp\":\(xp),\"dayStreak\":\(streak),\"tracks\":[\(tracks)]}"
     }
 
     // MARK: Persistence
