@@ -45,7 +45,7 @@ media.
 ## What is in here
 
 - **`BidLabCore`** (built as a SwiftPM-style library): a pure, UI-free Swift
-  engine validated by a known-answer test suite (2,500+ checks) covering pricing,
+  engine validated by a known-answer test suite (400+ checks) covering pricing,
   auctions, probability, statistics, reach and frequency, budget allocation,
   pacing, a seeded market simulation, scoring, analytics (power, difference-in-
   differences, adstock, saturation, OLS), DSP systems (latency, queueing), and
@@ -66,7 +66,7 @@ Xcode). This project builds entirely with `swiftc` (no full Xcode required),
 because the Command Line Tools on the original machine shipped a broken SwiftPM.
 
 ```sh
-./Scripts/test.sh      # build the core and run the test suite (2,500+ checks)
+./Scripts/test.sh      # build the core and run the test suite (400+ checks)
 ./Scripts/build.sh     # build the app -> build/BidLab.app
 open build/BidLab.app  # run it
 ```
