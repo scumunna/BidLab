@@ -48,6 +48,39 @@ public enum Statistics {
         sd > 0 ? (value - mean) / sd : 0
     }
 
+    /// Standard normal CDF, via the error function.
+    public static func standardNormalCDF(_ z: Double) -> Double {
+        0.5 * (1 + erf(z / 1.4142135623730951))
+    }
+
+    /// Wilson score interval for a proportion. Unlike the Wald (normal-approx)
+    /// interval it always stays within [0,1] and is reliable for small n and for
+    /// rates near 0 or 1, exactly the CTR/CVR regime where Wald undercovers.
+    public static func wilsonInterval(successes: Int, n: Int, z: Double = 1.96) -> (low: Double, high: Double) {
+        guard n > 0 else { return (0, 0) }
+        let nD = Double(n)
+        let p = Double(successes) / nD
+        let z2 = z * z
+        let denom = 1 + z2 / nD
+        let center = (p + z2 / (2 * nD)) / denom
+        let margin = z * sqrt(p * (1 - p) / nD + z2 / (4 * nD * nD)) / denom
+        return (max(0, center - margin), min(1, center + margin))
+    }
+
+    /// Two-proportion z-test (pooled) for H0: pA == pB. Returns the z statistic
+    /// and the two-sided p-value, so a measured lift comes with significance, not
+    /// just a point difference.
+    public static func twoProportionZTest(successesA: Int, nA: Int, successesB: Int, nB: Int) -> (z: Double, pValue: Double) {
+        guard nA > 0, nB > 0 else { return (0, 1) }
+        let pA = Double(successesA) / Double(nA)
+        let pB = Double(successesB) / Double(nB)
+        let pPool = Double(successesA + successesB) / Double(nA + nB)
+        let se = sqrt(pPool * (1 - pPool) * (1.0 / Double(nA) + 1.0 / Double(nB)))
+        guard se > 0 else { return (0, 1) }
+        let z = (pA - pB) / se
+        return (z, 2 * (1 - standardNormalCDF(abs(z))))
+    }
+
     /// The median (50th percentile) of a sample.
     public static func median(_ xs: [Double]) -> Double {
         guard !xs.isEmpty else { return 0 }

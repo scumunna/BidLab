@@ -24,4 +24,29 @@ func statisticsTests(_ h: Harness) {
     h.close("percentile 50", Statistics.percentile([1, 2, 3, 4], 0.5), 2.5)
     h.close("percentile 0", Statistics.percentile([1, 2, 3, 4], 0), 1)
     h.close("percentile 100", Statistics.percentile([1, 2, 3, 4], 1), 4)
+
+    // Standard normal CDF.
+    h.close("normal CDF at 0 is 0.5", Statistics.standardNormalCDF(0), 0.5, tol: 1e-9)
+    h.close("normal CDF at 1.96 is ~0.975", Statistics.standardNormalCDF(1.96), 0.975, tol: 1e-3)
+
+    // Wilson interval stays within [0,1] and brackets the estimate.
+    let w = Statistics.wilsonInterval(successes: 5, n: 10)
+    h.check("wilson low >= 0", w.low >= 0)
+    h.check("wilson high <= 1", w.high <= 1)
+    h.check("wilson brackets the point estimate", w.low < 0.5 && w.high > 0.5)
+    // For zero successes the lower bound is 0 but the upper bound is positive,
+    // where the Wald interval would collapse to [0, 0].
+    let w0 = Statistics.wilsonInterval(successes: 0, n: 20)
+    h.close("wilson lower bound at 0 successes is 0", w0.low, 0, tol: 1e-12)
+    h.check("wilson upper bound at 0 successes is positive", w0.high > 0)
+
+    // Two-proportion z-test.
+    let equal = Statistics.twoProportionZTest(successesA: 50, nA: 100, successesB: 50, nB: 100)
+    h.close("equal proportions give z = 0", equal.z, 0, tol: 1e-9)
+    h.close("equal proportions give p = 1", equal.pValue, 1, tol: 1e-9)
+    let diff = Statistics.twoProportionZTest(successesA: 60, nA: 100, successesB: 40, nB: 100)
+    h.close("z statistic for 0.60 vs 0.40", diff.z, 2.8284271247, tol: 1e-4)
+    h.close("two-sided p-value for that z", diff.pValue, 0.004677, tol: 1e-4)
+    h.check("a larger gap is more significant",
+            Statistics.twoProportionZTest(successesA: 70, nA: 100, successesB: 30, nB: 100).pValue < diff.pValue)
 }

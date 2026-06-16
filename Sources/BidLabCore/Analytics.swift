@@ -52,6 +52,20 @@ public enum Analytics {
         (treatmentPost - treatmentPre) - (controlPost - controlPre)
     }
 
+    /// Difference-in-differences with uncertainty. Given each cell's standard
+    /// error (the four group means are independent), the DiD standard error is
+    /// the root-sum-of-squares, and the estimate comes with a confidence
+    /// interval, so a reported lift is never just a point number.
+    public static func differenceInDifferences(
+        treatmentPre: Double, treatmentPost: Double, controlPre: Double, controlPost: Double,
+        standardErrors se: (tPre: Double, tPost: Double, cPre: Double, cPost: Double),
+        z: Double = 1.96
+    ) -> (estimate: Double, standardError: Double, ciLow: Double, ciHigh: Double) {
+        let estimate = (treatmentPost - treatmentPre) - (controlPost - controlPre)
+        let seD = (se.tPre * se.tPre + se.tPost * se.tPost + se.cPre * se.cPre + se.cPost * se.cPost).squareRoot()
+        return (estimate, seD, estimate - z * seD, estimate + z * seD)
+    }
+
     /// Geometric adstock: `a_t = x_t + decay * a_{t-1}`. Models advertising
     /// carryover, where today's impact lingers into future periods.
     public static func adstock(_ series: [Double], decay: Double) -> [Double] {

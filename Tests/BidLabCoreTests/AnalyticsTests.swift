@@ -17,6 +17,17 @@ func analyticsTests(_ h: Harness) {
     h.close("difference-in-differences",
             Analytics.differenceInDifferences(treatmentPre: 10, treatmentPost: 18, controlPre: 10, controlPost: 12), 6)
 
+    // DiD with uncertainty: same estimate, plus a root-sum-of-squares standard
+    // error and a confidence interval.
+    let did = Analytics.differenceInDifferences(
+        treatmentPre: 10, treatmentPost: 18, controlPre: 10, controlPost: 12,
+        standardErrors: (tPre: 0.1, tPost: 0.1, cPre: 0.1, cPost: 0.1)
+    )
+    h.close("DiD estimate matches the point version", did.estimate, 6)
+    h.close("DiD standard error is the root-sum-of-squares", did.standardError, 0.2, tol: 1e-9)
+    h.close("DiD CI low = estimate - 1.96 SE", did.ciLow, 6 - 1.96 * 0.2, tol: 1e-9)
+    h.close("DiD CI high = estimate + 1.96 SE", did.ciHigh, 6 + 1.96 * 0.2, tol: 1e-9)
+
     // Adstock carryover.
     let stock = Analytics.adstock([1, 0, 0], decay: 0.5)
     h.close("adstock t0", stock[0], 1)
