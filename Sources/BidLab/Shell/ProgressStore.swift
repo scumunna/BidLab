@@ -296,15 +296,30 @@ final class ProgressStore: ObservableObject {
         lines.append("best_trading_score,\(Int(bestTradingScore.rounded()))")
         lines.append("xp,\(xp)")
         lines.append("day_streak,\(streak)")
-        // Tamper-evident signature over the summary fields, so a manager rolling
-        // these up can tell an edited file from a real one (see Cohort).
+        // Tamper-evident signature over the summary AND per-track rows, so a
+        // manager rolling these up can tell an edited file from a real one,
+        // including an edited per-path certification (see Cohort).
         let signature = Cohort.transcriptSignature(
             name: displayName, lessonsCompleted: totalCompleted, lessonsTotal: totalLiveLessons,
             certifications: passedExams.count, bestTradingScore: Int(bestTradingScore.rounded()),
-            xp: xp, dayStreak: streak
+            xp: xp, dayStreak: streak, tracks: transcriptTrackProgress()
         )
         lines.append("signature,\(signature)")
         return lines.joined(separator: "\n")
+    }
+
+    /// The per-track rows as `TrackProgress`, matching exactly what `transcriptCSV`
+    /// writes, so signing and verification agree.
+    private func transcriptTrackProgress() -> [TrackProgress] {
+        Track.all.map { t in
+            TrackProgress(
+                trackID: t.id, role: t.role,
+                lessonsCompleted: completedCount(forTrack: t.id), lessonsTotal: liveCount(forTrack: t.id),
+                certified: isExamPassed(t.id),
+                examScorePct: examResults[t.id].map { Int(($0.fraction * 100).rounded()) },
+                examDate: examResults[t.id]?.dateISO
+            )
+        }
     }
 
     /// A JSON transcript: the same data structured for ingestion.
@@ -319,7 +334,7 @@ final class ProgressStore: ObservableObject {
         let signature = Cohort.transcriptSignature(
             name: displayName, lessonsCompleted: totalCompleted, lessonsTotal: totalLiveLessons,
             certifications: passedExams.count, bestTradingScore: Int(bestTradingScore.rounded()),
-            xp: xp, dayStreak: streak
+            xp: xp, dayStreak: streak, tracks: transcriptTrackProgress()
         )
         return "{\"learner\":\"\(safeName)\",\"lessonsCompletedTotal\":\(totalCompleted),\"lessonsTotal\":\(totalLiveLessons),\"certificationsEarned\":\(passedExams.count),\"bestTradingScore\":\(Int(bestTradingScore.rounded())),\"xp\":\(xp),\"dayStreak\":\(streak),\"signature\":\"\(signature)\",\"tracks\":[\(tracks)]}"
     }

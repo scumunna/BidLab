@@ -115,8 +115,16 @@ public enum Cohort {
     /// open-source app this is tamper-evidence (it catches a hand-edited file),
     /// not third-party authentication.
     public static func transcriptSignature(name: String, lessonsCompleted: Int, lessonsTotal: Int,
-                                           certifications: Int, bestTradingScore: Int, xp: Int, dayStreak: Int) -> String {
-        let seed = "\(name)|\(lessonsCompleted)|\(lessonsTotal)|\(certifications)|\(bestTradingScore)|\(xp)|\(dayStreak)"
+                                           certifications: Int, bestTradingScore: Int, xp: Int, dayStreak: Int,
+                                           tracks: [TrackProgress] = []) -> String {
+        // Per-track rows are part of the signed payload (sorted by id so order in
+        // the file does not matter), so a per-path certification cannot be edited
+        // under a "verified" seal, only the summary.
+        let trackPart = tracks
+            .sorted { $0.trackID < $1.trackID }
+            .map { "\($0.trackID):\($0.lessonsCompleted)/\($0.lessonsTotal):\($0.certified ? 1 : 0):\($0.examScorePct.map(String.init) ?? "")" }
+            .joined(separator: ";")
+        let seed = "\(name)|\(lessonsCompleted)|\(lessonsTotal)|\(certifications)|\(bestTradingScore)|\(xp)|\(dayStreak)|\(trackPart)"
         let raw = String(StableID.hash(seed), radix: 36).uppercased()
         let padded = raw + String(repeating: "0", count: max(0, 8 - raw.count))
         return "BL-\(padded.prefix(4))-\(padded.dropFirst(4).prefix(4))"
@@ -126,7 +134,7 @@ public enum Cohort {
     public static func signature(for r: LearnerRecord) -> String {
         transcriptSignature(name: r.name, lessonsCompleted: r.lessonsCompleted, lessonsTotal: r.lessonsTotal,
                             certifications: r.certificationsEarned, bestTradingScore: r.bestTradingScore,
-                            xp: r.xp, dayStreak: r.dayStreak)
+                            xp: r.xp, dayStreak: r.dayStreak, tracks: r.tracks)
     }
 
     /// Parse one exported transcript CSV into a learner record. Tolerant of the
@@ -177,7 +185,8 @@ public enum Cohort {
             certifications: intVal("certifications_earned"),
             bestTradingScore: intVal("best_trading_score"),
             xp: intVal("xp"),
-            dayStreak: intVal("day_streak")
+            dayStreak: intVal("day_streak"),
+            tracks: tracks
         )
         let verification: TranscriptVerification
         if let provided = summary["signature"], !provided.isEmpty {

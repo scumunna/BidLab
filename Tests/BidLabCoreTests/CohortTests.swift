@@ -139,4 +139,34 @@ func cohortTests(_ h: Harness) {
     h.check("DSP path has one certified", dsp?.certifiedCount == 1)
     h.close("DSP average completion is (6/13 + 1) / 2", dsp?.avgCompletion ?? -1, ((6.0 / 13.0) + 1.0) / 2.0, tol: 1e-9)
     h.check("a path only one learner has shows a single learner", paths.first { $0.trackID == "foundations" }?.learnerCount == 1)
+
+    // The signature now covers the per-track rows, so editing a single path's
+    // certification (without touching the summary) is detected.
+    let tProgress = [
+        TrackProgress(trackID: "foundations", role: "Foundations", lessonsCompleted: 12, lessonsTotal: 12, certified: true, examScorePct: 90),
+        TrackProgress(trackID: "dsp", role: "DSP / Trader", lessonsCompleted: 6, lessonsTotal: 13, certified: false),
+    ]
+    let sigT = Cohort.transcriptSignature(
+        name: "Sam", lessonsCompleted: 18, lessonsTotal: 113, certifications: 1,
+        bestTradingScore: 70, xp: 300, dayStreak: 3, tracks: tProgress
+    )
+    let signedWithTracks = """
+    learner,Sam
+    track,role,lessons_completed,lessons_total,certified,exam_score_pct,exam_date
+    foundations,Foundations,12,12,yes,90,2026-06-10
+    dsp,DSP / Trader,6,13,no,,
+
+    summary,value
+    lessons_completed_total,18
+    lessons_total,113
+    certifications_earned,1
+    best_trading_score,70
+    xp,300
+    day_streak,3
+    signature,\(sigT)
+    """
+    h.check("a signed transcript with track rows verifies", Cohort.parseTranscript(signedWithTracks)?.verification == .verified)
+    // Flip the DSP row from not-certified to certified, leaving the summary intact.
+    let trackTampered = signedWithTracks.replacingOccurrences(of: "dsp,DSP / Trader,6,13,no,,", with: "dsp,DSP / Trader,6,13,yes,99,2026-06-12")
+    h.check("editing a per-track certification is detected", Cohort.parseTranscript(trackTampered)?.verification == .tampered)
 }
