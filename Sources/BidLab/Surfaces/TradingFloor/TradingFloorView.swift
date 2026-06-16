@@ -34,6 +34,10 @@ struct TradingFloorView: View {
     @Local private var bid: Double = 0.30
     @Local private var floor: Double = 0.20
     @Local private var secondPrice = false
+    @Local private var paced = false
+    @Local private var flightBudget: Double = 7_500
+    @Local private var pacedResult: PacedFlight.Result?
+    private let flightIntervals = 12
 
     private var scenario: Scenario { scenarios[scenarioIndex] }
     private var marketMean: Double { scenario.marketMean }
@@ -55,6 +59,9 @@ struct TradingFloorView: View {
     }
 
     private var value: Double { ctr * cvr * revenuePerConversion }
+    // A flight budget that meaningfully binds for the scenario, so pacing matters.
+    private var maxFlightBudget: Double { max(value * Double(opportunities) * 0.5, 100) }
+    private var defaultFlightBudget: Double { value * Double(opportunities) * 0.15 }
     private var winRate: Double { config(bid: bid).winProbability(at: bid) }
     private var expectedProfitPerOpp: Double { config(bid: bid).expectedProfitPerOpportunity(at: bid) }
     private var optimal: (bid: Double, expectedProfit: Double) { config(bid: bid).optimal() }
@@ -113,8 +120,10 @@ struct TradingFloorView: View {
             .onChange(of: scenarioIndex) { _, _ in
                 result = nil
                 score = nil
+                pacedResult = nil
                 floor = scenario.floor
                 bid = value * 0.3
+                flightBudget = defaultFlightBudget
             }
             Picker("", selection: $secondPrice) {
                 Text("First price").tag(false)
@@ -126,6 +135,7 @@ struct TradingFloorView: View {
             .onChange(of: secondPrice) { _, _ in
                 result = nil
                 score = nil
+                pacedResult = nil
             }
         }
     }
@@ -142,7 +152,9 @@ struct TradingFloorView: View {
         VStack(alignment: .leading, spacing: 16) {
             scenarioCard
             bidControl
-            if let result, let score {
+            if paced, let pacedResult {
+                pacedResultTiles(pacedResult)
+            } else if let result, let score {
                 resultTiles(result, score: score)
             } else {
                 runHint
@@ -195,10 +207,27 @@ struct TradingFloorView: View {
                 miniStat("Win rate", pct(winRate), Brand.lime)
                 miniStat("Exp. profit / 1k", money(expectedProfitPerOpp * 1000, 2), Brand.up)
             }
+            Picker("", selection: $paced) {
+                Text("One-shot").tag(false)
+                Text("Paced flight").tag(true)
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
+            .onChange(of: paced) { _, _ in result = nil; score = nil; pacedResult = nil }
+            if paced {
+                HStack {
+                    Text("FLIGHT BUDGET").font(.brandMono(10, .semibold)).foregroundStyle(Color.white.opacity(0.4))
+                    Spacer()
+                    Text(money(flightBudget, 0)).font(.brandMono(14, .bold)).foregroundStyle(Brand.analytics)
+                }
+                Slider(value: $flightBudget, in: (maxFlightBudget * 0.06)...maxFlightBudget).tint(Brand.analytics)
+                    .accessibilityLabel("Flight budget")
+                    .accessibilityValue(money(flightBudget, 0))
+            }
             Button(action: run) {
                 HStack(spacing: 8) {
                     Image(systemName: "play.fill").font(.system(size: 12, weight: .bold))
-                    Text("Run \(intc(opportunities)) auctions").font(.brandRounded(14, .bold))
+                    Text(paced ? "Run flight · \(flightIntervals) intervals" : "Run \(intc(opportunities)) auctions").font(.brandRounded(14, .bold))
                 }
                 .foregroundStyle(Brand.console)
                 .frame(maxWidth: .infinity)
@@ -260,6 +289,20 @@ struct TradingFloorView: View {
 
     private var chartPanel: some View {
         VStack(alignment: .leading, spacing: 10) {
+            if paced, let pacedResult {
+                pacingChart(pacedResult)
+            } else {
+                profitChart
+            }
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .background(Color.white.opacity(0.03), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(Color.white.opacity(0.08), lineWidth: 1))
+    }
+
+    private var profitChart: some View {
+        VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 14) {
                 legendDot(Brand.lime, "expected profit")
                 legendDot(Brand.lime.opacity(0.9), "your bid", dashed: true)
@@ -283,10 +326,35 @@ struct TradingFloorView: View {
                 Text(money(value, 2)).font(.brandMono(10, .regular)).foregroundStyle(Color.white.opacity(0.4))
             }
         }
-        .padding(16)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(Color.white.opacity(0.03), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(Color.white.opacity(0.08), lineWidth: 1))
+    }
+
+    private func pacingChart(_ r: PacedFlight.Result) -> some View {
+        // Two cumulative-spend curves over the flight: where pacing aims (target)
+        // and where spend actually landed.
+        let target: [CGPoint] = [CGPoint(x: 0, y: 0)] + r.points.map { CGPoint(x: $0.fractionElapsed, y: $0.targetCumulativeSpend) }
+        let actual: [CGPoint] = [CGPoint(x: 0, y: 0)] + r.points.map { CGPoint(x: $0.fractionElapsed, y: $0.cumulativeSpend) }
+        let yMax = max(r.flightBudget, r.totalSpend) * 1.05
+        return VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 14) {
+                legendDot(Brand.analytics, "on-pace target")
+                legendDot(Brand.lime, "actual spend")
+                Spacer()
+            }
+            CurveChart(
+                series: [
+                    ChartSeries(color: Brand.analytics, points: target),
+                    ChartSeries(color: Brand.lime, points: actual),
+                ],
+                xDomain: 0...1,
+                yDomain: 0...max(yMax, 1e-4),
+                markers: []
+            )
+            HStack {
+                Text("flight start").font(.brandMono(10, .regular)).foregroundStyle(Color.white.opacity(0.4))
+                Spacer()
+                Text("flight end").font(.brandMono(10, .regular)).foregroundStyle(Color.white.opacity(0.4))
+            }
+        }
     }
 
     private var formulaFooter: some View {
@@ -318,13 +386,52 @@ struct TradingFloorView: View {
     }
 
     private func run() {
+        if paced {
+            let r = PacedFlight.run(baseConfig: config(bid: bid), flightBudget: flightBudget, intervals: flightIntervals, seed: seed)
+            withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
+                pacedResult = r
+                result = nil
+                score = nil
+            }
+            return
+        }
         let r = MarketSimulation.run(config(bid: bid), seed: seed)
         let s = Scoring.score(achievedProfit: r.profit / Double(opportunities), optimalProfit: optimal.expectedProfit)
         withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
             result = r
             score = s
+            pacedResult = nil
         }
         progress.recordTradingScore(s)
+    }
+
+    private func pacedResultTiles(_ r: PacedFlight.Result) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text("FLIGHT RESULT").font(.brandMono(10, .semibold)).foregroundStyle(Color.white.opacity(0.4))
+                Spacer()
+                Text("\(flightIntervals) intervals · proportional pacing").font(.brandMono(11, .regular)).foregroundStyle(Brand.analytics)
+            }
+            Text(pct(r.budgetUtilization))
+                .font(.brandDisplay(46, .heavy))
+                .foregroundStyle(r.budgetUtilization >= 0.9 ? Brand.up : (r.budgetUtilization >= 0.6 ? Brand.lime : Brand.down))
+                .contentTransition(.numericText())
+            Text("of the flight budget delivered").font(.brandMono(10, .regular)).foregroundStyle(Color.white.opacity(0.4))
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+                miniStat("Spend", money(r.totalSpend, 0), .white)
+                miniStat("Budget", money(r.flightBudget, 0), .white)
+                miniStat("Impressions", intc(r.impressionsWon), .white)
+                miniStat("Conversions", intc(r.conversions), .white)
+                miniStat("Revenue", money(r.revenue, 0), Brand.up)
+                miniStat("Profit", money(r.profit, 0), r.profit >= 0 ? Brand.up : Brand.down)
+                miniStat("Pacing error", pct(r.pacingError), r.pacingError <= 0.1 ? Brand.up : Brand.down)
+            }
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.white.opacity(0.04), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(Color.white.opacity(0.08), lineWidth: 1))
+        .transition(.opacity.combined(with: .move(edge: .top)))
     }
 
     private func exportRun(_ r: MarketSimulation.Result) {
