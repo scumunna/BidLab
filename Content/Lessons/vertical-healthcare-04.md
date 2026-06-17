@@ -47,7 +47,7 @@ explain: 40,000 times 0.75 equals 30,000 matched, and 30,000 times 0.60 equals 1
 
 Match rate is not one number, it is a property of where you buy. A best-in-class deterministic, opted-in graph resolves almost the whole list in seconds: DeepIntent reports 95 percent or better NPI match in under 10 seconds, linking roughly 7 digital identifiers to each NPI, where the industry norm without that graph is 30 to 70 percent over 3 to 7 business days. Endemic physician environments sit in a middle band, and open programmatic display sits lowest, so the operator plans the supply mix knowing that scale and match quality pull against each other.
 
-The practical defaults from the field: Doximity runs about 70 to 85 percent, Epocrates about 65 to 80 percent, Medscape about 60 to 75 percent, and open programmatic display often only 50 to 70 percent. You write a match-rate floor into the IO (commonly around 70 percent addressable), check the vendor's match guarantee, and reconcile delivered matched impressions against that floor.
+Match-rate ranges as observed in the field (directional planning defaults, not vendor-published guarantees): Doximity about 70 to 85 percent, Epocrates about 65 to 80 percent, Medscape about 60 to 75 percent, and open programmatic display often only 50 to 70 percent. You write a match-rate floor into the IO (commonly around 70 percent addressable), check the vendor's match guarantee, and reconcile delivered matched impressions against that floor.
 
 :::widget barChart
 title: NPI match rate by environment (midpoints, %)

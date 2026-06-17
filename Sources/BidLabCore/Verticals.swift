@@ -47,7 +47,7 @@ public enum Verticals {
             blurb: "Closed-loop, deterministic attribution on the retailer's own purchase data.",
             signatureKPI: "iROAS", signatureFormula: "Incremental Revenue / Ad Spend",
             anchorLabel: "US retail media ad spend, 2026", anchorValue: "$71.1B",
-            scenario: "Audit a flattering 5.0x reported ROAS down to a true 2.3x iROAS with a geo holdout, then reallocate to maximize incremental revenue.",
+            scenario: "Illustrative drill: audit a flattering 5.0x reported ROAS down to a 2.3x iROAS with a geo holdout, then reallocate to maximize incremental revenue.",
             citation: emarketer(2026)),
         Vertical(
             id: "cpg", name: "CPG", icon: "shippingbox.fill",

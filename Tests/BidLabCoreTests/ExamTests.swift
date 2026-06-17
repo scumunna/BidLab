@@ -81,5 +81,10 @@ func examValidationTests(_ h: Harness) {
             h.check("\(name): \(q.id) has a domain", !q.domain.isEmpty)
             h.check("\(name): \(q.id) no em dash", !q.question.contains("\u{2014}"))
         }
+        // Industry certification banks are authored to a fixed 24-question pool
+        // (12 drawn per attempt); assert it so a short bank cannot ship unnoticed.
+        if exam.track.hasPrefix("vertical-") {
+            h.check("\(name): vertical exam bank holds 24 questions", exam.questions.count == 24)
+        }
     }
 }
