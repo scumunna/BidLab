@@ -8,11 +8,26 @@ import { Margin } from './components/Margin'
 import { Attribution } from './components/Attribution'
 import { Forecast } from './components/Forecast'
 import { Yield } from './components/Yield'
+import { PricingCalculator } from './components/PricingCalculator'
+import { Adstock } from './components/Adstock'
+import { Distribution } from './components/Distribution'
 
 const REPO = 'https://github.com/scumunna/BidLab'
 const RELEASES = 'https://github.com/scumunna/BidLab/releases'
 
-type RouteKey = 'trading' | 'reach' | 'power' | 'budget' | 'latency' | 'margin' | 'attribution' | 'forecast' | 'yield'
+type RouteKey =
+  | 'trading'
+  | 'reach'
+  | 'power'
+  | 'budget'
+  | 'latency'
+  | 'margin'
+  | 'attribution'
+  | 'forecast'
+  | 'yield'
+  | 'pricing'
+  | 'adstock'
+  | 'distribution'
 
 const NAV: { key: RouteKey; label: string; href: string; title: string }[] = [
   { key: 'trading', label: 'Trading Floor', href: '#/', title: 'Trading Floor' },
@@ -24,19 +39,15 @@ const NAV: { key: RouteKey; label: string; href: string; title: string }[] = [
   { key: 'attribution', label: 'Attribution', href: '#/attribution', title: 'Attribution' },
   { key: 'forecast', label: 'Forecast', href: '#/forecast', title: 'Forecast' },
   { key: 'yield', label: 'Yield', href: '#/yield', title: 'Yield & Floors' },
+  { key: 'pricing', label: 'Pricing', href: '#/pricing', title: 'Pricing Calculator' },
+  { key: 'adstock', label: 'Adstock', href: '#/adstock', title: 'Adstock' },
+  { key: 'distribution', label: 'Distribution', href: '#/distribution', title: 'Normal Distribution' },
 ]
 
 function routeFromHash(): RouteKey {
   const h = window.location.hash
-  if (h === '#/reach') return 'reach'
-  if (h === '#/power') return 'power'
-  if (h === '#/budget') return 'budget'
-  if (h === '#/latency') return 'latency'
-  if (h === '#/margin') return 'margin'
-  if (h === '#/attribution') return 'attribution'
-  if (h === '#/forecast') return 'forecast'
-  if (h === '#/yield') return 'yield'
-  return 'trading'
+  const key = h.replace(/^#\//, '') as RouteKey
+  return NAV.some((n) => n.key === key) ? key : 'trading'
 }
 
 export default function App() {
@@ -122,6 +133,9 @@ export default function App() {
         {route === 'attribution' && <Attribution />}
         {route === 'forecast' && <Forecast />}
         {route === 'yield' && <Yield />}
+        {route === 'pricing' && <PricingCalculator />}
+        {route === 'adstock' && <Adstock />}
+        {route === 'distribution' && <Distribution />}
       </main>
 
       <footer className="mt-8 border-t border-white/10 pt-6 text-[12.5px] leading-relaxed text-white/45">

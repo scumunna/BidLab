@@ -25,6 +25,13 @@ export function lgamma(x: number): number {
   return 0.5 * Math.log(2 * Math.PI) + (z + 0.5) * Math.log(t) - t + Math.log(a)
 }
 
+/** Standard normal probability density at x. */
+export function normalPDF(x: number, mean = 0, sd = 1): number {
+  if (!(sd > 0)) return 0
+  const z = (x - mean) / sd
+  return Math.exp(-0.5 * z * z) / (sd * Math.sqrt(2 * Math.PI))
+}
+
 /** Poisson pmf P(X = k) for rate `lambda`: `lambda^k * e^(-lambda) / k!`. */
 export function poissonPMF(k: number, lambda: number): number {
   if (k < 0 || lambda < 0) return 0
