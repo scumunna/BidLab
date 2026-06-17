@@ -134,7 +134,7 @@ struct VerticalsSurface: View {
                 Text(passed ? "\(vertical.name) certified" : "\(vertical.name) certification")
                     .font(.brandRounded(14.5, .bold)).foregroundStyle(Brand.ink)
                 Text(passed ? "You passed the exam for this industry path."
-                            : (examExists ? "Pass the exam to certify in this industry." : "Certification exam coming soon."))
+                            : (examExists ? "Pass to certify: 12 questions drawn from a 24-question bank, 70% to pass." : "Certification exam coming soon."))
                     .font(.brandRounded(12.5, .regular)).foregroundStyle(Brand.muted)
             }
             Spacer()

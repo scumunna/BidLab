@@ -28,7 +28,7 @@ explain: The business goal is incremental footfall into physical stores, and wit
 
 # The channel mix is shifting hard to CTV
 
-The center of gravity in QSR media is moving to connected TV. AdImpact reports chicken-chain CTV impressions rose from 1.1 billion in Q1 2024 to 4.1 billion in Q1 2026. In Q1 2026 the CTV impression leaders were McDonald's at 3.1B, Chick-fil-A at 2.7B, Arby's at 2.4B, Little Caesars at 1.3B, and Domino's at 1.1B. Digital audio, mobile in-app, display, and programmatic OOH/DOOH fill in the rest of the local meal-decision moment around that CTV core.
+The center of gravity in QSR media is moving to connected TV. AdImpact reports chicken-chain CTV impressions rose from 1.1 billion in Q1 2024 to 4.1 billion in Q1 2026. In Q1 2026 the all-QSR CTV impression leaders were McDonald's at 3.1B, Chick-fil-A at 2.7B, Arby's at 2.4B, Little Caesars at 1.3B, and Domino's at 1.1B (a broader set than the chicken-chain aggregate above). Digital audio, mobile in-app, display, and programmatic OOH/DOOH fill in the rest of the local meal-decision moment around that CTV core.
 
 Here is a practitioner habit worth building on day one: sanity-check vendor-published percentages before you repeat them to a client. AdImpact's own blog headlines that chicken-chain CTV growth as "310%," but the arithmetic on its own inputs does not support that. The correct percent increase is $(4.1 - 1.1) / 1.1 = 272.7\%$, roughly 273%, not 310%. A trader who cannot spot a wrong number in a vendor deck will eventually quote one in a QBR.
 

@@ -9,7 +9,7 @@ summary: Wire up where the ads run and how they stay tied to the lot, setting au
 
 Lesson 4 left you with a built audience. This lesson is the next move on the desk: deciding where those impressions are bought and how the creative stays glued to the live lot. In the Auto vertical the supply story is specific, you buy auto-endemic inventory (Cars.com, AutoTrader, CarGurus, Edmunds, plus Cox properties like KBB) where buyers are actively shopping vehicles, and you keep dynamic Vehicle Listing Ads in lockstep with what is physically on the dealer's lot. Get supply and feed right and the signature KPI, net cost per sale after co-op, drops because spend lands on in-market eyeballs against in-stock cars; get it wrong and you pay to send high-intent clicks to vehicles that already sold.
 
-About 91% of display advertising is now transacted programmatically, which is exactly what gives a trader the levers in this lesson: private deals, supply-path control, and feed-driven dynamic creative all operate inside that programmatic pipe rather than around it.
+About 90% of display advertising is now transacted programmatically, which is exactly what gives a trader the levers in this lesson: private deals, supply-path control, and feed-driven dynamic creative all operate inside that programmatic pipe rather than around it.
 
 :::figure supplyChain
 caption: The supply path from the dealer's DSP to an auto-endemic publisher. Open auction is the long, hop-heavy route, a PMP or deal-ID is the negotiated private lane, and SPO prunes duplicate hops down to the cleanest path to that inventory.
