@@ -9,6 +9,7 @@ export const C = {
   planning: '#ff9f1c',
   engineering: '#16c784',
   sales: '#ff4d6d',
+  violet: '#7c5cff',
   muted: '#9a9aa6',
   white: '#f4f4f8',
 }

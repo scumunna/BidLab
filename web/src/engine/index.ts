@@ -13,6 +13,8 @@ export * as Analytics from './analytics'
 export * as Systems from './systems'
 export * as BudgetAllocation from './budgetAllocation'
 export { ResponseCurve } from './budgetAllocation'
+export * as Attribution from './attribution'
+export * as Yield from './yield'
 export {
   MarketConfig,
   MarketResult,

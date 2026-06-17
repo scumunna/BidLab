@@ -5,11 +5,14 @@ import { ABPower } from './components/ABPower'
 import { BudgetAllocator } from './components/BudgetAllocator'
 import { Latency } from './components/Latency'
 import { Margin } from './components/Margin'
+import { Attribution } from './components/Attribution'
+import { Forecast } from './components/Forecast'
+import { Yield } from './components/Yield'
 
 const REPO = 'https://github.com/scumunna/BidLab'
 const RELEASES = 'https://github.com/scumunna/BidLab/releases'
 
-type RouteKey = 'trading' | 'reach' | 'power' | 'budget' | 'latency' | 'margin'
+type RouteKey = 'trading' | 'reach' | 'power' | 'budget' | 'latency' | 'margin' | 'attribution' | 'forecast' | 'yield'
 
 const NAV: { key: RouteKey; label: string; href: string; title: string }[] = [
   { key: 'trading', label: 'Trading Floor', href: '#/', title: 'Trading Floor' },
@@ -18,6 +21,9 @@ const NAV: { key: RouteKey; label: string; href: string; title: string }[] = [
   { key: 'budget', label: 'Budget Allocator', href: '#/budget', title: 'Budget Allocator' },
   { key: 'latency', label: 'Latency', href: '#/latency', title: 'Latency & Timeout' },
   { key: 'margin', label: 'Margin', href: '#/margin', title: 'Margin & Supply Path' },
+  { key: 'attribution', label: 'Attribution', href: '#/attribution', title: 'Attribution' },
+  { key: 'forecast', label: 'Forecast', href: '#/forecast', title: 'Forecast' },
+  { key: 'yield', label: 'Yield', href: '#/yield', title: 'Yield & Floors' },
 ]
 
 function routeFromHash(): RouteKey {
@@ -27,6 +33,9 @@ function routeFromHash(): RouteKey {
   if (h === '#/budget') return 'budget'
   if (h === '#/latency') return 'latency'
   if (h === '#/margin') return 'margin'
+  if (h === '#/attribution') return 'attribution'
+  if (h === '#/forecast') return 'forecast'
+  if (h === '#/yield') return 'yield'
   return 'trading'
 }
 
@@ -110,6 +119,9 @@ export default function App() {
         {route === 'budget' && <BudgetAllocator />}
         {route === 'latency' && <Latency />}
         {route === 'margin' && <Margin />}
+        {route === 'attribution' && <Attribution />}
+        {route === 'forecast' && <Forecast />}
+        {route === 'yield' && <Yield />}
       </main>
 
       <footer className="mt-8 border-t border-white/10 pt-6 text-[12.5px] leading-relaxed text-white/45">
