@@ -7,6 +7,9 @@ export { erf, normalCDF } from './mathx'
 export * as Auction from './auction'
 export * as Scoring from './scoring'
 export * as Pricing from './pricing'
+export * as Probability from './probability'
+export * as ReachFrequency from './reachFrequency'
+export * as Analytics from './analytics'
 export {
   MarketConfig,
   MarketResult,

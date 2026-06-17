@@ -1,57 +1,111 @@
+import { useEffect, useState } from 'react'
 import { TradingFloor } from './components/TradingFloor'
+import { ReachFrequency } from './components/ReachFrequency'
+import { ABPower } from './components/ABPower'
 
 const REPO = 'https://github.com/scumunna/BidLab'
 const RELEASES = 'https://github.com/scumunna/BidLab/releases'
 
+type RouteKey = 'trading' | 'reach' | 'power'
+
+const NAV: { key: RouteKey; label: string; href: string; title: string }[] = [
+  { key: 'trading', label: 'Trading Floor', href: '#/', title: 'Trading Floor' },
+  { key: 'reach', label: 'Reach & Frequency', href: '#/reach', title: 'Reach & Frequency' },
+  { key: 'power', label: 'A/B Power', href: '#/power', title: 'A/B Test Power' },
+]
+
+function routeFromHash(): RouteKey {
+  const h = window.location.hash
+  if (h === '#/reach') return 'reach'
+  if (h === '#/power') return 'power'
+  return 'trading'
+}
+
 export default function App() {
+  const [route, setRoute] = useState<RouteKey>(routeFromHash)
+
+  useEffect(() => {
+    const onHash = () => {
+      setRoute(routeFromHash())
+      window.scrollTo({ top: 0 })
+    }
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
+
+  useEffect(() => {
+    const nav = NAV.find((n) => n.key === route)
+    document.title = `BidLab · ${nav?.title ?? 'Trading Floor'} — interactive programmatic demo`
+  }, [route])
+
   return (
     <div className="mx-auto flex min-h-full max-w-5xl flex-col px-4 py-6 sm:px-6 sm:py-10">
-      {/* header */}
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-col gap-1.5">
-          <div className="flex items-center gap-2.5">
-            <span className="grid h-8 w-8 place-items-center rounded-lg bg-lime font-extrabold text-console">B</span>
-            <span className="text-lg font-extrabold tracking-tight">BidLab</span>
-            <span className="rounded-full border border-white/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-white/45">
-              interactive demo
-            </span>
+      <header className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="flex flex-col gap-1.5">
+            <div className="flex items-center gap-2.5">
+              <span className="grid h-8 w-8 place-items-center rounded-lg bg-lime font-extrabold text-console">B</span>
+              <span className="text-lg font-extrabold tracking-tight">BidLab</span>
+              <span className="rounded-full border border-white/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-white/45">
+                interactive demos
+              </span>
+            </div>
+            <p className="max-w-xl text-[13.5px] text-white/55">
+              The flight simulator for programmatic advertising. These are live, math-true explorables — the actual BidLab engine,
+              running in your browser.
+            </p>
           </div>
-          <p className="max-w-xl text-[13.5px] text-white/55">
-            The flight simulator for programmatic advertising. This is the hero <strong className="text-white/80">Trading Floor</strong>{' '}
-            — the actual BidLab auction engine, running in your browser.
-          </p>
+          <div className="flex shrink-0 gap-2">
+            <a
+              href={RELEASES}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full bg-lime px-4 py-2 text-[13px] font-semibold text-console transition-transform active:scale-[0.98]"
+            >
+              Get the macOS app
+            </a>
+            <a
+              href={REPO}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full border border-white/15 px-4 py-2 text-[13px] font-semibold text-white/80 transition-colors hover:bg-white/5"
+            >
+              View on GitHub
+            </a>
+          </div>
         </div>
-        <div className="flex shrink-0 gap-2">
-          <a
-            href={RELEASES}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-full bg-lime px-4 py-2 text-[13px] font-semibold text-console transition-transform active:scale-[0.98]"
-          >
-            Get the macOS app
-          </a>
-          <a
-            href={REPO}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-full border border-white/15 px-4 py-2 text-[13px] font-semibold text-white/80 transition-colors hover:bg-white/5"
-          >
-            View on GitHub
-          </a>
-        </div>
+
+        <nav className="flex flex-wrap gap-1.5" aria-label="Explorables">
+          {NAV.map((n) => {
+            const active = n.key === route
+            return (
+              <a
+                key={n.key}
+                href={n.href}
+                aria-current={active ? 'page' : undefined}
+                className={`rounded-full px-3.5 py-1.5 text-[13px] font-semibold transition-colors ${
+                  active ? 'bg-white/15 text-ink' : 'text-muted hover:bg-white/5 hover:text-ink'
+                }`}
+              >
+                {n.label}
+              </a>
+            )
+          })}
+        </nav>
       </header>
 
-      <main className="mt-7">
-        <TradingFloor />
+      <main className="mt-6">
+        {route === 'trading' && <TradingFloor />}
+        {route === 'reach' && <ReachFrequency />}
+        {route === 'power' && <ABPower />}
       </main>
 
-      {/* credibility footer */}
       <footer className="mt-8 border-t border-white/10 pt-6 text-[12.5px] leading-relaxed text-white/45">
         <p>
-          <strong className="text-white/70">Why the numbers are real.</strong> This page runs a faithful TypeScript port of BidLab's
-          pure Swift auction engine — the same log-normal market model, first/second-price clearing, publisher floors, and
-          optimal-bid scoring as the native macOS app. The port is verified bit-for-bit against the Swift engine's seeded run in a
-          golden-master test, so a given seed reproduces the native app's exact outcome.
+          <strong className="text-white/70">Why the numbers are real.</strong> Every explorable here runs a faithful TypeScript port
+          of BidLab's pure Swift engine — the same auction model, reach/frequency Poisson math, and experiment-power formulas as the
+          native macOS app. The ports are verified against the Swift engine in golden-master tests (the Trading Floor's seeded run
+          matches the native app bit-for-bit).
         </p>
         <p className="mt-3">
           The full app adds 124 interactive lessons across 9 roles and 11 industry verticals, certification exams, spaced-repetition
