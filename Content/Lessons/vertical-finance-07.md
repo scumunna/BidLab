@@ -107,7 +107,7 @@ explain: Seeded CPFA = $120,000 / 800 = $150. Broad CPFA = $120,000 / 500 = $240
 :::
 
 :::callout warning
-A real operator pain point: on Meta you cannot deploy a true CRM lookalike for a finance product. Under the Financial Products and Services Special Ad Category (Lesson 3) it must become a Special Ad Audience, a weaker substitute, and traders on Reddit report standard lookalikes built for a loan or card product getting disabled. Build the audience as an SAA from day one rather than launching a banned lookalike and watching it shut off mid-flight.
+A real operator pain point: on Meta you cannot deploy a true CRM lookalike for a finance product. Under the Financial Products and Services Special Ad Category (Lesson 3) lookalikes are blocked, so the compliant path is your first-party Custom Audience plus broad targeting and on-platform lead gen, and traders on Reddit report standard lookalikes built for a loan or card product getting disabled. Build prospecting on a first-party Custom Audience and broad delivery from day one rather than launching a banned lookalike and watching it shut off mid-flight.
 :::
 
 # Clean rooms: match without exporting PII
@@ -137,7 +137,7 @@ The trader's standing duties here are onboarding hygiene, match-rate monitoring 
 
 :::widget barChart
 title: First-party data flow, from CRM file to activatable reach (illustrative, thousands)
-labels: CRM records uploaded, Matched to RampID (40%), High-LTV seed subset, Suppression list, Lookalike/SAA reach
+labels: CRM records uploaded, Matched to RampID (40%), High-LTV seed subset, Suppression list, Custom Audience + broad reach
 data: 3000, 1200, 150, 1200, 9000
 unit: thousand users
 :::

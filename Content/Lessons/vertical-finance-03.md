@@ -28,7 +28,7 @@ explain: Meta's Special Ad Category and Google's G2 verification are platform po
 
 # Meta's Special Ad Category strips the levers
 
-Effective January 21, 2025 for US advertisers, any ad for a financial product or service on Meta, banking, loans, BNPL, investing, insurance, even financial education, must be declared in the Financial Products and Services Special Ad Category (SAC). Declaring it is not optional, and it disables your sharpest tools. Under SAC you lose custom-audience lookalikes and Advantage+ audience expansion, age is locked to 18 to 65+, gender targeting is removed, detailed-demographic, ZIP, and income gating are gone, and a 15-mile minimum location radius is forced. The compliant substitute for prospecting is a Special Ad Audience, a deliberately weaker lookalike-style model.
+Effective January 21, 2025 for US advertisers, any ad for a financial product or service on Meta, banking, loans, BNPL, investing, insurance, even financial education, must be declared in the Financial Products and Services Special Ad Category (SAC). Declaring it is not optional, and it disables your sharpest tools. Under SAC you lose custom-audience lookalikes and Advantage+ audience expansion, age is locked to 18 to 65+, gender targeting is removed, detailed-demographic, ZIP, and income gating are gone, and a 15-mile minimum location radius is forced. The compliant prospecting path is the bank's own first-party Custom Audience plus broad, automated delivery and on-platform lead generation, since Meta retired Special Ad Audiences in 2022 and no lookalike-style substitute exists.
 
 The practical effect is a much broader, blunter audience than you would build for a non-regulated product. Where a clean lookalike might address a few percent of a base, SAC pushes you toward broad-with-no-lookalike delivery and a coarse geo, so a larger share of impressions land on people who will never fund. That is the mechanism by which a policy rule becomes a CPFA problem.
 
@@ -39,12 +39,12 @@ caption: Each SAC restriction widens the audience, lookalikes off, age locked 18
 :::quiz
 question: A trader is launching a personal-loan campaign on Meta and wants to seed it with a 1% lookalike of the bank's best customers. Under the Financial Products and Services Special Ad Category, what actually happens?
 - The lookalike runs normally because lending is exempt from SAC
-- Custom-audience lookalikes are banned in SAC; the compliant substitute is a Special Ad Audience
+- Custom-audience lookalikes are banned in SAC; the compliant path is a first-party Custom Audience plus broad targeting and on-platform lead gen
 - The lookalike runs but is capped at a 15-mile radius
 - Lookalikes are allowed only if the advertiser uploads APR disclosures
 answer: 1
-hint: SAC removes the lever entirely and offers a named, weaker replacement.
-explain: A personal loan is a financial product, so the campaign must run in SAC, and SAC bans custom-audience lookalikes outright. The only compliant prospecting substitute is a Special Ad Audience, which models reach without the precision of a true lookalike. The 15-mile floor and disclosure rules are real but separate constraints.
+hint: SAC removes the lookalike lever; the fallback is your own data plus broad delivery.
+explain: A personal loan is a financial product, so the campaign must run in SAC, and SAC bans custom-audience lookalikes outright. The compliant prospecting path is the bank's own first-party Custom Audience plus broad targeting and on-platform lead gen, since Meta retired Special Ad Audiences in 2022. The 15-mile floor and disclosure rules are real but separate constraints.
 :::
 
 # The 15-mile geo floor quietly dilutes local strategies
