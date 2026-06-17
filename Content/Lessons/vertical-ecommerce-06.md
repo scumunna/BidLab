@@ -9,15 +9,15 @@ summary: Use MER and geo holdouts to separate media that truly causes sales from
 
 Every platform reports a ROAS that flatters itself because it claims conversions it only observed. Retargeting and brand-term campaigns recapture demand that would have converted anyway, and post-ATT modeled conversions estimate rather than measure, so the number you read in the dashboard is an upper bound on real impact, not the truth. The buy-side job is to treat platform ROAS as a claim to verify, not a result to bank. The two tools that do the verifying are MER (a blended top-line check) and incrementality testing (a causal measurement), and the rest of this lesson builds both.
 
-The scale of the gap is not subtle. The ANA's Q2 2025 Programmatic Transparency Benchmark found that only about 36.5% of programmatic spend met standard quality metrics, which means a large slice of "delivered" impressions never had a fair chance to drive the sales a platform later took credit for.
+The scale of the gap is not subtle. The ANA's Q2 2025 Programmatic Transparency Benchmark found that about 36.5% of programmatic spend failed to meet standard quality metrics (the TrueCPM Delta, the wasted share), which leaves only roughly 63.5% clearing the bar and means a large slice of "delivered" impressions never had a fair chance to drive the sales a platform later took credit for.
 
 :::predict
-prompt: The ANA's Q2 2025 benchmark found about 36.5% of programmatic spend met standard quality metrics. On a $200,000 programmatic budget, how many dollars cleared that quality bar?
+prompt: The ANA's Q2 2025 benchmark found about 36.5% of programmatic spend failed to meet standard quality metrics. On a $200,000 programmatic budget, how many dollars did NOT clear that quality bar?
 answer: 73000
 tolerance: 500
 unit: USD
 hint: Take 36.5% of the budget.
-explain: 200,000 times 0.365 equals 73,000. Only about 73,000 dollars of the 200,000 cleared the quality bar, so the rest is impressions a platform can still claim ROAS credit for without ever having a fair chance to drive a sale. That gap is exactly why platform ROAS is a claim to verify, not a result to bank.
+explain: 200,000 times 0.365 equals 73,000. About 73,000 dollars of the 200,000 failed to clear the quality bar, so that slice is impressions a platform can still claim ROAS credit for without ever having a fair chance to drive a sale. That gap is exactly why platform ROAS is a claim to verify, not a result to bank.
 :::
 
 :::callout key
@@ -101,15 +101,15 @@ explain: Incremental CAC = 40 / 0.50 = $80. True LTV:CAC = 160 / 80 = 2.0:1. The
 
 # Where this bites: PMax, brand terms, and the cannibalization debate
 
-The classic offenders are the campaigns that post the best platform ROAS precisely because they recapture existing demand. Performance Max is the headline example: an Optmyzr study of 500-plus accounts found PMax cannibalized Search in about 73% of accounts and cost roughly 34% more per conversion on average, meaning much of its "incremental" volume was Search demand re-bought at a premium. The same logic settles the Amazon paid-versus-organic debate from the efficiency lesson: a brand-term holdout reveals how much Sponsored Brands defense is buying sales the listing would have won organically. Even vendor incrementality claims (Meta's own meta-analysis reports about 32% lower cost per incremental conversion when ASC runs alongside manual) need independent geo or holdout validation before you act on them.
+The classic offenders are the campaigns that post the best platform ROAS precisely because they recapture existing demand. Performance Max is the headline example: an Optmyzr study of 503 accounts found Search and PMax keyword overlap in about 91% of accounts, meaning much of its "incremental" volume was Search demand re-bought through a different campaign type. The same logic settles the Amazon paid-versus-organic debate from the efficiency lesson: a brand-term holdout reveals how much Sponsored Brands defense is buying sales the listing would have won organically. Even vendor incrementality claims (Meta's own meta-analysis reports about 32% lower cost per incremental conversion when ASC runs alongside manual) need independent geo or holdout validation before you act on them.
 
 :::predict
-prompt: A Search campaign acquires conversions at $25 each. PMax is added and cannibalizes Search while costing about 34% more per conversion. What is the approximate PMax cost per conversion (to the nearest dollar)?
-answer: 34
-tolerance: 1
-unit: USD
-hint: Increase $25 by 34%.
-explain: 25 x 1.34 = $33.50, about $34 per conversion. You are paying roughly $8.50 more per conversion for volume that a geo or brand-term holdout would likely show was largely Search demand you already owned. The cannibalization is invisible in platform ROAS and only surfaces in a holdout.
+prompt: The Optmyzr study analyzed 503 accounts and found Search/PMax keyword overlap in about 91% of them. Roughly how many accounts showed that overlap (to the nearest whole account)?
+answer: 458
+tolerance: 5
+unit: accounts
+hint: Take 91% of 503 accounts.
+explain: 503 x 0.91 = 457.7, about 458 accounts. Overlap that widespread means PMax is largely competing for the same queries Search already covered, so much of its "incremental" volume is demand you already owned. The cannibalization is invisible in platform ROAS and only surfaces in a geo or brand-term holdout.
 :::
 
 :::quiz

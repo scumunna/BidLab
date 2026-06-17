@@ -109,7 +109,7 @@ explain: After ATT, many conversions are modeled rather than observed, and those
 
 # Supply quality is direct margin protection
 
-On the open web, budget leaks to made-for-advertising (MFA) sites and invalid traffic (IVT) that still report impressions, so the trader applies supply-path optimization (SPO), checks ads.txt and sellers.json, and runs inclusion lists. The scale is not trivial: the ANA's Q2 2025 benchmark found only about 36.5% of programmatic spend met standard quality metrics and roughly $26.8 billion of media value is still wasted annually. MFA alone grew from about 5% of web auctions in early 2020 to roughly 30% by mid-2023, and while disciplined buyers now keep MFA spend under about 1%, the bottom quartile still runs 5 to 29%. Treating this as box-ticking leaves real contribution margin on the table.
+On the open web, budget leaks to made-for-advertising (MFA) sites and invalid traffic (IVT) that still report impressions, so the trader applies supply-path optimization (SPO), checks ads.txt and sellers.json, and runs inclusion lists. The scale is not trivial: the ANA's Q2 2025 benchmark found only about 63.5% of programmatic spend met standard quality metrics (i.e., roughly 36.5% still failed them) and about $26.8 billion of media value is still wasted annually. MFA alone grew from about 5% of web auctions in early 2020 to roughly 30% by mid-2023, and while disciplined buyers now keep MFA spend under about 1%, the bottom quartile still runs 5 to 29%. Treating this as box-ticking leaves real contribution margin on the table.
 
 MFA and IVT exposure is the share of open-web spend landing on junk inventory, and it belongs on the same QA dashboard as feed health and reconciliation variance:
 
@@ -127,7 +127,7 @@ explain: 4,500 / 30,000 = 0.15, a 15% exposure. That is well above the under-1% 
 :::widget donutChart
 title: ANA Q2 2025: programmatic spend meeting standard quality metrics
 labels: Met quality metrics, Did not meet quality metrics
-data: 36.5, 63.5
+data: 63.5, 36.5
 unit: %
 :::
 
@@ -151,7 +151,7 @@ The most-cited operator pain here is that platform-reported revenue "never match
 :::
 
 :::sources
-- ANA, Q2 2025 Programmatic Transparency Benchmark (36.5% met quality metrics; $26.8B wasted annually) | https://www.ana.net/content/show/id/pr-2025-08-programmatictrans
+- ANA, Q2 2025 Programmatic Transparency Benchmark (63.5% met quality metrics, 36.5% failed them; $26.8B wasted annually) | https://www.ana.net/content/show/id/pr-2025-08-programmatictrans
 - ANA, Programmatic Media Supply Chain Transparency Study (MFA growth from ~5% to ~30% of auctions) | https://www.ana.net/content/show/id/pr-2023-06-programmaticstudy
 - AdExchanger, For Meta Marketers, Automation Isn't Always The Advantage (post-ATT modeled conversions; CAPI signal) | https://www.adexchanger.com/measurement/for-meta-marketers-automation-isnt-always-the-advantage-but-its-complicated/
 - The Trade Desk, Unified ID 2.0 (open-web identity as third-party cookies deprecate) | https://unifiedid.com/

@@ -7,7 +7,7 @@ summary: You will learn to gate ads on buy-box and inventory status, quantify th
 ---
 # The two gates that decide whether a click can convert
 
-Before any bid math matters, two catalog gates decide whether an ad can even work, and both live outside the campaign console where most traders look. The first is buy-box (Featured Offer) ownership: the Featured Offer drives roughly 83% of Amazon sales, so if you advertise an ASIN you do not own the buy box on, the click lands on a page with no easy Add to Cart and the spend is gone. The second is inventory: Amazon does not auto-pause Sponsored Products during a stockout, so ads keep serving, budget keeps spending, almost nothing converts, and the lost velocity quietly drops organic rank too. These two gates are the single most-cited operator pain point in the vertical because every dashboard upstream can look fine while budget bleeds.
+Before any bid math matters, two catalog gates decide whether an ad can even work, and both live outside the campaign console where most traders look. The first is buy-box (Featured Offer) ownership: the Featured Offer drives roughly 83% of Amazon sales, so if you advertise an ASIN you do not own the buy box on, the click lands on a page with no easy Add to Cart and the spend is gone. The second is inventory: Amazon auto-pauses Sponsored Products only on a true zero-inventory stockout (with up to a 4-hour restart lag), but that protection is incomplete and unreliable. It does not trigger on merely low stock, does not cover Sponsored Brands, Display, or DSP, can leak on parent ASINs when a child variation is still in stock, and never fires when you lose the Featured Offer while the item is still in stock, so budget can still bleed, almost nothing converts, and the lost velocity quietly drops organic rank too. These two gates are the single most-cited operator pain point in the vertical because every dashboard upstream can look fine while budget bleeds.
 
 :::callout key
 A click can only convert if three things are true at once: the ASIN is in stock, you own the buy box, and the listing is not suppressed. Auction wins and a low ACoS mean nothing if any of the three is false. Gate the ads on catalog state first, then optimize bids.
@@ -43,13 +43,13 @@ explain: 500 clicks x 0.08 gap x $40 AOV = $1,600 of sales value lost every day 
 
 # The out-of-stock gate: the most expensive repeated mistake
 
-Amazon will not pause your Sponsored Products when an ASIN goes out of stock, so the ads run, the clicks come, and they convert at near zero because shoppers cannot buy. Worse, an out-of-stock product is ineligible to win the Buy Box, so the two gates compound, and the missing sales velocity feeds Amazon's A9 ranking a weak signal that drops the listing's organic position even after restock. Operators consistently rank "ads kept spending while we were out of stock" as their most expensive, most repeated error, and the only durable fix is inventory-aware automation that pauses or throttles ads as days-of-cover run low.
+Amazon auto-pauses Sponsored Products on a full stockout, but the protection is leaky: low (non-zero) stock, parent listings with an in-stock child variation, the up-to-4-hour restart delay, and especially a lost buy box (item still in stock) all let paid clicks keep landing on a page that cannot convert. Worse, an out-of-stock product is ineligible to win the Buy Box, so the two gates compound, and the missing sales velocity feeds Amazon's A9 ranking a weak signal that drops the listing's organic position even after restock. Operators consistently rank "ads kept spending while we were out of stock" as their most expensive, most repeated error, and the only durable fix is inventory-aware automation that pauses or throttles ads as days-of-cover run low.
 
 The wasted spend is easy to estimate. With daily ad spend $S$, days out of stock $d$, and a residual (near-zero) conversion rate, the budget burned is approximately:
 
 $$ \text{wasted stockout spend} = S \times d \times (1 - r) $$
 
-where $r$ is the residual conversion fraction (close to 0 during a true stockout, so the waste is close to the full $S \times d$).
+where $r$ is the residual conversion fraction (close to 0 whenever ads keep serving to a page that cannot convert, a low-stock, parent/child-leak, restart-lag, or lost-buy-box case, so the waste is close to the full $S \times d$).
 
 :::predict
 prompt: A Sponsored Products campaign spends $400/day and a best-seller is out of stock for 5 days with near-zero conversion. Roughly how much spend is wasted?
@@ -117,7 +117,7 @@ explain: A negative keyword stops the wasted spend on that specific irrelevant q
 Negatives are a scalpel, not a firehose. Over-aggressive negative keywords suffocate the auto and broad campaigns that surface new converting terms, starving the very harvest that feeds your exact-match structure, so negatives need periodic pruning, not just endless adding. The discipline is to negate terms that are proven irrelevant or unprofitable while leaving enough discovery surface for new winners to appear, and to revisit the negative list as the catalog, seasonality, and competitive set shift.
 
 :::callout warning
-The most expensive, most repeated mistake operators report in this vertical: ads kept spending while the ASIN was out of stock, often discovered only from a sudden ACoS spike rather than any alert, because Amazon will not auto-pause Sponsored Products on an out-of-stock or buy-box-lost ASIN. Forums are full of sellers who lost the buy box for hours and found out from a billing surprise, forcing third-party tools or scripts to do the obvious inventory and buy-box gating Amazon should do natively. Build the stock-check and buy-box monitor before you scale spend, not after the first wasted-budget post-mortem.
+The most expensive, most repeated mistake operators report in this vertical: ads kept spending while the ASIN was out of stock, often discovered only from a sudden ACoS spike rather than any alert, because Amazon's auto-pause is incomplete: it does not fire when you merely lose the buy box (the ASIN is still in stock), and it can miss low-stock or parent/child variation stockouts even though it does pause Sponsored Products on a clean full stockout. Forums are full of sellers who lost the buy box for hours and found out from a billing surprise, forcing third-party tools or scripts to do the obvious inventory and buy-box gating Amazon should do natively. Build the stock-check and buy-box monitor before you scale spend, not after the first wasted-budget post-mortem.
 :::
 
 :::quiz

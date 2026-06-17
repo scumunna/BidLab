@@ -7,14 +7,14 @@ summary: Orient yourself in the B2B/SaaS programmatic ecosystem so you know whic
 ---
 # The shape of the B2B money map
 
-B2B programmatic is a small slice of a giant market. US B2B digital ad spend is about $23.05B in 2026, up 10.4% year over year, against roughly $178B in US programmatic display overall and about $834B in the global programmatic market (Custom Market Insights). Digital now makes up 48% of total B2B ad spend, up from 43.5% in 2022, so the budget is shifting your way even though B2B is a minority of all programmatic dollars. The signature shape you must internalize: tiny click-through rates, huge deal value, and the account (not the individual cookie or user) as the thing you are buying.
+B2B programmatic is a small slice of a giant market. US B2B digital ad spend is about $23.05B in 2026, up 10.4% year over year, against roughly $220B in US programmatic display overall and about $834B in the global programmatic market (Custom Market Insights). Digital now makes up 48% of total B2B ad spend, up from 43.5% in 2022, so the budget is shifting your way even though B2B is a minority of all programmatic dollars. The signature shape you must internalize: tiny click-through rates, huge deal value, and the account (not the individual cookie or user) as the thing you are buying.
 
 That inversion is the whole vertical. In consumer programmatic you optimize toward a cheap conversion at scale. In B2B you optimize toward a handful of high-value accounts, where one closed-won deal can be worth $15K to $250K or more, so a $50 to $100 CPM can still pay back. Everything in this path, from bid ceilings to pacing to measurement, follows from that single fact.
 
 :::widget barChart
 title: Where B2B sits in the programmatic market (2026)
 labels: US B2B Digital, US Programmatic Display, Global Programmatic
-data: 23.05, 178.25, 834
+data: 23.05, 220, 834
 unit: USD billions
 :::
 

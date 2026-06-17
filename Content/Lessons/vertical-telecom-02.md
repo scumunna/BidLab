@@ -129,7 +129,7 @@ Reddit AdOps pain point: practitioners vent that clients hand over a flat CPA or
 
 # Churn, lifetime, and the three sub-businesses
 
-LTV depends on how long a subscriber stays, and lifetime is the inverse of monthly churn. Postpaid phone churn in 2025 ran roughly 0.90% at T-Mobile, 0.92% at AT&T, and 1.1% at Verizon late in the year, so a 1.0% monthly churn implies an expected lifetime of 100 months. Small churn differences swing LTV hard: dropping monthly churn from 1.1% to 0.9% lifts expected lifetime from about 91 months to about 111 months, a roughly 22% longer revenue tail on the same ARPU. That is why retention sits right next to acquisition in the mandate.
+LTV depends on how long a subscriber stays, and lifetime is the inverse of monthly churn. Postpaid phone churn late in 2025 ran roughly 1.02% at T-Mobile (0.93% full-year), 0.98% at AT&T, and 0.95% at Verizon, all close to 1.0% monthly, so a 1.0% monthly churn implies an expected lifetime near 100 months. Small churn differences swing LTV hard: dropping monthly churn from 1.1% to 0.9% lifts expected lifetime from about 91 months to about 111 months, a roughly 22% longer revenue tail on the same ARPU. That is why retention sits right next to acquisition in the mandate.
 
 The three telecom sub-businesses do not share one CAC target. Postpaid wireless is high revenue and low churn but carries handset subsidies that inflate SAC. Prepaid is lower ARPU and higher churn. Broadband and fixed wireless access (FWA) are sticky and act as a bundling lever. One blanket CAC number cannot govern all three, so you set the gate per line of business.
 

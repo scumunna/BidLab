@@ -83,7 +83,7 @@ unit: gross adds
 
 # MMM for the always-on, cross-channel picture
 
-Geo holdouts answer one question for one flight; marketing mix modeling (MMM) answers the always-on, cross-channel question by regressing outcomes against spend across all channels over time. The two are complements, not rivals: geo experiments give you a clean causal point estimate, and you use that estimate to calibrate the MMM so the model is anchored to ground truth rather than trusting either alone. MMM needs roughly 8 to 12 weeks of clean pre-period data and can mis-attribute when several channels change at once, which is precisely why experiment calibration matters.
+Geo holdouts answer one question for one flight; marketing mix modeling (MMM) answers the always-on, cross-channel question by regressing outcomes against spend across all channels over time. The two are complements, not rivals: geo experiments give you a clean causal point estimate, and you use that estimate to calibrate the MMM so the model is anchored to ground truth rather than trusting either alone. MMM typically needs at least about 2 years (around 104 weeks) of clean weekly historical data, 3 years for national models, with the most data-flexible vendors starting around 6 to 12 months, and it can mis-attribute when several channels change at once, which is precisely why experiment calibration matters.
 
 The tooling matured fast. Google's open-source MMM, Meridian, reached general availability on January 29, 2025, and added a no-code Scenario Planner in February 2026, lowering the barrier for a trading team to run modeled what-ifs alongside the geo test. The trader's posture is to treat MMM as the strategic, cross-channel allocator and geo holdouts as the calibrating experiments that keep it honest.
 
@@ -95,7 +95,7 @@ question: Why should a trader calibrate an MMM with geo-holdout results rather t
 - MMM does not require any historical data
 answer: 1
 hint: Think about what breaks when several channels move at the same time.
-explain: MMM regresses outcomes on spend and can mis-assign credit when channels change together; a geo holdout gives a clean causal estimate that calibrates the model. Geo tests do not replace MMM, and MMM needs roughly 8 to 12 weeks of pre-period data.
+explain: MMM regresses outcomes on spend and can mis-assign credit when channels change together; a geo holdout gives a clean causal estimate that calibrates the model. Geo tests do not replace MMM, and MMM needs at least about 2 years (around 104 weeks) of weekly history (3 years for national models), with some modern vendors operating on a 6 to 12 month minimum.
 :::
 
 :::callout key

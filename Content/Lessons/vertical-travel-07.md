@@ -45,13 +45,13 @@ explain: 3,000 / 60,000 = 0.05, a 5 percent recovery rate. In a funnel where 80 
 
 # Metasearch is its own auction
 
-Metasearch is not RTB display and must never be paced like it. On Google Hotel Ads, Trivago, and Kayak, you bid (often via Koddi) on a CPC or commission basis to appear in the price-comparison unit, and the user clicks through to your booking engine. The economics behave like search, not like a CPM impression buy, so it needs its own bid strategy, its own budget, and its own targets rather than being folded into the RTB playbook.
+Metasearch is not RTB display and must never be paced like it. On Google Hotel Ads, you bid (often via Koddi) on a CPC or target-ROAS (tROAS) basis to appear in the price-comparison unit (Google removed commission bidding in 2024), and the user clicks through to your booking engine. Commission-based bidding still survives on some other metasearch providers (Sojern, for example), but the dominant unit transacts on CPC or tROAS. The economics behave like search, not like a CPM impression buy, so it needs its own bid strategy, its own budget, and its own targets rather than being folded into the RTB playbook.
 
 The right KPI for any booking channel, metasearch included, is cost per booking, computed for that channel in isolation.
 
 $$ \text{Channel CPB} = \frac{\text{Channel media spend}}{\text{Channel confirmed bookings}} $$
 
-The payoff is real: metasearch CAC commonly lands at 8 to 14 percent of booking value, far below OTA loaded commissions of 28 to 42 percent, which is exactly why direct-booking hotels lean on it. Case data cited by AppsFlyer (Plaza La Reina) showed 8x ROI on metasearch and 24x on retargeting within three months, a useful reminder that recovery channels and metasearch, not prospecting, carry travel efficiency.
+The payoff is real: metasearch CAC commonly lands at 8 to 14 percent of booking value, well below OTA commissions that typically run 15 to 30 percent (often into the low 30s once fully loaded with payment processing, currency, and paid visibility), which is exactly why direct-booking hotels lean on it. Case data cited by Cloudbeds (Plaza La Reina) showed 8x ROI on metasearch and 24x on retargeting within three months, a useful reminder that recovery channels and metasearch, not prospecting, carry travel efficiency.
 
 :::quiz
 question: Why can a metasearch line not be paced and bid like an open-exchange RTB display line?
@@ -61,7 +61,7 @@ question: Why can a metasearch line not be paced and bid like an open-exchange R
 - Metasearch is bought only as programmatic guaranteed
 answer: 1
 hint: Think about what you are actually paying for on Google Hotel Ads or Trivago.
-explain: Metasearch transacts on a CPC or commission basis in a price-comparison auction, so its bid logic, budget, and targets are search-like, not the CPM pacing used for RTB display. Treating it as RTB is a classic mistake.
+explain: Metasearch transacts on a CPC or tROAS basis (commission on some other providers) in a price-comparison auction, so its bid logic, budget, and targets are search-like, not the CPM pacing used for RTB display. Treating it as RTB is a classic mistake.
 :::
 
 # App-install: judge the booking, not the install

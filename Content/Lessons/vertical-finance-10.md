@@ -9,7 +9,7 @@ summary: You will learn to time finance buys to the tax and open-enrollment cale
 
 Finance is not a flat-demand vertical. Two structural spikes dominate the year: tax season, roughly January through April and peaking near the mid-April filing deadline, lifts demand for tax-prep, refund-advance, debt-payoff, and lump-sum-to-invest products, while insurance open enrollment compounds Q4. The trader's problem is that auction prices rise with this demand and also with non-finance retail competition, so more spend at the peak does not automatically buy more funded accounts. The signature KPI does not change with the season: success is still cost per funded account (CPFA), media spend divided by accounts that opened and funded, measured against the LTV-derived ceiling from module 4.
 
-Open enrollment is two distinct windows, not one, and a finance trader pacing insurance buys must respect both. Medicare Annual Enrollment runs October 15 to December 7, with coverage taking effect January 1. ACA Marketplace open enrollment is a separate, longer window that runs November 1 to January 15 for 2026 coverage: full-year coverage starting January 1 requires plan selection by December 15, and a final deadline of January 15 covers those who start coverage February 1. That means ACA funded intent does not stop in early December the way Medicare does, it carries a high-intent tail through the December 15 surge and on to the January 15 deadline. A trader who paces only to a December 7 cutoff would under-fund the exact ACA weeks that convert.
+Open enrollment is two distinct windows, not one, and a finance trader pacing insurance buys must respect both. Medicare Annual Enrollment runs October 15 to December 7, with coverage taking effect January 1. ACA Marketplace open enrollment is a separate, longer window that runs November 1 to January 15 for 2026 coverage: full-year coverage starting January 1 requires plan selection by December 15, and a final deadline of January 15 covers those who start coverage February 1. That means ACA funded intent does not stop in early December the way Medicare does, it carries a high-intent tail through the December 15 surge and on to the January 15 deadline. A trader who paces only to a December 7 cutoff would under-fund the exact ACA weeks that convert. Note that these January 15 and February 1 dates apply only to plan-year-2026 coverage. Beginning with plan year 2027 (the season that opens in fall 2026), CMS shortens the federal Marketplace open enrollment period to November 1 to December 15 and removes the January 15 deadline and February 1 effective date, so for PY2027 onward a trader should pace ACA buys to a December 15 close, not a January 15 tail. State-based exchanges may set their own dates but must close no later than December 31.
 
 :::predict
 prompt: ACA Marketplace open enrollment for 2026 coverage runs from November 1 to January 15. How many days long is that window, counting both endpoints?
@@ -22,15 +22,15 @@ explain: November contributes 30 days, December contributes 31, and January cont
 
 # Seasonal CPM premium and when to pull back
 
-Q4 is expensive for everyone, not just finance. General retail competition lifts CPMs by roughly 18 percent into November before they fall back in December and January as that demand recedes, and finance bids ride on top of that. The seasonal CPM premium is the percentage lift of peak CPM over baseline, $\text{premium} = (\text{CPM}_{\text{peak}} - \text{CPM}_{\text{baseline}}) / \text{CPM}_{\text{baseline}}$, and it tells the trader how much extra they pay for the same impression purely because of the calendar. The judgment call is whether that higher CPM is matched by higher funded intent. If it is not, the incremental CPFA worsens and the right move is to pull back, not chase volume.
+Q4 is expensive for everyone, not just finance. General retail competition lifts CPMs by roughly 30 percent or more into November (current US benchmarks show the November peak running about 28 to 38 percent above baseline, with some holiday segments higher) before they fall back in December and January as that demand recedes, and finance bids ride on top of that. The seasonal CPM premium is the percentage lift of peak CPM over baseline, $\text{premium} = (\text{CPM}_{\text{peak}} - \text{CPM}_{\text{baseline}}) / \text{CPM}_{\text{baseline}}$, and it tells the trader how much extra they pay for the same impression purely because of the calendar. The judgment call is whether that higher CPM is matched by higher funded intent. If it is not, the incremental CPFA worsens and the right move is to pull back, not chase volume.
 
 :::predict
-prompt: Baseline finance CPM is $11 and the November peak CPM is about $13. What is the seasonal CPM premium, rounded to the nearest whole percent?
-answer: 18
+prompt: Baseline finance CPM is $10 and the November peak CPM is about $13. What is the seasonal CPM premium, rounded to the nearest whole percent?
+answer: 30
 tolerance: 0.5
 unit: %
 hint: Subtract baseline from peak, then divide by baseline.
-explain: 13 minus 11 is 2. Then 2 divided by 11 is 0.1818, which rounds to an 18 percent premium. You are paying 18 percent more per impression in November before any change in funded rate.
+explain: 13 minus 10 is 3. Then 3 divided by 10 is 0.30, which is a 30 percent premium. You are paying 30 percent more per impression in November before any change in funded rate.
 :::
 
 :::callout warning
@@ -48,7 +48,7 @@ caption: Indexed finance CPM and seasonal demand across the year. The November Q
 :::widget lineChart
 title: Indexed finance CPM and seasonal demand by month
 labels: Aug, Sep, Oct, Nov, Dec, Jan, Feb, Mar, Apr
-data: 100, 104, 112, 118, 101, 92, 100, 110, 122
+data: 100, 104, 118, 130, 101, 92, 100, 110, 122
 unit: index
 :::
 

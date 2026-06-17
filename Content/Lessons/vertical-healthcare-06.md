@@ -30,7 +30,7 @@ explain: Fair balance and ISI for prescription-drug promotion come from 21 CFR 2
 
 The most common in-flight failure is ISI that technically exists but does not render legibly on a phone. The practitioner standard is a hard floor: ISI must never display below 12px regardless of viewport width. A robust CSS pattern is $\text{font-size} = \max(12\text{px},\ 2.5\text{vw})$ inside an `@media (max-width:480px)` block, so the type scales up on larger phones but can never collapse below the floor on a narrow one.
 
-Placement is just as load-bearing as size. The risk information must live in the post itself as scrolling ISI, never gated behind a "see more," a "swipe up," a linked page, or a QR scan. In 2026 FDA issued accelerated warning letters specifically over ISI hidden behind those gates, so "in view, never gated" is the rule the operator QAs on every placement.
+Placement is just as load-bearing as size. The risk information must live in the post itself as scrolling ISI, never gated behind a "see more," a "swipe up," a linked page, or a QR scan. The 2026 OPDP letters reinforce the underlying principle: the recurring risk-presentation findings were disclosures undercut by distracting visuals running during the safety statement and risk copy placed after a transition that signaled the ad had ended, so "in view, never gated, never undercut" is the rule the operator QAs on every placement.
 
 :::figure isiLayout
 caption: Fair-balance creative pairs the product claim with a scrolling ISI block in the same unit. The risk copy stays in view and legible (12px floor), never gated behind a swipe-up, see-more, linked page, or QR scan.
@@ -88,14 +88,14 @@ explain: Any automated change to an approved claim or ISI asset invalidates the 
 
 # The enforcement is live, and the pause has a budget cost
 
-This is not theoretical risk. FDA issued 8 untitled letters through Q2 2026, disproportionately in oncology and weight-loss, including a 2026 challenge to Novo Nordisk over a "Live Lighter" execution that overstated emotional outcomes. The operator's reason to care is concrete: enforcement forces a creative pause, and a pause inside a fixed flight is unspent or at-risk budget against the only KPI that funds renewal, cost per incremental script.
+This is not theoretical risk. FDA's OPDP issued at least 9 untitled letters and 1 warning letter in Q1 2026 alone (with more by Q2, plus over 30 compounder warning letters on semaglutide and tirzepatide), spread across oncology and hematology (Brukinsa, Vonjo, Anktiva), weight-loss and metabolic (Wegovy, Ozempic), autoimmune and neurologic (Vyvgart Hytrulo, Neffy), and immunology and dermatology (Tremfya) rather than concentrated in any one area, including a 2026 challenge to Novo Nordisk over a "Live Lighter" execution that overstated emotional outcomes. The operator's reason to care is concrete: enforcement forces a creative pause, and a pause inside a fixed flight is unspent or at-risk budget against the only KPI that funds renewal, cost per incremental script.
 
 Work the cost like any other pacing constraint. If a flight has a fixed budget and FDA action freezes the only compliant creative for part of the window, the at-risk budget is the flight budget scaled by the paused fraction of the flight. On a $900,000 twelve-week flight, a three-week forced pause exposes $900,000 times $3/12 = \$225{,}000$, which is why a pre-cleared backup asset is a budget instrument, not a nicety.
 
 :::widget barChart
-title: FDA enforcement signal through Q2 2026 (untitled letters, illustrative split by focus)
-labels: Oncology, Weight-loss, Other
-data: 3, 3, 2
+title: FDA OPDP enforcement signal, Q1 2026 untitled letters by therapeutic area
+labels: Oncology/heme, Weight-loss, Autoimmune/neuro, Immuno/derm
+data: 3, 2, 2, 2
 unit: letters
 :::
 
@@ -135,6 +135,6 @@ explain: Condition-contextual, consented targeting with no PHI is the HIPAA-safe
 - U.S. FDA, Prescription Drug Advertising (21 CFR 202.1) and OPDP enforcement | https://www.fda.gov/drugs/prescription-drug-advertising/prescription-drug-advertising-questions-and-answers
 - Veeva Crossix, Data Platform and Methodology White Paper (de-identified clean-room measurement) | https://www.veeva.com/wp-content/uploads/2023/08/Crossix-Data-and-Methodology-White-Paper.pdf
 - Digiday, How programmatic firms deal with complex pharmaceutical laws | https://digiday.com/marketing/pharma-programmatic/
-- HHS Office for Civil Rights, HIPAA and online tracking technologies guidance | https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/hipaa-online-tracking/index.html
+- HHS Office for Civil Rights, HIPAA and online tracking technologies guidance (note: partially vacated June 20, 2024 in AHA v. Becerra, N.D. Tex.; OCR dropped its appeal, so the position that an IP address plus an unauthenticated health-page visit is PHI is no longer enforceable. HIPAA still applies to actual PHI and to authenticated patient-portal pages.) | https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/hipaa-online-tracking/index.html
 - FiercePharma, 2026 forecast: Pharma ad dollars keep moving away from traditional TV | https://www.fiercepharma.com/marketing/2026-forecast-pharma-ad-dollars-will-continue-shifting-away-traditional-tv
 :::

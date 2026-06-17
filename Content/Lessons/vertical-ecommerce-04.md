@@ -24,7 +24,7 @@ explain: Auto and broad-match campaigns cast wide to surface queries you did not
 
 # The audience layer, clean rooms above the keyword
 
-Above keyword and ASIN targeting sits the audience layer, where the real first-party power lives. Amazon Marketing Cloud (AMC) is a privacy-safe clean room: the trader writes SQL-style queries to build custom audiences (viewed-but-did-not-buy, cross-category buyers, lapsed purchasers) and activates them inside Amazon DSP without ever touching user-level PII. Walmart's Luminate and clean-room plus its DSP integrations play the analogous role for Walmart Connect, the distant number two retail-media network.
+Above keyword and ASIN targeting sits the audience layer, where the real first-party power lives. Amazon Marketing Cloud (AMC) is a privacy-safe clean room: the trader writes SQL-style queries to build custom audiences (viewed-but-did-not-buy, cross-category buyers, lapsed purchasers) and activates them inside Amazon DSP without ever touching user-level PII. Walmart's Scintilla (formerly Luminate) and clean-room plus its DSP integrations play the analogous role for Walmart Connect, the distant number two retail-media network.
 
 The hard constraint, and the reason walled gardens stay walled, is that a clean-room audience only activates inside that ecosystem's DSP. A brilliant AMC audience cannot be ported to Meta, so the trader rebuilds equivalent intent in each walled garden rather than maintaining one master segment.
 
@@ -33,12 +33,12 @@ caption: A clean room like AMC matches the brand's first-party records against t
 :::
 
 :::callout key
-A clean-room audience is locked to its own DSP. AMC segments activate in Amazon DSP, Walmart Luminate segments in Walmart's stack, and neither crosses to the open web. Plan to rebuild intent per ecosystem rather than assuming one audience travels everywhere.
+A clean-room audience is locked to its own DSP. AMC segments activate in Amazon DSP, and Walmart Scintilla segments live in Walmart's stack (though Walmart Connect is now extending its first-party audiences to third-party DSPs like Yahoo DSP, DV360, and Magnite). Plan to rebuild intent per ecosystem rather than assuming one audience travels everywhere.
 :::
 
 # Open-web first-party data and identity
 
-On the open web (Meta, Google Shopping and PMax, The Trade Desk, DV360) targeting runs on first-party data because third-party cookies are deprecating. The trader uploads hashed CRM lists to build Google Customer Match and Meta Custom Audiences, expands them with lookalikes and Advantage+ audiences, and resolves users across sites through identity frameworks like UID2 and RampID. Social alone now accounts for roughly half of offsite retail-media spend, with about 72% of retail-media advertisers prioritizing offsite video, so this is where 1P audiences actually get activated at scale.
+On the open web (Meta, Google Shopping and PMax, The Trade Desk, DV360) targeting increasingly runs on first-party data as signal loss erodes third-party tracking, driven by iOS ATT, privacy regulation, and browser restrictions in Safari and Firefox. Note that Google ultimately kept third-party cookies in Chrome and wound down its Privacy Sandbox APIs in 2025, so the shift to first-party data is about general signal loss rather than an in-progress Chrome cookie deprecation. The trader uploads hashed CRM lists to build Google Customer Match and Meta Custom Audiences, expands them with lookalikes and Advantage+ audiences, and resolves users across sites through identity frameworks like UID2 and RampID. Social alone now accounts for roughly half of offsite retail-media spend, with about 72% of retail-media advertisers prioritizing offsite video, so this is where 1P audiences actually get activated at scale.
 
 The first QA gate is match rate, the share of uploaded CRM records that resolve to reachable users on the platform. Match rate is not a vanity stat: it directly caps reach and quietly degrades the lookalike seed when it runs low, so a poorly matched list underdelivers for reasons that never surface in the campaign UI.
 

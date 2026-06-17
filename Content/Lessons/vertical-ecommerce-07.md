@@ -101,7 +101,7 @@ explain: $\$500/\text{day} \times 3 \text{ days} \approx \$1,500$ of spend with 
 :::
 
 :::callout warning
-Operators describe Prime Day budget exhaustion by noon, then watching competitors own the afternoon at the best conversion rates of the year, and they call scaling spend into an item that stocks out mid-event their most expensive repeatable mistake. Amazon does not auto-pause Sponsored Products during a stockout, so a front-loaded peak budget on an item with thin cover will keep spending into a dead listing until someone manually intervenes. Gate the multiplier on days of cover, and set an alert on sell-through, not just on spend.
+Operators describe Prime Day budget exhaustion by noon, then watching competitors own the afternoon at the best conversion rates of the year, and they call scaling spend into an item that stocks out mid-event their most expensive repeatable mistake. Sponsored Products ads are retail-aware and generally go ineligible when an item stocks out or loses the Buy Box, but Sponsored Brands and DSP campaigns do not reliably auto-pause, and even Sponsored Products auto-pause can lag (up to about 4 hours), so a front-loaded peak budget on an item with thin cover can keep spending into a dead listing until someone manually intervenes. Because auto-pause is inconsistent and delayed, manual pausing is still the safe move. Gate the multiplier on days of cover, and set an alert on sell-through, not just on spend.
 :::
 
 # Dayparting and the post-event re-baseline

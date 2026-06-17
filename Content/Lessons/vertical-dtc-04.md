@@ -3,16 +3,16 @@ id: vertical-dtc-04
 track: vertical-dtc
 module: 4
 title: "The Execution Core: ASC, CBO vs ABO, Bid Strategy, Learning Phase, Pacing"
-summary: Build and pace Meta Advantage+ Shopping and manual campaigns, pick the right budget structure and bid strategy, clear the learning phase, and size daily budget so pacing serves volume without blowing CAC.
+summary: Build and pace Meta Advantage+ Sales and manual campaigns, pick the right budget structure and bid strategy, clear the learning phase, and size daily budget so pacing serves volume without blowing CAC.
 ---
 # The two campaign types you actually build
 
-This is the hands-on center of gravity of the DTC role. Day to day you live inside Meta Ads Manager building and pacing two things: Advantage+ Shopping (ASC), a near-fully-automated prospecting-plus-retargeting engine that finds new customers across broad audiences, and Advantage+ or manual campaigns where you keep more control over audience, placement, and optimization event. ASC is the default acquisition workhorse for most DTC brands in 2026 because it leans on Meta's signal and creative volume rather than hand-built audiences. Manual campaigns earn their keep when you need a clean read, a specific audience carve-out, or a controlled creative test before a winner graduates into ASC.
+This is the hands-on center of gravity of the DTC role. Day to day you live inside Meta Ads Manager building and pacing two things: Advantage+ Sales Campaigns (ASC, formerly Advantage+ Shopping), a near-fully-automated prospecting-plus-retargeting engine that finds new customers across broad audiences, and Advantage+ or manual campaigns where you keep more control over audience, placement, and optimization event. ASC is the default acquisition workhorse for most DTC brands in 2026 because it leans on Meta's signal and creative volume rather than hand-built audiences. Manual campaigns earn their keep when you need a clean read, a specific audience carve-out, or a controlled creative test before a winner graduates into ASC.
 
 The mental model is a creative-fed machine: ASC does the targeting for you, so your levers are budget structure, bid strategy, the learning phase, and pacing, with creative (Lesson 5) as the biggest input of all. Everything in this lesson is about keeping that machine spending efficiently against a blended scoreboard, not about chasing a pretty in-platform ROAS number.
 
 :::quiz
-question: In a 2026 DTC account, what is the primary job the trader still controls once Advantage+ Shopping automates the targeting?
+question: In a 2026 DTC account, what is the primary job the trader still controls once Advantage+ Sales (ASC) automates the targeting?
 - Hand-picking interest audiences for each ad set
 - Budget structure, bid strategy, learning phase, and pacing
 - Choosing which third-party cookies Meta uses
@@ -113,7 +113,7 @@ explain: Spend = $250 x 30 = $7,500. Customers = $7,500 / $35 = 214.3. Revenue =
 
 # The ASC trap: stop it from harvesting your warm buyers
 
-ASC has one signature failure mode the trader has to manage directly. With the existing-customer budget cap loosened or removed, ASC drifts toward the warm audiences that convert most easily, your prior purchasers, retargeting pool, and people who would have bought through organic or email anyway. That cannibalizes credit ASC did not really earn and inflates its apparent performance. The fix is to set the existing-customer allocation low, around 5 percent, which forces ASC to spend the rest hunting net-new customers (DollarCommerce and Tinuiti, 2026).
+ASC has one signature failure mode the trader has to manage directly. Left unchecked, ASC drifts toward the warm audiences that convert most easily, your prior purchasers, retargeting pool, and people who would have bought through organic or email anyway. That cannibalizes credit ASC did not really earn and inflates its apparent performance. Meta removed the settable existing-customer budget cap in February 2025, but the March 2026 Advantage+ update reinstated it, so you can once again cap the share of budget that goes to existing customers. The fix is to set the existing-customer allocation low, around 5 percent, which forces ASC to spend the rest hunting net-new customers (Optifox and Tinuiti, 2026).
 
 The relationship is simple: ASC new-customer share equals 1 minus the existing-customer allocation. Hold the existing-customer slice small and you keep ASC honest as an acquisition engine rather than an expensive retargeting layer.
 
@@ -156,7 +156,7 @@ explain: Raising budget more than roughly 20 to 25 percent in one move can reset
 - Coinis, Advantage+ Shopping Campaign (ASC): 2026 Guide | https://coinis.com/glossary/advantage-shopping-campaign-asc
 - Modern Marketing Institute, How to Exit the Meta Ads Learning Phase Fast and Start Scaling Profitably in 2026 | https://www.modernmarketinginstitute.com/blog/how-to-exit-the-meta-ads-learning-phase-fast-and-start-scaling-profitably-in-2026
 - Cometly, Facebook Ads Learning Phase Stuck: Fix Guide 2026 | https://www.cometly.com/post/facebook-ads-learning-phase-stuck
-- Dollar Commerce, Why did Facebook remove the existing customer percentage cap in ASC campaigns? | https://dollarcommerce.substack.com/p/why-did-facebook-remove-the-existing
+- Optifox, Meta Ads Best Practices 2026 (existing-customer % cap reinstated in the March 2026 Advantage+ update) | https://optifox.in/blog/meta-ads-best-practices-2026/
 - Eightx, MER Benchmarks for DTC Brands 2026 | https://eightx.co/blog/marketing-efficiency-ratio
 - Eightx, Average CAC Payback Period by DTC Vertical 2026 | https://eightx.co/blog/average-cac-payback-period-by-vertical
 :::

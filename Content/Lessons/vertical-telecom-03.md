@@ -69,7 +69,7 @@ Broadband and ISP marketers on Reddit complain that huge shares of programmatic 
 
 The number you watch every day is the in-footprint working-media percentage: impressions delivered to serviceable households divided by total impressions. It is the early-warning gauge that tells you whether the footprint layer is actually holding before the economics show up in CPGA. The companion figure is wasted spend, which is the out-of-footprint share multiplied by media spend, and it is the most honest way to show a client what loose geo is costing them.
 
-This sits inside a much leakier supply chain. Industry benchmarks find only about 36 cents of every dollar entering a DSP reaches the consumer as working media before any footprint filter is even applied, and the ANA pegged industry-wide wasted programmatic spend at roughly $26.8B in Q2 2025. Out-of-footprint delivery is a telecom-specific multiplier stacked on top of that baseline waste, so the footprint layer is not optional hygiene, it is the difference between a campaign that can clear its LTV:SAC gate and one that cannot.
+This sits inside a much leakier supply chain. The ANA's 2023 supply-chain transparency study found only about 36 cents of every dollar entering a DSP reached the consumer as working media before any footprint filter was applied, and the ANA pegged industry-wide wasted programmatic spend at roughly $26.8B in Q2 2025. Out-of-footprint delivery is a telecom-specific multiplier stacked on top of that baseline waste, so the footprint layer is not optional hygiene, it is the difference between a campaign that can clear its LTV:SAC gate and one that cannot.
 
 :::figure discrepancyWaterfall
 caption: Out-of-footprint delivery stacks on top of the supply-chain waste that already strips most of a DSP dollar before any footprint filter. Each layer (fees, invalid or non-viewable, then out-of-footprint) reduces the spend that can actually produce a serviceable gross add.
@@ -128,7 +128,7 @@ explain: The lift is (0.90 - 0.70) / 0.70 = 0.20 / 0.70 = 0.2857, about 28.57%. 
 
 :::widget barChart
 title: Footprint leakage vs supply-chain waste, share of spend reaching its target
-labels: Working Media to Consumer (any vertical), In-Footprint Delivery (this line item), After Footprint Cleanup
+labels: Working Media to Consumer (ANA 2023), In-Footprint Delivery (this line item), After Footprint Cleanup
 data: 36, 70, 90
 unit: percent
 :::

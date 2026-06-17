@@ -9,7 +9,7 @@ summary: Spot and price location spoofing and invalid traffic in a footfall buy,
 
 A QSR campaign pays a premium for one thing above all: location. The bid stream says a device is near a specific store, and the trader pays more to reach it and later counts a visit from it. That premium is exactly what location spoofing harvests. A fraudster fabricates GPS or lat/long in the bid request to collect the geo uplift on inventory that is not where it claims, or that does not exist at all, and the same fake coordinates then inject phantom visits into your footfall report. Because QSR also leans hard on CTV, the buy carries a second exposure on top of geo spoofing: device spoofing and server-side opacity in the living room.
 
-The scale is not theoretical. A 2025 CleanTap test reported that 100% of the invalid traffic it spoofed was accepted into live programmatic auctions and successfully bid on, global CTV invalid traffic sits near 18%, and roughly 30% of spoofed Roku traffic actually originated on mobile devices. Lunio's 2026 Global Invalid Traffic Report puts global ad spend wasted on invalid traffic at about $63 billion in 2025, on an 8.51% IVT rate across paid clicks. For the trader, fraud is not a compliance footnote, it is a direct tax on both budget and measurement.
+The scale is not theoretical. A 2025 CleanTap test reported that 100% of the invalid traffic it spoofed was accepted into live programmatic auctions and successfully bid on, and global CTV invalid traffic sits near 18%. In a 2022 Pixalate study, roughly 30% of spoofed Roku traffic appeared to originate on mobile devices. Lunio's 2026 Global Invalid Traffic Report puts global ad spend wasted on invalid traffic at about $63 billion in 2025, on an 8.51% IVT rate across paid clicks. For the trader, fraud is not a compliance footnote, it is a direct tax on both budget and measurement.
 
 :::figure discrepancyWaterfall
 caption: A clean CTV buy starts at gross impressions and steps down as invalid traffic, spoofed geo, and opaque SSAI supply are stripped out. What survives at the bottom is the valid inventory you should actually be paying for, and the gap is your effective-cost penalty.
@@ -111,8 +111,8 @@ explain: Real incremental visits are 9,000 - 1,500 = 7,500. True CPIV = 90,000 /
 :::
 
 :::widget barChart
-title: CTV invalid traffic baseline and the mobile share of spoofed CTV
-labels: Clean CTV, CTV IVT, Mobile-as-CTV share of spoof
+title: CTV invalid traffic baseline and the mobile share of spoofed CTV (2022)
+labels: Clean CTV, CTV IVT, Mobile-as-CTV share of spoof (2022)
 data: 82, 18, 30
 unit: %
 :::

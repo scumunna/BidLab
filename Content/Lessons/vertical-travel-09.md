@@ -71,7 +71,7 @@ explain: Co-op funding comes with rate-parity and brand-safety strings, and brea
 
 # Where the money actually leaks
 
-Beyond compliance, Travel quietly leaks roughly 5 to 10 percent of spend to three things: chasing travelers who already booked, serving stale abandoned-cart audiences whose intent has gone cold, and broken cross-surface suppression. Net working spend is gross spend minus the wasted spend and the non-compliant or blocked spend, and the single biggest recoverable piece is suppression. The leak exists because about 63 percent of bookings now complete on mobile and in apps while retargeting is often wired web-only, so a user who books in the app keeps seeing web ads for the trip they already bought (and vice versa). The waterfall below shows a representative breakdown of a gross budget into working spend versus the leaks, and the suppression slice is the one the trader can close fastest.
+Beyond compliance, Travel quietly leaks roughly 5 to 10 percent of spend to three things: chasing travelers who already booked, serving stale abandoned-cart audiences whose intent has gone cold, and broken cross-surface suppression. Net working spend is gross spend minus the wasted spend and the non-compliant or blocked spend, and the single biggest recoverable piece is suppression. The leak exists because about 63 percent of bookings now complete on mobile devices while retargeting is often wired web-only, so a user who books in the app keeps seeing web ads for the trip they already bought (and vice versa). The waterfall below shows a representative breakdown of a gross budget into working spend versus the leaks, and the suppression slice is the one the trader can close fastest.
 
 $$ \text{Net working spend} = \text{Gross spend} - (\text{Wasted spend} + \text{Non-compliant spend}) $$
 
@@ -135,14 +135,14 @@ question: A trader wants to raise net working spend without increasing the budge
 - Switching all inventory to programmatic guaranteed
 answer: 1
 hint: The biggest single leak in travel comes from one surface not knowing the user booked on the other.
-explain: Cross-surface suppression is the largest single recoverable leak because roughly 63 percent of bookings are in-app while retargeting is often web-only, so booked travelers keep getting chased on the other surface. Lowering floors or raising frequency does not address already-booked waste, and forcing all inventory to PG raises cost rather than recovering leaked spend.
+explain: Cross-surface suppression is the largest single recoverable leak because roughly 63 percent of bookings are on mobile devices while retargeting is often web-only, so booked travelers keep getting chased on the other surface. Lowering floors or raising frequency does not address already-booked waste, and forcing all inventory to PG raises cost rather than recovering leaked spend.
 :::
 
 :::sources
 - US Department of Transportation, Full-Fare Advertising Rule (airfare price advertising) | https://www.transportation.gov/individuals/aviation-consumer-protection/price-advertising
 - Federal Trade Commission, Rule on Unfair or Deceptive Fees (junk-fee / drip-pricing enforcement 2024-2025) | https://www.ftc.gov/legal-library/browse/rules/rule-unfair-or-deceptive-fees
 - AppsFlyer, Travel app marketing trends in 2025: Retargeting leads the way (75% of conversions from re-engaged users) | https://www.appsflyer.com/blog/mobile-marketing/travel-app-marketing-trends/
-- Condor Ferries, Over 70+ Online Travel Booking Statistics 2025 (mobile ~63% of online bookings) | https://www.condorferries.co.uk/online-travel-booking-statistics
+- Business of Apps, Booking Revenue and Usage Statistics 2026 (mobile ~63% of online travel bookings, mobile web and apps combined) | https://www.businessofapps.com/data/booking-statistics/
 - Adjust, AdAttributionKit vs SKAdNetwork (re-engagement and deep-link signal on iOS) | https://www.adjust.com/blog/adattributionkit/
 - AppsFlyer, Travel and Local App Attribution and Marketing Analytics (OTA/airline/hotel MMP measurement) | https://www.appsflyer.com/solutions/travel-local/
 - Hospitality Net, RateGain Consolidates MarTech Capabilities Under Sojern (travel-intent data scale) | https://www.hospitalitynet.org/news/4131164/rategain-consolidates-martech-capabilities-under-sojern-creating-the-worlds-largest-source-of-travel-intent-data

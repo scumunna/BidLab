@@ -151,5 +151,5 @@ A recurring AdOps pain point: a conversion event fires perfectly in testing but 
 - Cometly, Server-to-server (S2S) conversion tracking explained | https://www.cometly.com/post/server-to-server-tracking
 - Martech Zone, Why server-side tracking matters as pixels lose accuracy | https://martech.zone/server-side-tracking/
 - ANA, Q2 2025 Programmatic Transparency Benchmark | https://www.ana.net/content/show/id/pr-2025-08-programmatictrans
-- Google, Display & Video 360 API: Pacing and trafficking reference | https://developers.google.com/display-video/api/reference/rest/v3/Pacing
+- Google, Display & Video 360 API: Pacing and trafficking reference | https://developers.google.com/display-video/api/reference/rest/v4/Pacing
 :::

@@ -129,7 +129,7 @@ explain: Without a control group there are no true incremental visits, and a loo
 
 :::sources
 - Cuebiq, Footfall Attribution Benchmarks (CPIV, visit rate, uplift by vertical) | https://cuebiq.com/benchmarks/
-- Restaurant Dive, Drive-thru share of US fast-food sales and digital order growth | https://www.restaurantdive.com/news/drive-thru-sales-qsr/
+- Restaurant Dive, Drive-thru share of US fast-food sales and digital order growth | https://www.restaurantdive.com/news/drive-thrus-challenging-to-expand-result-in-sales-boosts/637272/
 - Remerge, Incrementality Tests 101: Intent-to-Treat, PSA, Ghost Ads and Ghost Bids | https://www.remerge.io/blog-post/incrementality-tests-101-intent-to-treat-psa-ghost-ads-and-ghost-bids
 - aidigital, Foot Traffic Attribution: polygon mapping, dwell, neighbor exclusion | https://www.aidigital.com/blog/footfall-attribution
 - Goodway Group, How Does Franchise Co-Op Advertising Work? | https://goodwaygroup.com/blogs/franchise-co-op-advertising

@@ -30,7 +30,7 @@ explain: If the audience is wrong you are paying to reach people who will never 
 
 The backbone of auto targeting is Polk predictive audiences from S&P Global Mobility, which score 125M+ US households for in-market and future-in-market timing. The catalog runs 2,000+ unique audience segments, including 200+ built specifically for hybrid and EV buyers, and Polk Auto Direct layers on another 1,000+ across every make, model, and fuel type. On top of timing, Polk attaches loyalty, conquest, and defection signals plus lease-end status and brand-and-model profiles, which are exactly the fields you slice to build the three archetypes.
 
-You then layer Oracle and similar third-party in-market auto data, and the dealer's own owner list, on top of the Polk spine. The skill is not knowing that these segments exist, it is selecting the few that map to this rooftop's tier and inventory rather than buying a giant generic in-market blob. A Tier 3 trader building for one store wants make/model/lease-end precision inside a drive radius, not a national new-car intender pool.
+You then layer Experian, LiveRamp, or similar third-party in-market auto data, and the dealer's own owner list, on top of the Polk spine. The skill is not knowing that these segments exist, it is selecting the few that map to this rooftop's tier and inventory rather than buying a giant generic in-market blob. A Tier 3 trader building for one store wants make/model/lease-end precision inside a drive radius, not a national new-car intender pool.
 
 :::predict
 prompt: Polk's main catalog has 2,000 unique segments and 200 of them are built for hybrid and EV buyers. What percent of the catalog is hybrid or EV?

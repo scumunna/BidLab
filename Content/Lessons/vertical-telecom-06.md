@@ -145,7 +145,7 @@ explain: Allowable SAC = 1,800 / 3 = 600. Any loaded acquisition cost up to $600
 
 :::sources
 - eMarketer, Programmatic ad spending set to reach nearly $180 billion by 2025 | https://www.emarketer.com/content/programmatic-ad-spending-set-reach-nearly-180-billion-by-2025
-- Google, Display & Video 360 API Pacing (PACING_TYPE_ASAP flight rule) | https://developers.google.com/display-video/api/reference/rest/v3/Pacing
+- Google, Display & Video 360 API Pacing (PACING_TYPE_ASAP flight rule) | https://developers.google.com/display-video/api/reference/rest/v4/Pacing
 - Investopedia, Cost Per Gross Addition (CPGA) | https://www.investopedia.com/terms/c/cpga.asp
 - Umbrex, LTV to CAC Ratio | https://umbrex.com/resources/financial-modeling/ltv-to-cac-ratio/
 - Accounting for Everyone, Subscriber Acquisition Cost (SAC) explained | https://www.accountingforeveryone.com/subscriber-acquisition-cost-sac/

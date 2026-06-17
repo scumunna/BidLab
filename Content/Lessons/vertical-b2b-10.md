@@ -54,7 +54,7 @@ explain: 16,000 times 0.55 equals 8,800 matched contacts. Subtract the 1,300 sup
 
 With the tier and the allowable CAC fixed, you work backward to a defensible bid ceiling. The max CPM equals the allowable CAC times the closed-won rate per thousand impressions, so a richer mid-market account justifies a far higher CPM than an SMB one, and you set the ceiling per tier and per funnel stage rather than one global cap that overpays for SMB and starves enterprise reach. Because CTR is a vanity signal on this inventory, you optimize bids toward downstream account and pipeline value, not cheap clicks.
 
-Then you source the impressions. Open-exchange B2B is thin and roughly 15 percent of it lands on made-for-advertising junk, so you buy through curated PMP deals where the inventory is cleaner and more targetable, apply pre-bid brand-safety and IVT filters, and reconcile the DSP-versus-SSP impression gap against the roughly 10 percent normal threshold. A perfect account match rendered on an MFA page is still wasted, so supply quality and audience quality have to hold together.
+Then you source the impressions. Open-exchange B2B is thin, and while industry-wide made-for-advertising waste has fallen sharply (the ANA's Q2 2025 benchmark puts MFA at a median of about 0.8 percent of spend, down from roughly 15 percent in 2023), the open market still carries disproportionately more MFA and low-quality inventory than curated supply (top-quartile exposure still runs as high as 28.7 percent), so you buy through curated PMP deals where the inventory is cleaner and more targetable, apply pre-bid brand-safety and IVT filters, and reconcile the DSP-versus-SSP impression gap against the roughly 10 percent normal threshold. A perfect account match rendered on an MFA page is still wasted, so supply quality and audience quality have to hold together.
 
 :::predict
 prompt: Allowable CAC is $6,000 and the campaign converts 0.0008 closed-won deals per 1,000 impressions. What max CPM can the mid-market tier sustain (to one decimal)?
@@ -73,7 +73,7 @@ question: Open-market CPM is $4.41 and the curated PMP deal is $7.15. Why does t
 - PMP deals are exempt from impression discrepancy reconciliation
 answer: 1
 hint: Compare cost per legitimate, on-target impression, not the raw CPM sticker.
-explain: The higher PMP CPM buys impressions that actually reach target accounts on brand-safe pages, while the cheap open-market CPM quietly loses about 15 percent to MFA plus more to IVT. Net of waste, the premium inventory is frequently cheaper per impression that can pay back.
+explain: The higher PMP CPM buys impressions that actually reach target accounts on brand-safe pages, while the cheap open-market CPM quietly loses a disproportionate slice to MFA and IVT (open-market MFA exposure still reaches as high as 28.7 percent in the top quartile even as the blended median has fallen below 1 percent). Net of waste, the premium inventory is frequently cheaper per impression that can pay back.
 :::
 
 # Step 3: Creative, flight, and pacing the cycle

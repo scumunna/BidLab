@@ -24,7 +24,7 @@ explain: Raw PII (emails, names, addresses) cannot be exposed in the bidstream. 
 
 # The onboarding and match pipeline
 
-The mechanics run in a fixed order. First the carrier hashes its CRM or coverage file and submits it to a clean room or onboarder such as LiveRamp, Habu, InfoSum, Amazon Marketing Cloud, or a Snowflake/AWS clean room. The vendor resolves each hashed record against an identity graph to a durable people-based ID (RampID and similar). Records that are not in the graph are dropped, never sent to the ad platform. The survivors become an addressable segment you push onto line items as an inclusion (prospects) or exclusion (suppression) layer.
+The mechanics run in a fixed order. First the carrier hashes its CRM or coverage file and submits it to a clean room or onboarder such as LiveRamp (formerly Habu), Snowflake Data Clean Rooms, Google Ads Data Hub, Amazon Marketing Cloud, or an AWS Clean Rooms environment. The vendor resolves each hashed record against an identity graph to a durable people-based ID (RampID and similar). Records that are not in the graph are dropped, never sent to the ad platform. The survivors become an addressable segment you push onto line items as an inclusion (prospects) or exclusion (suppression) layer.
 
 The number that governs everything is match rate, the share of submitted records the vendor can resolve and activate.
 

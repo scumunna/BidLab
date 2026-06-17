@@ -139,8 +139,8 @@ A perennial r/adops thread is "my deal isn't bidding," and the answer is almost 
 :::
 
 :::sources
-- PubMatic, PMP Troubleshooting Playbook (zero bid requests: deal ID, SSP, activation causes) | https://community.pubmatic.com/pages/viewpage.action?spaceKey=PMP&title=PMP+troubleshooting+playbook
-- AdImpact, Q1 2026 Fast Food Advertising Trends (QSR CTV growth and brand leaders) | https://adimpact.com/blog/fast-food-advertising-trends/
+- PubMatic, PMP Troubleshooting Playbook (zero bid requests: deal ID, SSP, activation causes) | https://help.pubmatic.com/
+- AdImpact, Q1 2026 Fast Food Advertising Trends (QSR CTV growth and brand leaders) | https://adimpact.com/blogs/q1-2026-fast-food-advertising-trends
 - Cuebiq, Footfall Attribution Benchmarks (CPIV, visit rate, uplift by vertical) | https://cuebiq.com/benchmarks/
 - KORTX, Restaurant Marketing Strategy: The 2026 QSR Playbook (curated supply, daypart, store-radius) | https://kortx.io/news/restaurant-marketing-strategy-qsr/
 - Eskimi, Dayparting and Dynamic Creative for QSR (meal-window inventory and frequency) | https://www.eskimi.com/blog/daypart-targeting

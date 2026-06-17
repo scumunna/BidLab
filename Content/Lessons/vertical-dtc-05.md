@@ -7,7 +7,7 @@ summary: Read hook rate and hold rate to localize why an ad fails, diagnose fati
 ---
 # Creative is the targeting now
 
-In an Advantage+ Shopping (ASC) world the trader no longer hand-picks interests, lookalikes, or placements, because Meta's optimizer does that across broad audiences. What you control is the creative, so the creative IS the targeting: the concept, the hook, the angle, and the format decide who the algorithm finds and how cheaply. That makes a creative-testing engine the single biggest lever in DTC paid social, which is why this is a full lesson and not an aside.
+In an Advantage+ Sales (ASC, formerly Advantage+ Shopping) world the trader no longer hand-picks interests, lookalikes, or placements, because Meta's optimizer does that across broad audiences. What you control is the creative, so the creative IS the targeting: the concept, the hook, the angle, and the format decide who the algorithm finds and how cheaply. That makes a creative-testing engine the single biggest lever in DTC paid social, which is why this is a full lesson and not an aside.
 
 The job is to manufacture a steady stream of testable concepts (hooks, angles, formats, UGC versus studio) and read a small set of diagnostic metrics that tell you not just whether an ad works but WHERE it breaks. Top performance teams in 2026 generate 50 or more unique short-form creatives daily because fatigue is the silent killer, so volume of testable ideas is itself a competitive moat.
 

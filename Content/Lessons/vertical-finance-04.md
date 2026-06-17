@@ -153,7 +153,7 @@ A pain point operators raise constantly on r/PPC and r/adops: finance hands the 
 :::sources
 - eightx, LTV:CAC Ratio: Why 3:1 Matters and CAC Payback Benchmarks | https://eightx.co/blog/ltv-cac-ratio-guide
 - GonzoBanker, The Real Cost of Acquiring a Banking Customer | https://gonzobanker.com/2024/05/the-real-cost-of-customer-acquisition/
-- First Page Sage, Customer Acquisition Cost by Industry (Fintech) | https://firstpagesage.com/seo-blog/customer-acquisition-cost-by-industry/
+- First Page Sage, Customer Acquisition Cost by Industry (Fintech) | https://firstpagesage.com/seo-blog/fintech-cac-benchmarks-report/
 - Veridas, KYC Funnel Loss and Customer Drop-off | https://veridas.com/en/kyc-funnel-loss-customer-drop-off/
 - incrmntal, Understanding Incremental ROAS vs ROAS | https://www.incrmntal.com/resources/understanding-incremental-roas-vs-roas-for-marketers
 - Cornerstone Advisors, What Banks Really Spend to Acquire a Customer | https://www.crnrstone.com/insights

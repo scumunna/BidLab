@@ -96,7 +96,7 @@ explain: Reallocated spend = 0.15 x $200,000 = $30,000. Incremental sales before
 :::
 
 :::callout warning
-A recurring operator complaint: "the API broke again and the report is two days stale," which makes the weekly loop unreliable, and operators separately report rebuilding ad spend by hand because Amazon now auto-deducts ad costs from disbursements, scrambling the accounting (r/PPC, r/AmazonSeller, ppc.land). Treat a console-to-invoice-to-API reconciliation that does not tie within tolerance as a blocker, not a rounding issue, and report the discrepancy rather than the stale pull.
+A recurring operator complaint: "the API broke again and the report is two days stale," which makes the weekly loop unreliable, and operators separately expect to rebuild ad spend by hand because Amazon is moving (effective August 1, 2026, after a deferral from an original April 15, 2026 date) to auto-deduct ad costs from seller proceeds before disbursement, which will scramble the accounting (r/PPC, r/AmazonSeller, ppc.land). Treat a console-to-invoice-to-API reconciliation that does not tie within tolerance as a blocker, not a rounding issue, and report the discrepancy rather than the stale pull.
 :::
 
 # The 2026 frontier and the shifting trader role
@@ -139,5 +139,5 @@ explain: Agentic automation creates and adjusts campaigns faster than a trader c
 - incrementumdigital, Amazon Unboxed 2025: features for Q1 2026 (buy-box above-fold, PDP/creative) | https://incrementumdigital.com/blog/advertising/amazon-unboxed-2025-10-new-features-for-q1-2026/
 - osmos.ai, DoorDash, Uber Eats & Instacart Ads: Food Delivery Retail Media 2026 | https://www.osmos.ai/blog/food-delivery-retail-media-monetization-2026
 - IAB Europe, Commerce (incl. Retail) Media Measurement Standards V2.1 (grace period to July 2026) | https://iabeurope.eu/knowledge_hub/iab-europes-commerce-incl-retail-media-measurement-standards-v2/
-- ppc.land, Amazon ad costs to auto-deduct from seller proceeds (reconciliation pain) | https://ppc.land/amazons-payment-grab-ad-costs-to-auto-deduct-from-seller-proceeds-april-15/
+- ppc.land, Amazon Ads delays advertiser payment overhaul to August 1, 2026 after pushback (reconciliation pain forthcoming) | https://ppc.land/amazon-ads-delays-advertiser-payment-overhaul-to-august-after-pushback/
 :::

@@ -60,7 +60,7 @@ explain: The tech tax falls 22% to 15%, a 7-point drop. 0.07 times $12,000 = $84
 
 # The inventory feed and dynamic Vehicle Listing Ads
 
-The signature activation skill in Auto is the inventory feed. You wire the dealer's live inventory into Google Merchant Center so dynamic Vehicle Listing Ads (VLAs) automatically render the exact in-stock vehicle, its price, and mileage, and link straight to that vehicle's VDP. Small, slow lots can upload a CSV or XML file; large, fast-changing lots use the Merchant Center Content API for real-time programmatic sync so the ad never advertises a car the lot no longer has.
+The signature activation skill in Auto is the inventory feed. You wire the dealer's live inventory into Google Merchant Center so dynamic Vehicle Listing Ads (VLAs) automatically render the exact in-stock vehicle, its price, and mileage, and link straight to that vehicle's VDP. Small, slow lots can upload a CSV or XML file; large, fast-changing lots use the Google Merchant API for real-time programmatic sync so the ad never advertises a car the lot no longer has (the older Content API for Shopping it replaced is sunsetting on August 18, 2026).
 
 The feed is fragile by design. Google crawls each vehicle's landing page and compares the on-page price to the feed price, and any mismatch disapproves that listing, so only the VINs that pass become eligible to serve.
 

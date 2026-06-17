@@ -7,7 +7,7 @@ summary: Build the forced LinkedIn-plus-open-DSP media plan and wield format, of
 ---
 # The forced split: walled garden and open DSP
 
-In B2B you do not run one buying motion, you run two. LinkedIn is a walled garden bought inside its own platform (Sponsored Content, document, conversation, and thought-leader ads), while the open DSP (The Trade Desk, DV360, StackAdapt) covers display, native, and CTV, including LinkedIn CTV via The Trade Desk with job-title and seniority targeting rolling out in the second half of 2026. Because the same account and its ~11-person buying committee can be reached on both, the trader's job is to de-duplicate frequency across the two so no account is hammered on one channel and missed on the other.
+In B2B you do not run one buying motion, you run two. LinkedIn is a walled garden bought inside its own platform (Sponsored Content, document, conversation, and thought-leader ads), while the open DSP (The Trade Desk, DV360, StackAdapt) covers display, native, and CTV, including LinkedIn CTV via The Trade Desk (and Amazon DSP) with job-title and seniority targeting, available as of early 2026. Because the same account and its ~11-person buying committee can be reached on both, the trader's job is to de-duplicate frequency across the two so no account is hammered on one channel and missed on the other.
 
 The unit that ties the two motions together is blended, de-duped frequency: total impressions across both channels divided by the unique accounts actually reached. Get that wrong and you either over-serve a handful of accounts into fatigue or spread spend so thin the committee never forms a memory.
 
