@@ -1,13 +1,16 @@
 // The hero Trading Floor, ported from the native app's
 // Sources/BidLab/Surfaces/TradingFloor/TradingFloorView.swift. Drag your bid,
 // watch the analytic win rate and expected-profit curve respond, then run 50,000
-// simulated auctions and score your strategy against the mathematical optimum.
+// simulated auctions (one-shot) or a budget-paced flight, and score against the
+// mathematical optimum.
 
 import { useCallback, useMemo, useState } from 'react'
 import {
   MarketConfig,
   type MarketResult,
   runMarket,
+  runPacedFlight,
+  type PacedFlightResult,
   Scoring,
   SCENARIOS,
   OPPORTUNITIES,
@@ -18,7 +21,11 @@ import {
 } from '../engine'
 import { intc, money, pct } from '../format'
 import { ProfitCurve, type CurvePoint } from './ProfitCurve'
+import { LineChart } from './LineChart'
 import { C, card, Legend, Segmented, Slider, Stat } from './ui'
+
+const FLIGHT_INTERVALS = 12
+const flightBudgetFor = (value: number) => value * OPPORTUNITIES * 0.15
 
 function buildConfig(s: Scenario, floor: number, secondPrice: boolean, bid: number): MarketConfig {
   return new MarketConfig({
@@ -38,31 +45,45 @@ function buildConfig(s: Scenario, floor: number, secondPrice: boolean, bid: numb
 export function TradingFloor() {
   const [scenarioIndex, setScenarioIndex] = useState(0)
   const [secondPrice, setSecondPrice] = useState(false)
+  const [paced, setPaced] = useState(false)
   const s = SCENARIOS[scenarioIndex]
   const value = scenarioValue(s)
   const [bid, setBid] = useState(value * 0.3)
   const [floor, setFloor] = useState(s.floor)
+  const [flightBudget, setFlightBudget] = useState(() => flightBudgetFor(scenarioValue(SCENARIOS[0])))
   const [result, setResult] = useState<MarketResult | null>(null)
   const [scoreVal, setScoreVal] = useState<number | null>(null)
+  const [pacedResult, setPacedResult] = useState<PacedFlightResult | null>(null)
+
+  const maxFlightBudget = Math.max(value * OPPORTUNITIES * 0.5, 100)
+
+  const reset = () => {
+    setResult(null)
+    setScoreVal(null)
+    setPacedResult(null)
+  }
 
   const selectScenario = useCallback((i: number) => {
     const ns = SCENARIOS[i]
     setScenarioIndex(i)
     setBid(scenarioValue(ns) * 0.3)
     setFloor(ns.floor)
-    setResult(null)
-    setScoreVal(null)
+    setFlightBudget(flightBudgetFor(scenarioValue(ns)))
+    reset()
   }, [])
 
   const selectAuction = useCallback((second: boolean) => {
     setSecondPrice(second)
-    setResult(null)
-    setScoreVal(null)
+    reset()
+  }, [])
+
+  const selectMode = useCallback((isPaced: boolean) => {
+    setPaced(isPaced)
+    reset()
   }, [])
 
   // The curve, optimal bid, and floor depend on the scenario/auction/floor — NOT
-  // the slider bid — so they only recompute when those change (keeps dragging the
-  // bid smooth even with the second-price integral).
+  // the slider bid — so they only recompute when those change.
   const cfg = useMemo(() => buildConfig(s, floor, secondPrice, value), [s, floor, secondPrice, value])
   const optimal = useMemo(() => cfg.optimal(), [cfg])
   const profitCurve = useMemo<CurvePoint[]>(() => {
@@ -78,12 +99,17 @@ export function TradingFloor() {
   const belowFloor = bid < floor
 
   const run = useCallback(() => {
-    const runCfg = buildConfig(s, floor, secondPrice, bid)
-    const r = runMarket(runCfg, SEED)
-    const sc = Scoring.score(r.profit / OPPORTUNITIES, optimal.expectedProfit)
+    if (paced) {
+      setPacedResult(runPacedFlight(buildConfig(s, floor, secondPrice, bid), flightBudget, FLIGHT_INTERVALS, SEED))
+      setResult(null)
+      setScoreVal(null)
+      return
+    }
+    const r = runMarket(buildConfig(s, floor, secondPrice, bid), SEED)
     setResult(r)
-    setScoreVal(sc)
-  }, [s, floor, secondPrice, bid, optimal])
+    setScoreVal(Scoring.score(r.profit / OPPORTUNITIES, optimal.expectedProfit))
+    setPacedResult(null)
+  }, [paced, s, floor, secondPrice, bid, flightBudget, optimal])
 
   const scoreColor = scoreVal == null ? C.white : scoreVal >= 80 ? C.up : scoreVal >= 50 ? C.lime : C.down
 
@@ -106,12 +132,7 @@ export function TradingFloor() {
 
       <div className="mt-4 flex flex-col gap-3 lg:flex-row">
         <div className="lg:max-w-[480px] lg:flex-1">
-          <Segmented
-            ariaLabel="Scenario"
-            value={scenarioIndex}
-            onChange={selectScenario}
-            options={SCENARIOS.map((sc, i) => ({ label: sc.name, value: i }))}
-          />
+          <Segmented ariaLabel="Scenario" value={scenarioIndex} onChange={selectScenario} options={SCENARIOS.map((sc, i) => ({ label: sc.name, value: i }))} />
         </div>
         <div className="lg:w-[240px]">
           <Segmented
@@ -144,23 +165,41 @@ export function TradingFloor() {
           <div className={`${card} flex flex-col gap-3`}>
             <Slider label="Your bid" value={bid} min={0.001} max={value} step={value / 1000} display={money(bid, 3)} color={C.lime} onChange={setBid} />
             <Slider label="Publisher floor" value={floor} min={0} max={value} step={value / 1000} display={money(floor, 3)} color={C.down} onChange={setFloor} />
-            {belowFloor && (
-              <p className="text-[11.5px] font-medium text-down">Your bid is under the floor, so it never clears the reserve.</p>
-            )}
+            {belowFloor && <p className="text-[11.5px] font-medium text-down">Your bid is under the floor, so it never clears the reserve.</p>}
             <div className="flex gap-5">
               <Stat label="Win rate" value={pct(winRate)} color={C.lime} />
               <Stat label="Exp. profit / 1k" value={money(expProfitPerOpp * 1000, 2)} color={C.up} />
             </div>
-            <button
-              onClick={run}
-              className="mt-1 flex items-center justify-center gap-2 rounded-full bg-lime py-2.5 font-semibold text-console transition-transform active:scale-[0.98]"
-            >
+            <Segmented
+              ariaLabel="Run mode"
+              value={paced ? 1 : 0}
+              onChange={(v) => selectMode(v === 1)}
+              options={[
+                { label: 'One-shot', value: 0 },
+                { label: 'Paced flight', value: 1 },
+              ]}
+            />
+            {paced && (
+              <Slider
+                label="Flight budget"
+                value={flightBudget}
+                min={maxFlightBudget * 0.06}
+                max={maxFlightBudget}
+                step={maxFlightBudget / 1000}
+                display={money(flightBudget, 0)}
+                color={C.analytics}
+                onChange={setFlightBudget}
+              />
+            )}
+            <button onClick={run} className="mt-1 flex items-center justify-center gap-2 rounded-full bg-lime py-2.5 font-semibold text-console transition-transform active:scale-[0.98]">
               <span aria-hidden>▶</span>
-              Run {intc(OPPORTUNITIES)} auctions
+              {paced ? `Run flight · ${FLIGHT_INTERVALS} intervals` : `Run ${intc(OPPORTUNITIES)} auctions`}
             </button>
           </div>
 
-          {result && scoreVal != null ? (
+          {paced && pacedResult ? (
+            <PacedTiles r={pacedResult} />
+          ) : result && scoreVal != null ? (
             <div className={card}>
               <div className="flex items-center justify-between">
                 <span className="font-mono text-[10px] uppercase tracking-wide text-white/40">Your score</span>
@@ -181,32 +220,32 @@ export function TradingFloor() {
               </div>
             </div>
           ) : (
-            <p className="px-1 text-[12.5px] text-white/45">Run the market to see realized results and your score.</p>
+            <p className="px-1 text-[12.5px] text-white/45">
+              {paced ? 'Run the flight to see budget pacing over the campaign.' : 'Run the market to see realized results and your score.'}
+            </p>
           )}
         </div>
 
         <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-          <div className="flex flex-wrap gap-x-4 gap-y-1">
-            <Legend color={C.lime} label="expected profit" />
-            <Legend color={C.lime} label="your bid" />
-            <Legend color={C.down} label="floor" />
-            <Legend color={C.analytics} label="optimal" />
-          </div>
-          <div className="mt-3">
-            <ProfitCurve
-              points={profitCurve}
-              xMax={value}
-              yMax={Math.max(optimal.expectedProfit * 1.2, 1e-4)}
-              bid={bid}
-              floor={floor}
-              optimalBid={optimal.bid}
-              optimalProfit={optimal.expectedProfit}
-            />
-          </div>
-          <div className="mt-1 flex justify-between font-mono text-[10px] text-white/40">
-            <span>bid → {money(0, 0)}</span>
-            <span>{money(value, 2)}</span>
-          </div>
+          {paced && pacedResult ? (
+            <PacingChart r={pacedResult} />
+          ) : (
+            <>
+              <div className="flex flex-wrap gap-x-4 gap-y-1">
+                <Legend color={C.lime} label="expected profit" />
+                <Legend color={C.lime} label="your bid" />
+                <Legend color={C.down} label="floor" />
+                <Legend color={C.analytics} label="optimal" />
+              </div>
+              <div className="mt-3">
+                <ProfitCurve points={profitCurve} xMax={value} yMax={Math.max(optimal.expectedProfit * 1.2, 1e-4)} bid={bid} floor={floor} optimalBid={optimal.bid} optimalProfit={optimal.expectedProfit} />
+              </div>
+              <div className="mt-1 flex justify-between font-mono text-[10px] text-white/40">
+                <span>bid → {money(0, 0)}</span>
+                <span>{money(value, 2)}</span>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
@@ -216,38 +255,70 @@ export function TradingFloor() {
           {secondPrice ? 'E[π / opp] = ∫ (value − c) · f(c) dc' : 'E[π / opp] = P_win(bid) · (value − bid)'}
         </p>
         <ul className="mt-2 list-disc space-y-1 pl-5 text-[12.5px] text-white/55">
-          <li>
-            Competing clearing price is log-normal with mean {money(s.marketMean, 2)} and log spread σ = {s.marketSigma.toFixed(2)}, so
-            the win curve is the log-normal CDF — the S-shaped bid landscape.
-          </li>
+          <li>Competing clearing price is log-normal with mean {money(s.marketMean, 2)} and log spread σ = {s.marketSigma.toFixed(2)}, so the win curve is the log-normal CDF — the S-shaped bid landscape.</li>
           <li>Value per impression = CTR × CVR × revenue per conversion.</li>
-          <li>
-            {secondPrice
-              ? 'Second-price clearing: the winner pays max(clearing price, floor), so bidding true value is optimal.'
-              : 'First-price clearing: the winner pays its own bid, so the optimal bid shades below value.'}
-          </li>
-          <li>Publisher floor {money(floor, 2)} is the reserve: a bid below it never clears.</li>
+          <li>{secondPrice ? 'Second-price clearing: the winner pays max(clearing price, floor), so bidding true value is optimal.' : 'First-price clearing: the winner pays its own bid, so the optimal bid shades below value.'}</li>
+          <li>{paced ? 'Paced flight: 12 intervals with a proportional pacing throttle and an intraday market that swings volume and competition.' : `Publisher floor ${money(floor, 2)} is the reserve: a bid below it never clears.`}</li>
         </ul>
-        <div className="mt-3 grid grid-cols-2 gap-x-6 gap-y-1.5 sm:grid-cols-4">
-          <Param label="your bid" value={money(bid, 3)} />
-          <Param label="market mean" value={money(s.marketMean, 2)} />
-          <Param label="market sigma" value={s.marketSigma.toFixed(2)} />
-          <Param label="value / imp" value={money(value, 2)} />
-          <Param label="analytic win rate" value={pct(winRate)} />
-          <Param label="optimal bid" value={money(optimal.bid, 3)} />
-          <Param label="opportunities" value={intc(OPPORTUNITIES)} />
-          <Param label="rng seed" value={SEED.toString()} />
-        </div>
       </div>
     </section>
   )
 }
 
-function Param({ label, value }: { label: string; value: string }) {
+function PacedTiles({ r }: { r: PacedFlightResult }) {
+  const u = r.budgetUtilization
+  const color = u >= 0.9 ? C.up : u >= 0.6 ? C.lime : C.down
   return (
-    <div className="flex items-baseline justify-between gap-2 border-b border-white/5 pb-1">
-      <span className="font-mono text-[10px] text-white/40">{label}</span>
-      <span className="font-mono text-[11px] font-semibold tabular-nums text-white/80">{value}</span>
+    <div className={card}>
+      <div className="flex items-center justify-between">
+        <span className="font-mono text-[10px] uppercase tracking-wide text-white/40">Flight result</span>
+        <span className="font-mono text-[11px] text-analytics">{FLIGHT_INTERVALS} intervals · proportional pacing</span>
+      </div>
+      <div className="font-mono text-5xl font-extrabold tabular-nums" style={{ color }}>
+        {pct(u, 0)}
+      </div>
+      <div className="font-mono text-[10px] text-white/40">of the flight budget delivered</div>
+      <div className="mt-3 grid grid-cols-2 gap-3">
+        <Stat label="Spend" value={money(r.totalSpend, 0)} />
+        <Stat label="Budget" value={money(r.flightBudget, 0)} />
+        <Stat label="Impressions" value={intc(r.impressionsWon)} />
+        <Stat label="Conversions" value={intc(r.conversions)} />
+        <Stat label="Revenue" value={money(r.revenue, 0)} color={C.up} />
+        <Stat label="Profit" value={money(r.profit, 0)} color={r.profit >= 0 ? C.up : C.down} />
+        <Stat label="Pacing error" value={pct(r.pacingError)} color={r.pacingError <= 0.1 ? C.up : C.down} />
+      </div>
     </div>
+  )
+}
+
+function PacingChart({ r }: { r: PacedFlightResult }) {
+  const yMax = Math.max(r.flightBudget, r.totalSpend) * 1.05
+  const target = [{ x: 0, y: 0 }, ...r.points.map((p) => ({ x: p.fractionElapsed, y: p.targetCumulativeSpend }))]
+  const actual = [{ x: 0, y: 0 }, ...r.points.map((p) => ({ x: p.fractionElapsed, y: p.cumulativeSpend }))]
+  const winRate = r.points.map((p) => ({ x: p.fractionElapsed, y: p.winRate * yMax }))
+  return (
+    <>
+      <div className="flex flex-wrap gap-x-4 gap-y-1">
+        <Legend color={C.analytics} label="on-pace target" />
+        <Legend color={C.lime} label="actual spend" />
+        <Legend color={C.planning} label="win rate (0–100%)" />
+      </div>
+      <div className="mt-3">
+        <LineChart
+          series={[
+            { color: C.analytics, points: target },
+            { color: C.lime, points: actual },
+            { color: C.planning, points: winRate, width: 1.5 },
+          ]}
+          xDomain={[0, 1]}
+          yDomain={[0, Math.max(yMax, 1e-4)]}
+          ariaLabel="Cumulative spend versus the on-pace target across the flight, with win rate"
+        />
+      </div>
+      <div className="mt-1 flex justify-between font-mono text-[10px] text-white/40">
+        <span>flight start · market varies intraday</span>
+        <span>flight end</span>
+      </div>
+    </>
   )
 }

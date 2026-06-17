@@ -18,6 +18,8 @@ export {
   type AuctionType,
   type MarketConfigParams,
 } from './market'
+export * as Pacing from './pacing'
+export { runPacedFlight, PacedFlightResult, type IntervalPoint } from './pacedFlight'
 export {
   SCENARIOS,
   OPPORTUNITIES,
