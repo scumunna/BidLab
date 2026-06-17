@@ -25,6 +25,24 @@ public enum Figures {
         "vastFlow",
         "discrepancyWaterfall",
         "pacingCurve",
+        // Industry deep-dive figures
+        "retailMediaFlow",
+        "cleanRoomMatch",
+        "costPerFundedCascade",
+        "lookToBookFunnel",
+        "seasonalityCurve",
+        "npiTargeting",
+        "scriptLift",
+        "isiLayout",
+        "churnLtvCurve",
+        "subscriptionLtv",
+        "dealerTiers",
+        "tradeVsMedia",
+        "mmmDecomposition",
+        "abmPipeline",
+        "geoHoldout",
+        "incrementalityHoldout",   // alias of geoHoldout (briefs' common name)
+        "daypartingHeatmap",
     ]
 
     public static let known = Set(names)

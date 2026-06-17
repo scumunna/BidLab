@@ -96,7 +96,7 @@ struct LearnSurface: View {
                 .frame(maxWidth: 700, alignment: .leading)
                 .fixedSize(horizontal: false, vertical: true)
             HStack(spacing: 10) {
-                StatChip(value: "\(Track.all.count)", label: "learning paths")
+                StatChip(value: "\(Track.all.filter { !$0.isVertical }.count)", label: "learning paths")
                 StatChip(value: "\(LessonLibrary.all.count)", label: "lessons")
                 StatChip(value: "0 → expert", label: "from scratch")
                 StatChip(value: "Math-true", label: "simulators")
@@ -151,7 +151,7 @@ struct LearnSurface: View {
         VStack(alignment: .leading, spacing: 16) {
             SectionHeader(title: "Choose your path")
             LazyVGrid(columns: columns, spacing: 16) {
-                ForEach(Track.all) { track in
+                ForEach(Track.all.filter { !$0.isVertical }) { track in
                     TrackCard(
                         track: track,
                         isSelected: app.selectedTrackID == track.id,

@@ -4,7 +4,7 @@ import Foundation
 /// Validates every authored lesson file under Content/Lessons. The directory is
 /// passed in via the BIDLAB_CONTENT environment variable (set by test.sh). This
 /// catches malformed frontmatter, id/filename drift, and unknown widget types
-/// across all 84 lessons as they are authored.
+/// across every authored lesson as the corpus grows.
 func contentValidationTests(_ h: Harness) {
     let knownWidgets: Set<String> = [
         "auctionSimulator", "auctionPlayground", "bidPlayground",

@@ -69,7 +69,7 @@ Teach: dealers think ~$175/lead but real cost-per-qualified runs $250-280 (dupes
 
 ### Regulatory/privacy
 - OEM co-op compliance: approved logos/colors/messaging, certified vendors, proof-of-performance; mentioning competitors or unapproved logos voids the claim. DemandLocal/LeadVenture.
-- FTC CARS Rule vacated by 5th Circuit Jan 27 2025 (pricing-transparency principles remain best practice). FTC deceptive-ad penalty ~$51,744/violation `[verify against FTC current civil-penalty table]`.
+- FTC CARS Rule vacated by 5th Circuit Jan 27 2025 (pricing-transparency principles remain best practice). FTC deceptive-ad penalty $53,088/violation (FTC Act Section 5(m); 16 CFR Part 1, inflation adjustment eff. Jan 17 2025, unchanged for 2026).
 
 ### Capstone: "Tier-3 with co-op handcuffs"
 Honda dealer, $40k/mo, 50% co-op match on COMPLIANT spend only. Sell 30 incremental units/mo under target cost-per-sale. Allocate across in-market search, conquesting, VDP-driving inventory ads; every creative checked vs OEM rules (break rule -> lose match on that line). Twist: dupes/bad-fit leads, optimize cost-per-qualified-lead. Win: >=30 units, net cost-per-sale under budget, co-op compliance on >=90% of spend.
@@ -114,4 +114,4 @@ High-yield savings account. Constraints: Meta Special Ad Category (no ZIP, 15-mi
 ## Cross-vertical
 - Signature anchors: DTC -> blended MER / LTV:CAC; Auto -> three-tier + co-op net cost; Finance -> cost-per-funded cascade.
 - Cite-freely: eMarketer/Adweek/Marketing Dive, WordStream most-expensive-keywords, Cox Automotive, FCRA statute, Meta policy docs.
-- Re-verify before shipping: SQ Magazine DTC $239.75B vs eMarketer; a current cost-per-VDP-view; $653 vs $84 finance CPL scope; FTC $51,744 penalty; auto $22.25B vs eMarketer forecast page.
+- Re-verify before shipping: SQ Magazine DTC $239.75B vs eMarketer; a current cost-per-VDP-view; $653 vs $84 finance CPL scope; FTC $53,088 penalty (verified Jan 2025 adjustment, current for 2026); auto $22.25B vs eMarketer forecast page.
