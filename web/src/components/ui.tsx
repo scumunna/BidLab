@@ -7,6 +7,8 @@ export const C = {
   down: '#ff3b5c',
   analytics: '#00b4d8',
   planning: '#ff9f1c',
+  engineering: '#16c784',
+  sales: '#ff4d6d',
   muted: '#9a9aa6',
   white: '#f4f4f8',
 }

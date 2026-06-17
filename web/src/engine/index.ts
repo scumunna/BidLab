@@ -10,6 +10,9 @@ export * as Pricing from './pricing'
 export * as Probability from './probability'
 export * as ReachFrequency from './reachFrequency'
 export * as Analytics from './analytics'
+export * as Systems from './systems'
+export * as BudgetAllocation from './budgetAllocation'
+export { ResponseCurve } from './budgetAllocation'
 export {
   MarketConfig,
   MarketResult,
