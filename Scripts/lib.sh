@@ -17,26 +17,26 @@ APP="$DIST/BidLab.app"
 build_core() {
     mkdir -p "$BUILD"
     local opt="${1:-}"
-    local srcs
-    srcs="$(find "$ROOT/Sources/BidLabCore" -name '*.swift')"
-    # shellcheck disable=SC2086
+    local srcs=()
+    while IFS= read -r -d '' f; do srcs+=("$f"); done < <(find "$ROOT/Sources/BidLabCore" -name '*.swift' -print0)
+    # shellcheck disable=SC2086  # $opt is intentionally word-split into flags
     swiftc $opt -parse-as-library -emit-module -emit-library -static \
         -module-name BidLabCore \
         -emit-module-path "$BUILD/BidLabCore.swiftmodule" \
         -o "$BUILD/libBidLabCore.a" \
-        $srcs -sdk "$SDK"
+        "${srcs[@]}" -sdk "$SDK"
 }
 
 build_app() {
     local opt="${1:-}"
-    local srcs
-    srcs="$(find "$ROOT/Sources/BidLab" -name '*.swift')"
-    # shellcheck disable=SC2086
+    local srcs=()
+    while IFS= read -r -d '' f; do srcs+=("$f"); done < <(find "$ROOT/Sources/BidLab" -name '*.swift' -print0)
+    # shellcheck disable=SC2086  # $opt is intentionally word-split into flags
     swiftc $opt -parse-as-library \
         -I "$BUILD" -L "$BUILD" -lBidLabCore -lsqlite3 \
         -module-name BidLab \
         -o "$BUILD/BidLab" \
-        $srcs -sdk "$SDK"
+        "${srcs[@]}" -sdk "$SDK"
 }
 
 bundle_app() {
