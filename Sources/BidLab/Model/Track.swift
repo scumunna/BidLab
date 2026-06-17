@@ -9,6 +9,7 @@ struct Track: Identifiable, Hashable {
     let icon: String        // SF Symbol name
     let accent: Color
     let modules: Int
+    var isVertical: Bool = false   // industry deep-dive path, surfaced under Industries, not the Learn grid
 
     static let all: [Track] = [
         Track(
@@ -82,6 +83,107 @@ struct Track: Identifiable, Hashable {
             icon: "wand.and.stars",
             accent: Brand.violet,
             modules: 11
+        ),
+        // Industry deep-dives: each vertical is a first-class 10-lesson path with its
+        // own certification. Surfaced under Industries, filtered out of the Learn grid.
+        Track(
+            id: "vertical-retail",
+            role: "Retail",
+            tagline: "Closed-loop iROAS on the retailer's own purchase data, from money map to lift test.",
+            icon: "cart.fill",
+            accent: Brand.up,
+            modules: 10,
+            isVertical: true
+        ),
+        Track(
+            id: "vertical-cpg",
+            role: "CPG",
+            tagline: "Penetration-led growth, trade versus media, and MMM truth over platform ROAS.",
+            icon: "shippingbox.fill",
+            accent: Brand.planning,
+            modules: 10,
+            isVertical: true
+        ),
+        Track(
+            id: "vertical-ecommerce",
+            role: "Ecommerce",
+            tagline: "Break-even ROAS, blended CAC, and contribution margin run the whole buy.",
+            icon: "bag.fill",
+            accent: Brand.sales,
+            modules: 10,
+            isVertical: true
+        ),
+        Track(
+            id: "vertical-dtc",
+            role: "DTC",
+            tagline: "The unit economics are the campaign, after iOS ATT broke platform attribution.",
+            icon: "person.crop.square.fill",
+            accent: Brand.violet,
+            modules: 10,
+            isVertical: true
+        ),
+        Track(
+            id: "vertical-auto",
+            role: "Auto",
+            tagline: "Three tiers, co-op compliance, and VIN matchback to the titled sale.",
+            icon: "car.fill",
+            accent: Brand.dsp,
+            modules: 10,
+            isVertical: true
+        ),
+        Track(
+            id: "vertical-finance",
+            role: "Finance",
+            tagline: "The market's highest CPMs under Special Ad Category and FCRA, priced to a funded account.",
+            icon: "building.columns.fill",
+            accent: Brand.analytics,
+            modules: 10,
+            isVertical: true
+        ),
+        Track(
+            id: "vertical-travel",
+            role: "Travel",
+            tagline: "Look-to-book, a demand curve you don't control, and booking-window pacing.",
+            icon: "airplane",
+            accent: Brand.core,
+            modules: 10,
+            isVertical: true
+        ),
+        Track(
+            id: "vertical-telecom",
+            role: "Telecom",
+            tagline: "Subscription churn economics where one point of churn moves the whole lifetime value.",
+            icon: "antenna.radiowaves.left.and.right",
+            accent: Brand.adops,
+            modules: 10,
+            isVertical: true
+        ),
+        Track(
+            id: "vertical-healthcare",
+            role: "Healthcare / Pharma",
+            tagline: "NPI-level HCP buys, indirect script lift, and MLR-gated creative ops.",
+            icon: "cross.case.fill",
+            accent: Brand.engineering,
+            modules: 10,
+            isVertical: true
+        ),
+        Track(
+            id: "vertical-qsr",
+            role: "QSR / Restaurants",
+            tagline: "Local at scale: footfall, dayparting, and cost per incremental visit.",
+            icon: "fork.knife",
+            accent: Brand.foundations,
+            modules: 10,
+            isVertical: true
+        ),
+        Track(
+            id: "vertical-b2b",
+            role: "B2B / SaaS",
+            tagline: "A months-long, multi-stakeholder funnel and ABM pipeline math.",
+            icon: "briefcase.fill",
+            accent: Brand.down,
+            modules: 10,
+            isVertical: true
         ),
     ]
 }
