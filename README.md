@@ -12,6 +12,23 @@ Every concept is interactive and every number is real. Train the bid, the plan,
 the deal, the experiment, and the bidder itself, without spending a dollar of
 media.
 
+## Try it live (no install)
+
+**▶ [Open the interactive web demo](https://scumunna.github.io/BidLab/)** — the
+*actual* BidLab engine running in your browser, free and on any device: drag a
+bid and run 50,000 auctions scored against the optimum, model reach and
+frequency, and size an A/B test. No Mac required.
+
+[![BidLab web demo](web/public/og.png)](https://scumunna.github.io/BidLab/)
+
+Prefer the full experience? **[Download for macOS](https://github.com/scumunna/BidLab/releases)**
+— 124 lessons, exams, spaced-repetition review, and shareable credentials — or
+build from source below.
+
+> The web demo is a faithful TypeScript port of the pure `BidLabCore` Swift
+> engine, verified bit-for-bit against it in a golden-master test (a given seed
+> reproduces the native app's exact result).
+
 ## Screenshots
 
 **Learn — nine role-based paths and 124 cited, interactive lessons**
@@ -58,6 +75,11 @@ media.
 - **Content** (`Content/Lessons/*.md`): 124 authored, cited lessons in an original
   Markdown-flavored format, parsed at launch from the app bundle. See
   `Content/CONTENT_GUIDE.md` for the format.
+- **Web demo** (`web/`): a Vite + React + TypeScript reimplementation of the hero
+  explorables (Trading Floor, Reach & Frequency, A/B Power), deployed free to
+  GitHub Pages. The math is a faithful port of `BidLabCore`, verified against the
+  Swift engine in a golden-master test, and the build/deploy is automated in
+  `.github/workflows/pages.yml`.
 
 ## Building and running
 
