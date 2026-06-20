@@ -3,7 +3,7 @@
 // curriculum (core-08, adops-13/14) leans on. Same dark console aesthetic and
 // transparency ethos as the rest of the suite.
 
-import { useState, type ReactNode } from 'react'
+import { useState, type CSSProperties, type ReactNode } from 'react'
 import { Tracking } from '../engine'
 import { intc, pct } from '../format'
 import { C, card, SectionHeader, Slider, StatRow } from './ui'
@@ -61,6 +61,19 @@ const STEPS: Step[] = [
       'Blockers, cookie caps, and bounces drop a meaningful share of client conversions. Send the event from your server too (Conversions API or server-side GTM) with the same event id, so the platform deduplicates instead of double-counting.',
     code: 'POST https://graph.facebook.com/v21.0/<DATASET_ID>/events\n{\n  "data": [{\n    "event_name": "Purchase",\n    "event_id": "ORDER-10231",          // SAME id as the browser pixel\n    "action_source": "website",\n    "user_data": { "em": "<sha256 email>", "ph": "<sha256 phone>" },\n    "custom_data": { "value": 49.90, "currency": "USD" }\n  }]\n}',
     checklist: ['Server posts the event first-party (CAPI / sGTM)', 'Same event_id as the browser pixel (for dedup)', 'EMQ at 7 or higher on the key event', 'Hash user_data (SHA-256 email / phone)'],
+  },
+  {
+    key: 'Strengthen',
+    title: 'Strengthen the match: click ids + Enhanced Conversions',
+    blurb:
+      'A clean pixel still loses matches to cookie loss. Capture the click id (gclid / fbclid) on landing and store it first-party, and send hashed first-party data (Google Enhanced Conversions / Meta Advanced Matching). Normalize before hashing or the match silently collapses; import offline sales by the stored click id within its window.',
+    code: `// capture the click id on landing, store it first-party
+const gclid = new URL(location.href).searchParams.get('gclid');
+if (gclid) document.cookie = '_gclid=' + gclid + ';max-age=7776000;path=/';
+
+// at conversion: send hashed, NORMALIZED first-party data
+gtag('set', 'user_data', { sha256_email_address: sha256(email.trim().toLowerCase()) });`,
+    checklist: ['Capture gclid / fbclid on landing into a first-party cookie', 'Send hashed email / phone (Enhanced Conversions / Advanced Matching)', 'Normalize before hashing: lowercase + trim email, E.164 phone', 'Offline sales imported by click id within its window'],
   },
   {
     key: 'Troubleshoot',
@@ -166,6 +179,8 @@ export function PixelSetup() {
         </div>
       </div>
 
+      <QuizCheck />
+
       {/* calculators */}
       <div className="mt-5">
         <div className="font-mono text-[10px] uppercase tracking-wide text-white/40">The numbers a trader checks</div>
@@ -184,6 +199,87 @@ export function PixelSetup() {
         </p>
       </div>
     </section>
+  )
+}
+
+interface QuizQ {
+  q: string
+  options: string[]
+  answer: number
+  explain: string
+}
+
+const QUIZ: QuizQ[] = [
+  {
+    q: 'Where does the conversion event snippet belong?',
+    options: ['In the head of every page', 'On the confirmation page, after the success state', "On the 'Place order' button click", 'On the product page'],
+    answer: 1,
+    explain: 'The global tag is sitewide; the event fires on the confirmation page, the proven success state, not the button (payment can still fail).',
+  },
+  {
+    q: 'EMQ is 3/10 even though the emails are hashed. Most likely cause?',
+    options: ['The order id is missing', 'The emails were not normalized before hashing, so the hashes never match', 'The view-through window is too short', 'The pixel loads twice'],
+    answer: 1,
+    explain: 'A raw, mixed-case, space-padded email hashes to a different value than the normalized one, so the hashes never match. Normalization is the number one silent EMQ killer.',
+  },
+  {
+    q: 'Browser pixel and CAPI both send the same purchase. What stops double-counting?',
+    options: ['Sending only one of them', 'A shared event id within the dedup window', 'The order value', 'A cachebuster'],
+    answer: 1,
+    explain: 'Deduplication keys on a shared, per-conversion event id (the order id) sent identically by both channels.',
+  },
+]
+
+function QuizCheck() {
+  const [answers, setAnswers] = useState<Record<number, number>>({})
+  const answeredCount = Object.keys(answers).length
+  const score = QUIZ.reduce((s, q, i) => s + (answers[i] === q.answer ? 1 : 0), 0)
+  return (
+    <div className="mt-5">
+      <div className="flex items-baseline justify-between">
+        <div className="font-mono text-[10px] uppercase tracking-wide text-white/40">Quick check (graded)</div>
+        <div className="font-mono text-[11px] text-white/50">{answeredCount > 0 ? `${score} / ${QUIZ.length} correct` : `${QUIZ.length} questions`}</div>
+      </div>
+      <div className="mt-3 grid grid-cols-1 gap-4 lg:grid-cols-3">
+        {QUIZ.map((q, qi) => {
+          const picked = answers[qi]
+          const answered = picked !== undefined
+          return (
+            <div key={qi} className={card}>
+              <p className="text-[13px] font-semibold text-ink">{q.q}</p>
+              <div className="mt-3 flex flex-col gap-1.5">
+                {q.options.map((opt, oi) => {
+                  let style: CSSProperties = {}
+                  if (answered) {
+                    if (oi === q.answer) style = { borderColor: C.up, color: C.up, backgroundColor: 'rgba(24,201,100,0.10)' }
+                    else if (oi === picked) style = { borderColor: C.down, color: C.down, backgroundColor: 'rgba(255,59,92,0.10)' }
+                    else style = { opacity: 0.5 }
+                  }
+                  return (
+                    <button
+                      key={oi}
+                      disabled={answered}
+                      onClick={() => setAnswers((a) => ({ ...a, [qi]: oi }))}
+                      aria-label={opt}
+                      className={`rounded-lg border border-white/10 px-3 py-2 text-left text-[12.5px] transition-colors ${answered ? '' : 'text-white/75 hover:bg-white/5'}`}
+                      style={style}
+                    >
+                      {opt}
+                    </button>
+                  )
+                })}
+              </div>
+              {answered && (
+                <p className="mt-2 text-[12px] leading-relaxed" style={{ color: picked === q.answer ? C.up : C.muted }}>
+                  {picked === q.answer ? 'Correct. ' : 'Not quite. '}
+                  <span className="text-white/60">{q.explain}</span>
+                </p>
+              )}
+            </div>
+          )
+        })}
+      </div>
+    </div>
   )
 }
 
