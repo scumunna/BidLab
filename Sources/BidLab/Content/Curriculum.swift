@@ -102,6 +102,8 @@ enum Curriculum {
         "PMP and PG deal setup",
         "CTV, audio, and DOOH operations",
         "Audience and segment operations",
+        "Conversion pixels, step by step",
+        "Server-side and app conversions: CAPI, postbacks, and SKAN",
     ]
 
     private static let dsp = [
