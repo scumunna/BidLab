@@ -28,9 +28,16 @@ export function dedupInflation(unmatchedShare: number): number {
   return Math.min(Math.max(unmatchedShare, 0), 1)
 }
 
-/** Counting-point discrepancy: (higher - lower) / higher. */
-export function discrepancy(higher: number, lower: number): number {
-  return higher > 0 ? (higher - lower) / higher : 0
+/**
+ * Counting-point discrepancy measured against a reference: (reference - observed)
+ * / reference. The reference is the source of truth or the upstream counting point
+ * (the publisher's request count, or the advertiser's back-end). An under-counting
+ * pixel gives a positive discrepancy; an over-counting one gives a negative
+ * discrepancy. Compare its magnitude to the normal band. Dividing by an explicit
+ * reference (not by whichever input is larger) keeps the meaning stable.
+ */
+export function discrepancy(reference: number, observed: number): number {
+  return reference > 0 ? (reference - observed) / reference : 0
 }
 
 /** Whether a discrepancy sits inside the ~10% band treated as normal drift. */

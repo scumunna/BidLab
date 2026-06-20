@@ -50,6 +50,7 @@ const STEPS: Step[] = [
       'Request returns 200 (devtools / Tag Assistant / Pixel Helper)',
       'value + order id populated, not 0 or undefined',
       'Fires once (the dedup key holds)',
+      'Consent Mode v2: fires after accept, suppressed before it (EEA)',
       'Appears in platform reporting with the right value',
     ],
   },
@@ -67,7 +68,7 @@ const STEPS: Step[] = [
     blurb:
       'The page looks fine and spend continues; only the numbers are wrong. When the pixel disagrees with the advertiser back-end by more than about 10%, suspect the implementation before the media.',
     checklist: [
-      'Not firing: wrong page / JS error / consent gate',
+      'Not firing: wrong page / JS error / Consent Mode v2 denied (EEA)',
       'SPA: bind to the route change or dataLayer, not page load',
       'Double-count: tag off the confirmation page / no dedup key',
       'Zero value: dataLayer not populated when the tag read it',
@@ -104,6 +105,7 @@ export function PixelSetup() {
               key={s.key}
               onClick={() => setActive(i)}
               aria-current={on ? 'step' : undefined}
+              aria-label={`Step ${i + 1}: ${s.key}`}
               className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12.5px] font-semibold transition-colors ${
                 on ? 'bg-lime text-console' : 'bg-white/5 text-muted hover:text-ink'
               }`}
@@ -133,7 +135,7 @@ export function PixelSetup() {
           {step.checklist.map((item, i) => {
             const on = !!checked[`${step.key}:${i}`]
             return (
-              <button key={i} onClick={() => toggle(i)} className="flex items-start gap-2.5 text-left">
+              <button key={i} onClick={() => toggle(i)} role="checkbox" aria-checked={on} aria-label={item} className="flex items-start gap-2.5 text-left">
                 <span
                   className="mt-[2px] grid h-[16px] w-[16px] shrink-0 place-items-center rounded border text-[10px] font-bold"
                   style={{ borderColor: on ? C.lime : 'rgba(255,255,255,0.25)', backgroundColor: on ? C.lime : 'transparent', color: '#0e0e15' }}
@@ -176,9 +178,9 @@ export function PixelSetup() {
 
       <div className="mt-5 rounded-2xl border border-lime/20 bg-lime/[0.05] p-4">
         <div className="font-mono text-[10px] uppercase tracking-wide text-lime">Why these are the numbers</div>
-        <p className="mt-2 font-mono text-[12.5px] text-white/80">capture = client / back-end · reported = true · (1 + unmatched) · discrepancy = (a − b) / a</p>
+        <p className="mt-2 font-mono text-[12.5px] text-white/80">capture = client / back-end · reported = true · (1 + unmatched) · discrepancy = (reference − observed) / reference</p>
         <p className="mt-2 text-[12.5px] leading-relaxed text-white/55">
-          A broken pixel does not just dent a dashboard — the bidder learns from conversions, so it optimizes toward the lie. These three checks (how much the client pixel captured, how much mismatched ids inflate the dedup, and whether a counting gap is normal drift) are the trader's standing QA. Full walkthrough lives in the app's AdOps lessons.
+          A broken pixel does not just dent a dashboard — the bidder learns from conversions, so it optimizes toward the lie. These three checks (how much the client pixel captured, how much mismatched ids inflate the dedup, and whether a counting gap is normal drift) are the trader's standing QA. The dedup figure is an upper bound: it assumes both channels report every conversion. The full walkthrough, including Consent Mode v2, lives in the app's AdOps lessons.
         </p>
       </div>
     </section>
@@ -203,7 +205,10 @@ function NumberField({ label, value, onChange, min = 0, step = 1 }: { label: str
         value={value}
         min={min}
         step={step}
-        onChange={(e) => onChange(Number(e.target.value))}
+        onChange={(e) => {
+          const n = Number(e.target.value)
+          onChange(Number.isFinite(n) ? Math.max(min, n) : min)
+        }}
         className="w-full rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 font-mono text-[13px] tabular-nums text-ink outline-none focus:border-white/30"
       />
     </label>
@@ -243,18 +248,16 @@ function DedupCalc() {
 }
 
 function DiscrepancyCalc() {
-  const [pub, setPub] = useState(1_050_000)
-  const [adv, setAdv] = useState(1_000_000)
-  const higher = Math.max(pub, adv)
-  const lower = Math.min(pub, adv)
-  const d = Tracking.discrepancy(higher, lower)
+  const [reference, setReference] = useState(1_050_000)
+  const [observed, setObserved] = useState(1_000_000)
+  const d = Tracking.discrepancy(reference, observed)
   const ok = Tracking.withinNormalBand(d)
   return (
     <CalcCard title="Discrepancy QA">
-      <NumberField label="Publisher / higher count" value={pub} onChange={setPub} min={0} step={1000} />
-      <NumberField label="Advertiser / lower count" value={adv} onChange={setAdv} min={0} step={1000} />
+      <NumberField label="Reference (publisher / back-end truth)" value={reference} onChange={setReference} min={1} step={1000} />
+      <NumberField label="Observed (your pixel)" value={observed} onChange={setObserved} min={0} step={1000} />
       <div className="mt-1 flex flex-col gap-2 border-t border-white/10 pt-3">
-        <StatRow label="Discrepancy" value={pct(d, 2)} color={ok ? C.up : C.down} />
+        <StatRow label="Discrepancy vs reference" value={pct(d, 2)} color={ok ? C.up : C.down} />
         <div className="flex items-center justify-between">
           <span className="text-[12.5px] text-white/55">Verdict</span>
           <span className="rounded-full px-2 py-0.5 font-mono text-[11px] font-bold" style={{ backgroundColor: ok ? 'rgba(24,201,100,0.15)' : 'rgba(255,59,92,0.15)', color: ok ? C.up : C.down }}>

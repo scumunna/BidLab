@@ -26,7 +26,7 @@ describe('Tracking — dedup inflation', () => {
 })
 
 describe('Tracking — discrepancy and the normal band', () => {
-  it('matches core-08 (1,050,000 vs 1,000,000 ~= 4.76%)', () => {
+  it('matches core-08, measured against the reference (1,050,000 vs 1,000,000 ~= 4.76%)', () => {
     const d = Tracking.discrepancy(1_050_000, 1_000_000)
     expect(d).toBeCloseTo(0.047619, 5)
     expect(Tracking.withinNormalBand(d)).toBe(true)
@@ -34,6 +34,11 @@ describe('Tracking — discrepancy and the normal band', () => {
   it('flags a 16.67% gap as outside the band', () => {
     const d = Tracking.discrepancy(1_200_000, 1_000_000)
     expect(d).toBeCloseTo(0.166667, 5)
+    expect(Tracking.withinNormalBand(d)).toBe(false)
+  })
+  it('measures an over-counting pixel relative to back-end truth (truth 1,000, pixel 1,400 = -40%)', () => {
+    const d = Tracking.discrepancy(1000, 1400)
+    expect(d).toBeCloseTo(-0.4, 5)
     expect(Tracking.withinNormalBand(d)).toBe(false)
   })
 })
