@@ -72,6 +72,8 @@ When the ids do not match, dedup fails open, and the unmatched pair counts twice
 
 $$ \text{reported} = \text{true} + (\text{unmatched share}) \times \text{true} $$
 
+Treat that as the upper bound on the damage. It assumes both channels report every true conversion and that matched pairs collapse cleanly, so a real setup (where the browser side also leaks) usually inflates by less, but the direction and the cause, mismatched ids, are exactly right.
+
 :::predict
 prompt: The browser pixel and CAPI each send the same 1,000 purchases with a shared event id, but 20% of the ids fail to match between the two channels. After deduplication, how many conversions does the platform report?
 answer: 1200

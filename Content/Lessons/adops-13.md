@@ -118,7 +118,9 @@ Next, check the payload. The value and the order id must be present and correct,
 
 Then confirm it fires once. Reload the confirmation page and check that the dedup key holds, or that a unique counter does not log a second conversion.
 
-Finally, confirm it lands in the platform. The conversion appears in real-time reporting, Events Manager, or Floodlight with the right activity, value, and id. Only when all five pass do you turn on budget.
+Then check consent. In the EEA, Google Consent Mode v2 and your consent management platform gate the tag: with `ad_storage` and `analytics_storage` denied the tag should stay silent or send only cookieless pings, and it should fire fully once the user accepts. Toggle consent both ways in the banner and confirm the behavior, because a consent gate that never opens looks exactly like a dead pixel.
+
+Finally, confirm it lands in the platform. The conversion appears in real-time reporting, Events Manager, or Floodlight with the right activity, value, and id. Only when every check passes do you turn on budget.
 
 :::predict
 prompt: Your test fires cleanly. On the first day live, the pixel reports 920 purchases while the store's own checkout back-end recorded 1,000. What is the pixel's capture rate?
@@ -144,7 +146,7 @@ explain: A pixel that fires but sends value 0 or a missing order id breaks reven
 
 Like the delivery tags in adops-03, conversion pixels fail silently. The page looks fine, the campaign keeps spending, and only the numbers are wrong. Five failures account for most of what you will hit.
 
-Not firing at all. The snippet is on the wrong page, a JavaScript error earlier on the page halts the script, or a consent gate blocks the tag until the user accepts and that consent never comes. The symptom is near-zero conversions on a campaign that is plainly driving sales.
+Not firing at all. The snippet is on the wrong page, a JavaScript error earlier on the page halts the script, or a consent gate blocks the tag until the user accepts and that consent never comes. In the EEA this is usually Google Consent Mode v2: if your consent management platform never sets `ad_storage` to granted, the tag is suppressed by design, so an entire region can go dark while the campaign looks healthy everywhere else. The symptom is near-zero conversions on a campaign that is plainly driving sales, often concentrated in one geo.
 
 The single-page-app trap. On an SPA the confirmation "page" is a client-side route change, not a real page load, so a tag bound to page load never fires. You have to bind it to the route change or to a dataLayer event the app pushes on confirmation.
 
@@ -186,4 +188,5 @@ explain: An SPA never reloads the page on confirmation, so a page-load trigger h
 - Google, Install the Google tag (gtag.js) | https://developers.google.com/tag-platform/gtagjs/install
 - Google Tag Manager, Trigger types | https://support.google.com/tagmanager/answer/7679316
 - Google, Verify your tags with Tag Assistant | https://support.google.com/tagassistant/answer/10039345
+- Google, Consent Mode v2 for tags | https://developers.google.com/tag-platform/security/guides/consent
 :::
