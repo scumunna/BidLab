@@ -91,7 +91,7 @@ A broken dedup key is worse than no server feed. It does not just add noise, it 
 
 A native app has no page and no web pixel, so app conversions take a different path entirely, and a trader buying app inventory has to know it. The app embeds a software development kit and routes attribution through a mobile measurement partner (MMP) such as AppsFlyer, Adjust, or Branch, which is the neutral referee between the ad networks and the app.
 
-On iOS, Apple's SKAdNetwork (now SKAN 4) puts attribution on the device, not in the advertiser's hands. Post-install behavior is compressed into a small conversion value, and a few privacy-preserving postbacks fire after measurement windows ending around day 2, day 7, and day 35, each delayed by a random timer so the timing itself cannot identify a user. Crucially, when a cohort is too small to be anonymous, Apple suppresses the conversion value entirely (the crowd-anonymity threshold), so low-volume campaigns get coarse or null signal. In place of a client pixel confirming the install, the ad network receives a server-to-server postback.
+On iOS, Apple's SKAdNetwork (now SKAN 4) puts attribution on the device, not in the advertiser's hands. Post-install behavior is compressed into a conversion value, and a few privacy-preserving postbacks fire after measurement windows ending around day 2, day 7, and day 35, each delayed by a random timer so the timing itself cannot identify a user. SKAN 4 made that value hierarchical: a fine-grained value (0 to 63) unlocks only for high-volume cohorts, while smaller cohorts fall back to a coarse value (low, medium, or high) or to nothing at all, which is the crowd-anonymity threshold deciding how much detail you have earned. Apple is now steering developers toward AdAttributionKit, the successor that carries the same on-device, privacy-preserving model to alternative app marketplaces and re-engagement. In place of a client pixel confirming the install, the ad network receives a server-to-server postback.
 
 This is why app campaigns feel blunt compared to web. You are optimizing on delayed, aggregated, sometimes-suppressed signal, and the MMP plus SKAN postbacks are the only conversion truth you get.
 
@@ -115,7 +115,24 @@ hint: Apps have no page, and Apple decides attribution on the device.
 explain: Apps use an MMP's SDK together with Apple's SKAdNetwork, which encodes post-install behavior into a small conversion value and returns it through privacy-preserving postbacks. There is no page, no pixel, and no cookie inside a native app.
 :::
 
-# Step 4: QA the server path
+# Step 4: Offline and delayed conversions
+
+Plenty of conversions never happen in the browser at all. A lead becomes a sale on a phone call a week later, a funded account clears after underwriting, a quote turns into a signed contract in a CRM. The browser pixel never sees these, and CAPI at checkout does not either, so you import them after the fact.
+
+The mechanism is the offline conversion import. When the conversion finally happens, your CRM sends it to the platform keyed by the click id you captured at the start (the `gclid` or `fbclid` stored on the lead), or by hashed first-party data when the click id is gone. Google calls it offline conversion import; Meta calls it offline events or the CRM path of the Conversions API. The catch is the window: a click id is valid only for a bounded lookback (Google's is generally up to 90 days), so a sale that closes after the window cannot be tied back to the click.
+
+This is the backbone of measurement in lead generation, finance, auto, and B2B, where the money event lands days or weeks downstream of the ad. Optimize on the form-fill alone and you train the bidder on the wrong outcome; import the funded sale and it learns what actually pays.
+
+:::predict
+prompt: You captured the click id on 1,000 leads. 220 of them convert to a sale, but 30 of those sales close after the 90-day click-id window. How many sales can the offline import match back to the click?
+answer: 190
+tolerance: 0
+unit:
+hint: Only conversions still inside the window have a valid click id.
+explain: 220 sales close, but 30 fall outside the 90-day window where the click id is still valid, so only 190 can be matched back to the click and credited. The other 30 go unattributed or fall back to weaker hashed-data matching, which is why long sales cycles need a long window and stored identifiers.
+:::
+
+# Step 5: QA the server path
 
 The web QA from adops-13 proves the client pixel. The server path needs its own pass, because its failures are even quieter (there is no page to watch).
 
@@ -140,7 +157,7 @@ explain: Capture went from 780/1,000 (78 percent) to 970/1,000 (97 percent), a r
 
 Across web, server, and app, the pre-launch gate is one list, and budget does not go live until every line is green.
 
-The web pixel fires on the confirmation page with the value and order id populated, once. The server feed (CAPI or server-side GTM) is live and sending the same `event_id`. Deduplication is verified in the platform's reporting. EMQ is 7 or higher on the key event. App campaigns have their MMP and SKAN postbacks confirming installs. And the deduplicated platform total reconciles to the advertiser's back-end inside the normal counting band.
+The web pixel fires on the confirmation page with the value and order id populated, once. The server feed (CAPI or server-side GTM) is live and sending the same `event_id`. Deduplication is verified in the platform's reporting. EMQ is 7 or higher on the key event, which means the identifiers are normalized before hashing. Click ids are captured at landing and sent with the conversion, and any offline conversions are imported within the click-id window. App campaigns have their MMP and SKAN postbacks confirming installs. And the deduplicated platform total reconciles to the advertiser's back-end inside the normal counting band.
 
 :::callout key
 A trader who can recite this checklist from memory, and refuses to spend until it passes, is worth more than one who can quote bid theory. The math only matters if the conversions feeding it are real, and this list is what makes them real.

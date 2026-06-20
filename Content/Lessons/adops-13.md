@@ -118,7 +118,7 @@ Next, check the payload. The value and the order id must be present and correct,
 
 Then confirm it fires once. Reload the confirmation page and check that the dedup key holds, or that a unique counter does not log a second conversion.
 
-Then check consent. In the EEA, Google Consent Mode v2 and your consent management platform gate the tag: with `ad_storage` and `analytics_storage` denied the tag should stay silent or send only cookieless pings, and it should fire fully once the user accepts. Toggle consent both ways in the banner and confirm the behavior, because a consent gate that never opens looks exactly like a dead pixel.
+Then check consent. In the EEA, Google Consent Mode v2 and your consent management platform gate the tag through four signals: `ad_storage`, `analytics_storage`, and the v2 additions `ad_user_data` and `ad_personalization`. In basic mode a denial blocks the tag from loading at all; in advanced mode the tag loads but sends only cookieless pings until the user accepts, then fires fully. Toggle consent both ways in the banner and confirm both behaviors, because a consent gate that never opens looks exactly like a dead pixel.
 
 Finally, confirm it lands in the platform. The conversion appears in real-time reporting, Events Manager, or Floodlight with the right activity, value, and id. Only when every check passes do you turn on budget.
 
@@ -142,7 +142,46 @@ hint: Reporting and dedup both depend on two fields arriving correctly.
 explain: A pixel that fires but sends value 0 or a missing order id breaks revenue, ROAS, and deduplication at once. Confirming the populated value and order id is the heart of the QA, more than the name or where else it loads.
 :::
 
-# Step 5: Troubleshoot the silent failures
+# Step 5: Strengthen the match, click ids and Enhanced Conversions
+
+A clean pixel still loses matches to cookie loss. Two upgrades recover most of it, and a trader should insist on both before blaming the channel.
+
+Capture the click id. When a user lands from an ad, the URL carries a click id: Google's `gclid` (plus `gbraid` and `wbraid` for iOS app and web-to-app journeys) and Meta's `fbclid`, which the pixel stores as the `_fbc` cookie alongside the `_fbp` browser id. Read it on the landing page, store it in a first-party cookie, and send it with the conversion and on to the server feed in the next lesson. It is the strongest match signal there is, because it ties the conversion straight back to the exact click.
+
+Send hashed first-party data. Google calls this Enhanced Conversions and Meta calls it Advanced Matching: with the conversion you also pass the user's email and phone, hashed with SHA-256, so the platform can match the conversion to a signed-in user even after the cookie is gone.
+
+```
+// capture the click id once, on landing, into a first-party cookie
+const gclid = new URL(location.href).searchParams.get('gclid');
+if (gclid) document.cookie = `_gclid=${gclid};max-age=7776000;path=/`; // 90 days
+
+// at conversion, send hashed, NORMALIZED first-party data
+gtag('set', 'user_data', { sha256_email_address: sha256(email.trim().toLowerCase()) });
+```
+
+Normalization is the catch, and it is the single most common silent failure in this whole area. Lowercase and trim the email, apply the platform's rules (such as stripping Gmail dots and plus-addressing), and put the phone in E.164 form, all before you hash. Hash a raw, mixed-case, space-padded string and your hash will not equal the platform's, so the match rate quietly collapses while every event still arrives.
+
+:::quiz
+question: Your server feed sends plenty of events but Event Match Quality sits at 3 out of 10, and the emails are hashed. What is the most likely cause?
+- The order id is missing from the payload
+- The emails were not normalized (lowercased and trimmed) before hashing, so the hashes never match
+- The pixel is firing on the wrong page
+- The view-through window is too short
+answer: 1
+hint: A hash only matches if both sides hashed the exact same bytes.
+explain: SHA-256 of "Jane.Doe@Gmail.com " and of "jane.doe@gmail.com" are entirely different strings. Without lowercasing, trimming, and applying the platform's normalization before hashing, the hashes never match, so EMQ and match rate collapse even though every event arrives. Normalization is the number one silent EMQ killer.
+:::
+
+:::predict
+prompt: Your web pixel matches 80% of conversions on cookies alone. You add Enhanced Conversions, which recovers half of the previously unmatched conversions. What is the new match rate?
+answer: 90
+tolerance: 0.5
+unit: %
+hint: Half of the missing 20 points comes back.
+explain: 20 percent were unmatched; recovering half of them adds 10 points, for a 90 percent match rate. Hashed first-party data is matched against signed-in users server-side, so it survives the cookie loss that caps a cookie-only match.
+:::
+
+# Step 6: Troubleshoot the silent failures
 
 Like the delivery tags in adops-03, conversion pixels fail silently. The page looks fine, the campaign keeps spending, and only the numbers are wrong. Five failures account for most of what you will hit.
 
