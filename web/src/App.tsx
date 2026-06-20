@@ -11,6 +11,7 @@ import { Yield } from './components/Yield'
 import { PricingCalculator } from './components/PricingCalculator'
 import { Adstock } from './components/Adstock'
 import { Distribution } from './components/Distribution'
+import { PixelSetup } from './components/PixelSetup'
 
 const REPO = 'https://github.com/scumunna/BidLab'
 const RELEASES = 'https://github.com/scumunna/BidLab/releases'
@@ -28,6 +29,7 @@ type RouteKey =
   | 'pricing'
   | 'adstock'
   | 'distribution'
+  | 'pixel'
 
 const NAV: { key: RouteKey; label: string; href: string; title: string }[] = [
   { key: 'trading', label: 'Trading Floor', href: '#/', title: 'Trading Floor' },
@@ -36,6 +38,7 @@ const NAV: { key: RouteKey; label: string; href: string; title: string }[] = [
   { key: 'budget', label: 'Budget Allocator', href: '#/budget', title: 'Budget Allocator' },
   { key: 'latency', label: 'Latency', href: '#/latency', title: 'Latency & Timeout' },
   { key: 'margin', label: 'Margin', href: '#/margin', title: 'Margin & Supply Path' },
+  { key: 'pixel', label: 'Pixel Setup', href: '#/pixel', title: 'Pixel Setup' },
   { key: 'attribution', label: 'Attribution', href: '#/attribution', title: 'Attribution' },
   { key: 'forecast', label: 'Forecast', href: '#/forecast', title: 'Forecast' },
   { key: 'yield', label: 'Yield', href: '#/yield', title: 'Yield & Floors' },
@@ -136,6 +139,7 @@ export default function App() {
         {route === 'pricing' && <PricingCalculator />}
         {route === 'adstock' && <Adstock />}
         {route === 'distribution' && <Distribution />}
+        {route === 'pixel' && <PixelSetup />}
       </main>
 
       <footer className="mt-8 border-t border-white/10 pt-6 text-[12.5px] leading-relaxed text-white/45">
