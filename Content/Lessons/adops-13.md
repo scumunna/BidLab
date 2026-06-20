@@ -26,6 +26,9 @@ hint: Delivery tags count what the media did. This one counts what the user did 
 explain: Impression and click tags measure delivery. The conversion pixel measures the outcome on the advertiser's site, a purchase, lead, or signup, which is what CPA, ROAS, and the optimization model are built on.
 :::
 
+:::widget pixelSetup
+:::
+
 # Step 1: Create the pixel and decide what it counts
 
 You first create the pixel or activity in your platform, then choose its counting rule, and that second choice is the one that bites later.
@@ -140,6 +143,9 @@ question: During the test fire, which single thing matters most to verify?
 answer: 1
 hint: Reporting and dedup both depend on two fields arriving correctly.
 explain: A pixel that fires but sends value 0 or a missing order id breaks revenue, ROAS, and deduplication at once. Confirming the populated value and order id is the heart of the QA, more than the name or where else it loads.
+:::
+
+:::widget pixelCalculators
 :::
 
 # Step 5: Strengthen the match, click ids and Enhanced Conversions
