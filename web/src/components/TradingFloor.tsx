@@ -218,6 +218,11 @@ export function TradingFloor() {
                 <Stat label="Below floor" value={pct(result.lostToFloorRate)} color={C.down} />
                 <Stat label="Outbid" value={pct(result.lostToCompetitionRate)} />
               </div>
+              <p className="mt-3 text-[12.5px] leading-snug" style={{ color: scoreVal >= 80 ? C.up : C.lime }}>
+                {scoreVal >= 80
+                  ? `Nice, you're near the optimal bid of ${money(optimal.bid, 3)}. Try another scenario, or switch to second-price.`
+                  : `Your bid ${money(bid, 3)} is ${bid < optimal.bid ? 'below' : 'above'} the optimal ${money(optimal.bid, 3)}. Drag it ${bid < optimal.bid ? 'up' : 'down'} and run again to raise your score.`}
+              </p>
             </div>
           ) : (
             <p className="px-1 text-[12.5px] text-white/45">
