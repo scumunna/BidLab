@@ -128,7 +128,7 @@ public enum PacedFlight {
                 spend: r.spend,
                 cumulativeSpend: cumulativeSpend,
                 targetCumulativeSpend: Pacing.targetSpend(totalBudget: flightBudget, fractionElapsed: endFraction),
-                winRate: intervalOpportunities > 0 ? Double(r.impressionsWon) / Double(intervalOpportunities) : 0
+                winRate: Double(r.impressionsWon) / Double(intervalOpportunities) // intervalOpportunities is max(1, ...), always >= 1
             ))
         }
 
