@@ -12,7 +12,6 @@ export default defineConfig({
     include: ['src/**/*.test.ts'],
     coverage: {
       provider: 'v8',
-      all: true,
       // The gate is the pure engine (the math ported bit-for-bit from BidLabCore).
       // Components are UI and covered separately; they are not part of this gate.
       include: ['src/engine/**/*.ts'],
