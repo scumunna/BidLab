@@ -109,7 +109,7 @@ export function runPacedFlight(
       spend: r.spend,
       cumulativeSpend,
       targetCumulativeSpend: targetSpend(flightBudget, endFraction),
-      winRate: intervalOpportunities > 0 ? r.impressionsWon / intervalOpportunities : 0,
+      winRate: r.impressionsWon / intervalOpportunities, // intervalOpportunities is max(1, ...), always >= 1
     })
   }
 

@@ -31,6 +31,9 @@ export function power(baselineRate: number, mde: number, nPerArm: number, alpha 
   const p1 = baselineRate
   const p2 = Math.min(Math.max(baselineRate + mde, 0), 1)
   const se = Math.sqrt((p1 * (1 - p1)) / nPerArm + (p2 * (1 - p2)) / nPerArm)
+  // Defensive: se is always > 0 here, because the guard above forces baselineRate
+  // into (0,1), so p1(1-p1) > 0. Kept as a safety net; unreachable by construction.
+  /* v8 ignore next */
   if (!(se > 0)) return 0
   const zAlpha = normalQuantile(1 - alpha / 2)
   const z = Math.abs(mde) / se - zAlpha
