@@ -15,6 +15,7 @@ export * as BudgetAllocation from './budgetAllocation'
 export { ResponseCurve } from './budgetAllocation'
 export * as Attribution from './attribution'
 export * as Yield from './yield'
+export * as Tracking from './tracking'
 export {
   MarketConfig,
   MarketResult,

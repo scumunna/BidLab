@@ -17,6 +17,7 @@ func contentValidationTests(_ h: Harness) {
         "monteCarlo", "forecastExplorer", "sqlLab", "codeLab",
         "didExplorer", "yieldExplorer",
         "barChart", "lineChart", "donutChart",
+        "pixelSetup", "pixelWalkthrough", "pixelCalculators", "trackingCalculators",
     ]
 
     guard let dirPath = ProcessInfo.processInfo.environment["BIDLAB_CONTENT"] else {

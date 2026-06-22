@@ -32,5 +32,6 @@ campaignDataTests(harness)
 glossaryTests(harness)
 pacedFlightTests(harness)
 contentValidationTests(harness)
+trackingTests(harness)
 
 exit(harness.summary())

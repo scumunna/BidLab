@@ -50,6 +50,10 @@ enum WidgetRegistry {
             CodeLab(params: params)
         case "sqlLab":
             SQLLab(params: params)
+        case "pixelSetup", "pixelWalkthrough":
+            PixelSetupExplorer(params: params)
+        case "pixelCalculators", "trackingCalculators":
+            PixelMatchCalculators(params: params)
         default:
             UnknownWidget(type: type)
         }
