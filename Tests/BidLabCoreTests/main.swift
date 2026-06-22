@@ -33,5 +33,7 @@ glossaryTests(harness)
 pacedFlightTests(harness)
 contentValidationTests(harness)
 trackingTests(harness)
+edgeCoverageTests(harness)
+parserCoverageTests(harness)
 
 exit(harness.summary())
