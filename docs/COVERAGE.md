@@ -16,8 +16,15 @@ references directly.
 
 ```sh
 ./Scripts/coverage.sh                 # build, run, print the per-file report
+./Scripts/coverage.sh check           # also fail if coverage regresses (the CI gate)
 ./Scripts/coverage.sh show Exam.swift # annotate uncovered lines in one file
 ```
+
+**Enforced in CI.** The `ci.yml` macOS job runs `./Scripts/coverage.sh check`
+after the known-answer suite. It fails the build if the missed region / function
+/ line counts rise above the baseline (4 / 2 / 2), so any newly uncovered code is
+caught. A literal 100% is not the bar, since that baseline is exactly the
+unreachable defensive set documented below.
 
 ## Result
 

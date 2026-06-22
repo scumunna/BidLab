@@ -25,5 +25,8 @@ jobs:
       - name: Run the known-answer test suite
         run: bash Scripts/test.sh
 
+      - name: Coverage gate (no regression beyond the documented baseline)
+        run: bash Scripts/coverage.sh check
+
       - name: Build the app (release)
         run: bash Scripts/build.sh release
