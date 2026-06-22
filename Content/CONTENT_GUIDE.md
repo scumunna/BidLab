@@ -48,7 +48,11 @@ explain: One or two sentences on why the answer is correct.
 ## Rules
 
 - Frontmatter keys: `id`, `track`, `module`, `title`, `summary`. `track` is one
-  of: foundations, core, dsp, sales, planning, analytics, engineering.
+  of: foundations, core, adops, dsp, sales, planning, analytics, engineering, ai,
+  or an industry vertical (`vertical-retail`, `vertical-cpg`,
+  `vertical-ecommerce`, `vertical-dtc`, `vertical-auto`, `vertical-finance`,
+  `vertical-travel`, `vertical-telecom`, `vertical-healthcare`, `vertical-qsr`,
+  `vertical-b2b`).
 - Structure each lesson as 3 to 5 short sections: a `# heading` then prose.
 - Include exactly one display-math block `$$ ... $$` where the concept has a
   formula. Keep LaTeX simple. Supported: greek (`\pi \mu \sigma \lambda \alpha
@@ -92,10 +96,16 @@ explain: One or two sentences on why the answer is correct.
 - `codeLab` — read the algorithm behind a system
 - `didExplorer` — difference-in-differences lift
 - `yieldExplorer` — fill rate and yield
+- `pixelSetup` / `pixelWalkthrough` — step-by-step conversion-pixel setup walkthrough
+- `pixelCalculators` / `trackingCalculators` — capture rate, dedup inflation, and discrepancy calculators
 
-Only `bidPlayground`/`auctionSimulator`, `reachFrequency`, and `experimentPower`
-are interactive today. The rest render as a labeled placeholder, which is fine.
-Reference whichever is most apt for the lesson.
+Every type listed above renders as a live, interactive SwiftUI widget today; the
+one exception is `monteCarlo`, which still renders as a labeled placeholder. The
+registry that resolves a `:::widget <type>` directive to a view is
+`Sources/BidLab/Widgets/WidgetRegistry.swift`. Reference whichever is most apt
+for the lesson. If you add a new type, register it there and add it to the
+`knownWidgets` whitelist in `Tests/BidLabCoreTests/ContentValidationTests.swift`,
+or `Scripts/test.sh` will fail.
 
 ## Output
 
