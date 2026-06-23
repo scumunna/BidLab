@@ -232,26 +232,24 @@ public enum Cohort {
     /// Roll the cohort up by path, preserving first-seen path order, so a manager
     /// can see certification and completion per path across the team.
     public static func byPath(_ records: [LearnerRecord]) -> [PathRollup] {
+        // One accumulator per path, in first-seen order. An id is recorded here the
+        // first time its track appears, so every id in `order` has an entry and a
+        // learner count of at least one: no lookup below needs a fallback.
         var order: [String] = []
-        var roles: [String: String] = [:]
-        var learners: [String: Int] = [:]
-        var certified: [String: Int] = [:]
-        var completionSum: [String: Double] = [:]
+        var accs: [String: (role: String, learners: Int, certified: Int, completion: Double)] = [:]
         for r in records {
             for t in r.tracks {
-                if learners[t.trackID] == nil { order.append(t.trackID); roles[t.trackID] = t.role }
-                learners[t.trackID, default: 0] += 1
-                if t.certified { certified[t.trackID, default: 0] += 1 }
-                completionSum[t.trackID, default: 0] += t.completionFraction
+                if accs[t.trackID] == nil { order.append(t.trackID); accs[t.trackID] = (t.role, 0, 0, 0) }
+                accs[t.trackID]!.learners += 1
+                if t.certified { accs[t.trackID]!.certified += 1 }
+                accs[t.trackID]!.completion += t.completionFraction
             }
         }
         return order.map { id in
-            let n = learners[id] ?? 0
-            return PathRollup(
-                trackID: id, role: roles[id] ?? id, learnerCount: n,
-                certifiedCount: certified[id] ?? 0,
-                avgCompletion: n > 0 ? (completionSum[id] ?? 0) / Double(n) : 0
-            )
+            let a = accs[id]!
+            return PathRollup(trackID: id, role: a.role, learnerCount: a.learners,
+                              certifiedCount: a.certified,
+                              avgCompletion: a.completion / Double(a.learners))
         }
     }
 

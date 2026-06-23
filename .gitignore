@@ -25,3 +25,4 @@ bidlab-trading-run.*
 
 # Intermediate research briefs (inputs to lesson authoring, not shipped product)
 /Research/_briefs/
+.build-cov/

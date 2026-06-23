@@ -91,4 +91,39 @@ func simulationTests(_ h: Harness) {
     h.check("a second-price reserve raises the price paid", withReserve.spend > noReserve.spend)
     h.check("every opportunity is a win, a floor loss, or a competition loss",
             withReserve.impressionsWon + withReserve.lostToFloor + withReserve.lostToCompetition == reserveCfg.opportunities)
+
+    // Convenience getters on Result: a fully populated result and an empty one
+    // exercise both sides of every divide-by-zero guard.
+    let res = MarketSimulation.Result(opportunities: 1000, impressionsWon: 400, spend: 250,
+                                      clicks: 8, conversions: 2, revenue: 1000,
+                                      lostToFloor: 100, lostToCompetition: 500)
+    h.close("result profit = revenue - spend", res.profit, 750)
+    h.close("result win rate", res.winRate, 0.4)
+    h.close("result effective CPA = spend / conversions", res.effectiveCPA, 125)
+    h.close("result ROAS = revenue / spend", res.roas, 4)
+    h.close("result floor-loss rate", res.lostToFloorRate, 0.1)
+    h.close("result competition-loss rate", res.lostToCompetitionRate, 0.5)
+    let blank = MarketSimulation.Result(opportunities: 0, impressionsWon: 0, spend: 0,
+                                        clicks: 0, conversions: 0, revenue: 0)
+    h.check("zero-conversion CPA is infinite", blank.effectiveCPA.isInfinite)
+    h.check("zero-spend ROAS is infinite", blank.roas.isInfinite)
+    h.close("zero-opportunity win rate is zero", blank.winRate, 0)
+    h.close("zero-opportunity floor-loss rate is zero", blank.lostToFloorRate, 0)
+    h.close("zero-opportunity competition-loss rate is zero", blank.lostToCompetitionRate, 0)
+
+    // First-price expected profit per opportunity and the optimal-bid scan.
+    // valuePerImpression = 0.02 * 0.10 * 500 = 1.0; bidding full value leaves zero surplus.
+    let fpValue = config.valuePerImpression
+    h.close("first-price surplus at bid = value is zero", config.expectedProfitPerOpportunity(at: fpValue), 0, tol: 1e-9)
+    h.check("first-price optimal bid shades below value", config.optimal().bid < fpValue)
+    h.check("first-price optimal profit is positive", config.optimal().expectedProfit > 0)
+    var floored = config
+    floored.floor = 0.5
+    h.close("expected profit below a positive floor is zero", floored.expectedProfitPerOpportunity(at: 0.4), 0, tol: 1e-12)
+
+    // Second-price expected profit under the exponential market exercises the
+    // exponential competing-price density (the log-normal path is covered above).
+    var spExp = config
+    spExp.auction = .secondPrice
+    h.check("second-price exponential optimal profit is positive", spExp.optimal().expectedProfit > 0)
 }

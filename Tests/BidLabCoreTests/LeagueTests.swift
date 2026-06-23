@@ -18,4 +18,7 @@ func leagueTests(_ h: Harness) {
     let lowRank = (League.weekly(userXP: 50).firstIndex { $0.isYou } ?? 99)
     let highRank = (League.weekly(userXP: 5000).firstIndex { $0.isYou } ?? 99)
     h.check("more xp ranks higher", highRank <= lowRank)
+
+    // Identifiable conformance: a league entry's id is its name.
+    h.check("league entry id is its name", LeagueEntry(name: "Ava", xp: 100, isYou: false).id == "Ava")
 }

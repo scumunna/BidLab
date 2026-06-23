@@ -43,4 +43,13 @@ func pacedFlightTests(_ h: Harness) {
     // Zero volatility reproduces a stationary market (constant per-interval volume).
     let flat = PacedFlight.run(baseConfig: cfg, flightBudget: flightBudget, intervals: 12, volatility: 0, seed: 7)
     h.check("zero volatility holds per-interval volume constant", Set(flat.points.map { $0.opportunities }).count == 1)
+
+    // Result convenience getters: profit and pacing error on a real flight.
+    h.close("flight profit = revenue - total spend", r.profit, r.revenue - r.totalSpend, tol: 1e-9)
+    h.check("pacing error is within [0,1] for a real flight", r.pacingError >= 0 && r.pacingError <= 1)
+    // A zero-budget flight cannot spend, so utilization and pacing error fall back to zero.
+    let zeroBudget = PacedFlight.run(baseConfig: cfg, flightBudget: 0, intervals: 4, seed: 1)
+    h.close("zero-budget flight pacing error is zero", zeroBudget.pacingError, 0, tol: 1e-12)
+    h.close("zero-budget flight utilization is zero", zeroBudget.budgetUtilization, 0, tol: 1e-12)
+    h.close("zero-budget flight profit", zeroBudget.profit, zeroBudget.revenue - zeroBudget.totalSpend, tol: 1e-9)
 }

@@ -49,4 +49,9 @@ func statisticsTests(_ h: Harness) {
     h.close("two-sided p-value for that z", diff.pValue, 0.004677, tol: 1e-4)
     h.check("a larger gap is more significant",
             Statistics.twoProportionZTest(successesA: 70, nA: 100, successesB: 30, nB: 100).pValue < diff.pValue)
+
+    // Standard error of the mean: sample sd / sqrt(n). For [2,4,4,4,5,5,7,9],
+    // sample sd = sqrt(32/7) = 2.138090, /sqrt(8) = 0.755929. Empty sample -> 0.
+    h.close("standard error of the mean", Statistics.standardError([2, 4, 4, 4, 5, 5, 7, 9]), 0.7559289, tol: 1e-6)
+    h.close("standard error of an empty sample is zero", Statistics.standardError([]), 0, tol: 1e-12)
 }

@@ -56,4 +56,14 @@ func campaignDataTests(_ h: Harness) {
     h.check("a high-CPA line is costly", CampaignData.verdict(line: costlyLine, blendedCPA: blendedCPA) == .costly)
     h.check("a near-blend line is typical", CampaignData.verdict(line: typicalLine, blendedCPA: blendedCPA) == .typical)
     h.check("a line with no conversions is flagged", CampaignData.verdict(line: noConvLine, blendedCPA: blendedCPA) == .noConversions)
+
+    // Blended CTR/CVR/CPC on the summary (clicks 3500, impressions 150000, conv 250, spend 2400).
+    h.close("blended CTR", s.ctr, 3500.0 / 150000.0, tol: 1e-12)
+    h.close("blended CVR", s.cvr, 250.0 / 3500.0, tol: 1e-12)
+    h.close("blended CPC", s.cpc, 2400.0 / 3500.0, tol: 1e-12)
+    // An empty summary divides by zero safely (every rate falls back to 0).
+    let zeroSummary = CampaignData.summarize([])
+    h.close("empty summary CTR is zero", zeroSummary.ctr, 0, tol: 1e-12)
+    h.close("empty summary CVR is zero", zeroSummary.cvr, 0, tol: 1e-12)
+    h.close("empty summary CPC is zero", zeroSummary.cpc, 0, tol: 1e-12)
 }

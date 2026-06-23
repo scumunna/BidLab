@@ -25,4 +25,7 @@ func benchmarksTests(_ h: Harness) {
     // No em dashes in user-facing benchmark strings.
     let strings = catalog.flatMap { [$0.label, $0.value, $0.detail, $0.citation.note ?? ""] }
     h.check("no em dashes in figures", strings.allSatisfy { !$0.contains("\u{2014}") })
+
+    // Identifiable conformance: a benchmark's id is its key.
+    h.check("benchmark id is its key", catalog[0].id == catalog[0].key)
 }
