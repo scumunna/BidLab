@@ -65,7 +65,7 @@ build from source below.
 ## What is in here
 
 - **`BidLabCore`** (built as a SwiftPM-style library): a pure, UI-free Swift
-  engine validated by a known-answer test suite (5,127 checks) covering pricing,
+  engine validated by a known-answer test suite (5,271 checks) covering pricing,
   auctions, probability, statistics, reach and frequency, budget allocation,
   pacing, a seeded market simulation, scoring, analytics (power, difference-in-
   differences, adstock, saturation, OLS), DSP systems (latency, queueing),
@@ -83,7 +83,7 @@ build from source below.
   Budget Allocator, Latency, Margin, Pixel Setup, Attribution, Forecast, Yield,
   Pricing, Adstock, and Distribution), deployed free to GitHub Pages. The math is
   a faithful port of `BidLabCore`, verified against the Swift engine in
-  golden-master tests (147 web tests), and the build and deploy are automated in
+  golden-master tests (180 web tests; the engine is gated at 100% coverage), and the build and deploy are automated in
   `.github/workflows/pages.yml`.
 
 ## Building and running
@@ -93,7 +93,7 @@ Xcode). This project builds entirely with `swiftc` (no full Xcode required),
 because the Command Line Tools on the original machine shipped a broken SwiftPM.
 
 ```sh
-./Scripts/test.sh      # build the core and run the test suite (5,127 checks)
+./Scripts/test.sh      # build the core and run the test suite (5,271 checks)
 ./Scripts/build.sh     # build the app -> build/BidLab.app
 open build/BidLab.app  # run it
 ```
@@ -103,7 +103,7 @@ For the web demo:
 ```sh
 cd web
 npm install
-npm test               # run the engine + acceptance test suite (147 checks)
+npm test               # run the engine + acceptance test suite (180 checks)
 npm run dev            # serve the demo locally
 ```
 
@@ -127,10 +127,11 @@ hdiutil create -volname BidLab -srcfolder build/BidLab.app -ov -format UDZO buil
 
 BidLab is feature-complete: all nine role paths and eleven industry verticals are
 authored (225 lessons, 20 certification exams), every widget is interactive, and
-the free web demo is live on GitHub Pages. The engine is covered by 5,127 native
-and 147 web known-answer checks; see [docs/ACCEPTANCE.md](docs/ACCEPTANCE.md) for
-the full acceptance-evidence report. Latest release:
-[v1.1.1](https://github.com/scumunna/BidLab/releases).
+the free web demo is live on GitHub Pages. The pure engines are covered to 100%
+(web) and 100% of reachable code (native), enforced by CI coverage gates, across
+5,271 native and 180 web known-answer checks; see
+[docs/COVERAGE.md](docs/COVERAGE.md) and [docs/ACCEPTANCE.md](docs/ACCEPTANCE.md).
+Latest release: [v1.1.1](https://github.com/scumunna/BidLab/releases).
 
 ## License
 
