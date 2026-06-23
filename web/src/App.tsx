@@ -150,7 +150,7 @@ export default function App() {
           matches the native app bit-for-bit).
         </p>
         <p className="mt-3">
-          The full app adds 124 interactive lessons across 9 roles and 11 industry verticals, certification exams, spaced-repetition
+          The full app adds 225 interactive lessons across 9 roles and 11 industry verticals, 20 certification exams, spaced-repetition
           review, and shareable credentials.{' '}
           <a href={REPO} target="_blank" rel="noopener noreferrer" className="text-analytics underline-offset-2 hover:underline">
             See the project on GitHub →

@@ -16,11 +16,13 @@ A reproducible, deterministic acceptance pass over every major capability of the
 | Layer | What it proves | Scenarios | Result |
 |---|---|---|---|
 | **Engine acceptance suite** (`web/src/eval/acceptance.test.ts`) | Every engine capability: golden + invariant + edge | **100** | ✅ 100 / 100 |
-| Web unit suite (`web/src/engine/*.test.ts`) | Golden parity vs the compiled Swift engine | 47 | ✅ 47 / 47 |
+| Web engine suite (`web/src/engine/*.test.ts`) | Golden parity vs the compiled Swift engine + 100% engine boundary coverage | 80 | ✅ 80 / 80 |
 | Live UI run (Playwright, headless) | Entry, routing, the hero in 3 modes, onboarding, all explorables, the pixel widget, responsiveness @375px | 20 | ✅ 20 / 20 |
-| Native known-answer suite (`./Scripts/test.sh`) | Swift engine + all lessons/exams/widgets | 5,127 | ✅ 5,127 / 5,127 |
+| Native known-answer suite (`./Scripts/test.sh`) | Swift engine + all lessons/exams/widgets | 5,271 | ✅ 5,271 / 5,271 |
 
 **The complete set passed on the first run and again on rerun (stable).** No failures occurred, so the fix-and-rerun loop completed with no changes required — the product already cleared the bar.
+
+Both pure engines are additionally **gated to 100% coverage in CI**: the web engine via `vitest` v8 (`.github/workflows/web.yml`) and `BidLabCore` via `llvm-cov` of reachable code (`.github/workflows/ci.yml`). See [COVERAGE.md](COVERAGE.md).
 
 ## The 100 acceptance scenarios, by capability
 
@@ -46,11 +48,11 @@ Each row is a numbered, named `it(...)` in `web/src/eval/acceptance.test.ts`; th
 ## Reproduce
 
 ```sh
-# Engine acceptance + web unit (100 + 47), deterministic:
-cd web && npm test            # -> 147 passed
+# Engine acceptance + web engine suites (100 + 80), deterministic:
+cd web && npm test            # -> 180 passed
 
 # Native engine + all curriculum (lessons, exams, widgets):
-./Scripts/test.sh             # -> all 5,127 checks passed
+./Scripts/test.sh             # -> all 5,271 checks passed
 ```
 
 The web demo's numbers are not illustrative — they are the *same* engine, asserted equal to the native macOS app. That parity is the whole point: what a CEO clicks in the browser is the production math.

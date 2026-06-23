@@ -5,8 +5,9 @@
 The flight simulator for programmatic advertising. A native macOS app that
 teaches the math of programmatic by doing it: nine learning paths (Foundations
 and Programmatic Core, plus Ad Operations, DSP/Trader, Sales, Planning,
-Analytics, Engineering, and AI in AdTech), 124 interactive lessons, 9 role
-certification exams, a math-true bidding simulator, and a shareable credential.
+Analytics, Engineering, and AI in AdTech) and eleven industry verticals, 225
+interactive lessons, 20 certification exams, a math-true bidding simulator, and a
+shareable credential.
 
 Every concept is interactive and every number is real. Train the bid, the plan,
 the deal, the experiment, and the bidder itself, without spending a dollar of
@@ -17,12 +18,14 @@ media.
 **▶ [Open the interactive web demo](https://scumunna.github.io/BidLab/)** — the
 *actual* BidLab engine running in your browser, free and on any device: drag a
 bid and run 50,000 auctions scored against the optimum, model reach and
-frequency, and size an A/B test. No Mac required.
+frequency, size an A/B test, and explore ten more (budget allocation,
+attribution, yield, pacing, latency, conversion-pixel setup, and more). No Mac
+required.
 
 [![BidLab web demo](web/public/og.png)](https://scumunna.github.io/BidLab/)
 
 Prefer the full experience? **[Download for macOS](https://github.com/scumunna/BidLab/releases)**
-— 124 lessons, exams, spaced-repetition review, and shareable credentials — or
+— 225 lessons, 20 exams, spaced-repetition review, and shareable credentials — or
 build from source below.
 
 > The web demo is a faithful TypeScript port of the pure `BidLabCore` Swift
@@ -31,7 +34,7 @@ build from source below.
 
 ## Screenshots
 
-**Learn — nine role-based paths and 124 cited, interactive lessons**
+**Learn — nine role-based paths plus eleven industry verticals, 225 cited, interactive lessons**
 
 ![BidLab Learn surface](docs/screenshots/learn.png)
 
@@ -62,23 +65,25 @@ build from source below.
 ## What is in here
 
 - **`BidLabCore`** (built as a SwiftPM-style library): a pure, UI-free Swift
-  engine validated by a known-answer test suite (2,500+ checks) covering pricing,
+  engine validated by a known-answer test suite (5,271 checks) covering pricing,
   auctions, probability, statistics, reach and frequency, budget allocation,
   pacing, a seeded market simulation, scoring, analytics (power, difference-in-
-  differences, adstock, saturation, OLS), DSP systems (latency, queueing), and
-  the lesson parser.
+  differences, adstock, saturation, OLS), DSP systems (latency, queueing),
+  conversion tracking, and the lesson parser.
 - **The app** (`Sources/BidLab`): a SwiftUI shell with nine surfaces (Learn,
   Review, Industries, Trading Floor, Tools, Exams, Progress, Explorable, and
   Settings), an original design system, interactive widgets, a native math
   renderer, the "open the hood" transparency panel, an embedded SQLite SQL lab,
   branded PNG/CSV/JSON export, and progress with a shareable certificate.
-- **Content** (`Content/Lessons/*.md`): 124 authored, cited lessons in an original
+- **Content** (`Content/Lessons/*.md`): 225 authored, cited lessons in an original
   Markdown-flavored format, parsed at launch from the app bundle. See
   `Content/CONTENT_GUIDE.md` for the format.
-- **Web demo** (`web/`): a Vite + React + TypeScript reimplementation of the hero
-  explorables (Trading Floor, Reach & Frequency, A/B Power), deployed free to
-  GitHub Pages. The math is a faithful port of `BidLabCore`, verified against the
-  Swift engine in a golden-master test, and the build/deploy is automated in
+- **Web demo** (`web/`): a Vite + React + TypeScript reimplementation of thirteen
+  interactive explorables (the Trading Floor plus Reach & Frequency, A/B Power,
+  Budget Allocator, Latency, Margin, Pixel Setup, Attribution, Forecast, Yield,
+  Pricing, Adstock, and Distribution), deployed free to GitHub Pages. The math is
+  a faithful port of `BidLabCore`, verified against the Swift engine in
+  golden-master tests (180 web tests; the engine is gated at 100% coverage), and the build and deploy are automated in
   `.github/workflows/pages.yml`.
 
 ## Building and running
@@ -88,9 +93,18 @@ Xcode). This project builds entirely with `swiftc` (no full Xcode required),
 because the Command Line Tools on the original machine shipped a broken SwiftPM.
 
 ```sh
-./Scripts/test.sh      # build the core and run the test suite (2,500+ checks)
+./Scripts/test.sh      # build the core and run the test suite (5,271 checks)
 ./Scripts/build.sh     # build the app -> build/BidLab.app
 open build/BidLab.app  # run it
+```
+
+For the web demo:
+
+```sh
+cd web
+npm install
+npm test               # run the engine + acceptance test suite (180 checks)
+npm run dev            # serve the demo locally
 ```
 
 To produce a distributable disk image:
@@ -111,8 +125,13 @@ hdiutil create -volname BidLab -srcfolder build/BidLab.app -ov -format UDZO buil
 
 ## Status
 
-BidLab 1.0. All nine paths are complete (124 lessons), every widget is
-interactive, and the product has been verified running in the live environment.
+BidLab is feature-complete: all nine role paths and eleven industry verticals are
+authored (225 lessons, 20 certification exams), every widget is interactive, and
+the free web demo is live on GitHub Pages. The pure engines are covered to 100%
+(web) and 100% of reachable code (native), enforced by CI coverage gates, across
+5,271 native and 180 web known-answer checks; see
+[docs/COVERAGE.md](docs/COVERAGE.md) and [docs/ACCEPTANCE.md](docs/ACCEPTANCE.md).
+Latest release: [v1.1.1](https://github.com/scumunna/BidLab/releases).
 
 ## License
 
