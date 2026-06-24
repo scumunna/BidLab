@@ -12,6 +12,12 @@ struct SettingsSurface: View {
     @Local private var confirmReset = false
     @Local private var loaded = false
 
+    /// The app version, read from the bundle's `Info.plist`
+    /// (`CFBundleShortVersionString`) — the single source of truth, so the About
+    /// box can never drift from the shipped version. Falls back only when run
+    /// outside the .app bundle.
+    static let appVersion = (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String) ?? "—"
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
@@ -127,7 +133,7 @@ struct SettingsSurface: View {
     private var aboutSection: some View {
         card(title: "About", icon: "info.circle") {
             VStack(alignment: .leading, spacing: 10) {
-                aboutRow("Version", "BidLab 1.0")
+                aboutRow("Version", "BidLab \(Self.appVersion)")
                 aboutRow("Typeface", "Inter, under the SIL Open Font License")
                 aboutRow("Credential", "A self-attested completion certificate. The verification code is tamper-evident, not a third-party identity check.")
             }
