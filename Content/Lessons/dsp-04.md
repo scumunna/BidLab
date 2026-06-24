@@ -54,6 +54,13 @@ This is why two impressions for the same advertiser can be worth a hundred-fold 
 
 Valuation gives you the ceiling, the most an impression is worth. It is not yet your bid. In a first-price auction you bid below this value to keep surplus, a topic we cover under bid shading. For now, hold the distinction clearly: valuation answers what is it worth, bidding answers what should I pay.
 
+The impression you valued at one dollar a moment ago is the ceiling here. Drag your bid against the win-rate curve and watch expected profit respond: the best bid sits below the value, not at it. That gap is the surplus you keep.
+
+:::widget bidPlayground
+marketMean: 0.5
+value: 1.0
+:::
+
 :::callout insight
 Valuation and bidding are separate steps. First estimate the impression's expected value, then decide how much of that value to give up in the auction. Confusing the two leads to overbidding.
 :::
