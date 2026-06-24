@@ -66,11 +66,9 @@ The same multiply-by-a-fraction logic explains the most important curve in media
 
 Adstock, the carryover of advertising over time, is the time-domain cousin of this idea. The geometric adstock model is $A_t = X_t + \lambda A_{t-1}$, where this week's effect $A_t$ is this week's new advertising $X_t$ plus a decayed fraction $\lambda$ of last week's accumulated effect. The decay piece is the exponential fade from the previous section, and the accumulation piece is what builds the saturating curve. Both reach and adstock curves are concave because the next unit always does a bit less than the last, which is diminishing returns made visible.
 
-:::widget lineChart
-title: Saturating reach curve, new reach per dollar shrinks as spend rises (illustrative)
-labels: 1, 2, 3, 4, 6
-data: 39.35, 63.21, 77.69, 86.47, 95.02
-unit: %
+The curve below makes this concrete. Drag spend along it and watch each extra dollar buy less new reach than the one before, the saturation the math predicts.
+
+:::widget responseCurve
 :::
 
 :::predict
